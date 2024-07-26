@@ -1,0 +1,90 @@
+.main__table_schedule_container {
+    overflow: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column
+}
+
+.table_schedule_container__table_header_container {
+    padding-right: 5px
+}
+
+.table_header_container__table_header {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    overflow: hidden
+}
+
+.table_header__header {
+    font-size: 18px;
+    background: #434C63;
+    color: #FFFFFF
+}
+
+.table_schedule_container__table_body_container {
+    overflow: auto;
+    flex: 1
+}
+
+.table_body__body {
+    color: #434c63
+}
+
+.table_body__body_no_content {
+    background: #EFEFEF;
+    border: 1px solid #E2E8F0
+}
+
+.tr__td_schedule {
+    padding: 0
+}
+
+.td_schedule__schedule_content_mono {
+    padding: 10px
+}
+
+.td_schedule__schedule_content_flex {
+    border-top: 1px solid #E2E8F0;
+    padding: 10px
+}
+
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table_body_container__table_body_no_content {
+    height: 100%
+}
+
+.table_body_container__table_body_margin_bottom {
+    margin-bottom: 1px
+}
+
+table, th, td {
+    border: 1px solid #E2E8F0
+}
+
+td, th {
+    word-wrap: break-word;
+    padding: 10px;
+    text-align: center;
+}
+
+.tr__day_of_week_td, .tr__lesson_time_td {
+    width: 10%;
+}
+
+.td_display_none {
+    display: none
+}
+
+::-webkit-scrollbar {
+    width: 5px
+}
+
+::-webkit-scrollbar-thumb {
+    background: #495471;
+    border-radius: 5px
+}

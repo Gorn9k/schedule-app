@@ -1,0 +1,60 @@
+import React, {FC, useEffect, useState} from 'react';
+import styles from './MainPage.module.css';
+import {Link} from "react-router-dom";
+
+const MainPage : FC = () => {
+
+    const generateQueryDatePeriod = (date: Date): string => {
+        const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1;
+        const lastDayOfWeek = firstDayOfWeek + 6;
+        const firstDayOfWeekDate = new Date(date.setDate(firstDayOfWeek));
+        const lastDayOfWeekDate = new Date(date.setDate(lastDayOfWeek));
+
+        const firstDayOfWeekString = `${firstDayOfWeekDate.getFullYear()}-${(firstDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
+        const lastDayOfWeekString = `${lastDayOfWeekDate.getFullYear()}-${(lastDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${lastDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
+
+        return `startDate=${firstDayOfWeekString}&endDate=${lastDayOfWeekString}`
+    }
+
+    const resetTimeInDate = (date: Date): Date => {
+        date.setHours(0, 0, 0, 0)
+        return date
+    }
+
+    const [currentDate, setCurrentDate] = useState(resetTimeInDate(new Date()));
+    const queryDatePeriod = generateQueryDatePeriod(currentDate);
+
+    useEffect(() => {
+        // console.log(`Date changed ${currentDate}`)
+        const timerId = setInterval(() => {
+            setCurrentDate(resetTimeInDate(new Date()));
+        }, 1000);
+
+        return () => clearInterval(timerId);
+    }, []);
+
+    return (
+        <>
+            <header className={styles.header}>
+                Расписание занятости в аудиториях(ЦИТ)
+            </header>
+
+            <main className={styles.main}>
+                <div>
+                    <p>
+                        <Link to={`/schedule?${queryDatePeriod}&frame=FIRST`}>Расписание аудиторий в 1-ом учебном корпусе</Link>
+                    </p>
+                    <p>
+                        <Link to={`/schedule?${queryDatePeriod}&frame=FOURTH`}>Расписание аудиторий в 4-ом учебном корпусе</Link>
+                    </p>
+                    <p>
+                        <Link to={`/class-room/number/219/loads-info/list?${queryDatePeriod}`}>Расписание занятости в 219
+                            аудитории</Link>
+                    </p>
+                </div>
+            </main>
+        </>
+    )
+}
+
+export default MainPage;
