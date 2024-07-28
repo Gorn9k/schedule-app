@@ -1,6 +1,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import getSchedule, {DayAndLessonNumber, Lesson, Schedule} from "../../../../api/schedule-backend-api";
 import styles from './ScheduleTable.module.css'
+import Preloader from "../../../preloader/Preloader";
 
 type ScheduleTablePropsType = {
     startDate: string
@@ -31,7 +32,7 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
     }, [props.startDate, props.endDate, props.frame])
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Preloader/>;
     }
 
     if (error) {
