@@ -26,18 +26,10 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
             .then(() => {
                 setError(null)
             })
-            .catch(() => setError('Failed to fetch schedule'))
+            .catch(() => setError('Не удалось получить расписание из диспетчерской'))
             .finally(() => setLoading(false))
 
     }, [props.startDate, props.endDate, props.frame])
-
-    if (loading) {
-        return <Preloader/>;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
-    }
 
     const getUniqueSortedRoomNumbers = (schedule: Schedule): string[] => {
         const roomNumbersSet = new Set<string>();
@@ -142,7 +134,9 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
 
     return (
         <>
-            <div className={styles.main__table_schedule_container}>
+            {loading && <Preloader/>}
+            {!loading && error && <h2 style={{ color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center' }}>{error}</h2>}
+            {!loading && schedule && <div className={styles.main__table_schedule_container}>
                 <div
                     className={schedule && Object.keys(schedule).length === 0 ? '' : styles.table_schedule_container__table_header_container}
                     id="table-header-container">
@@ -151,11 +145,13 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                         <tr>
                             <th rowSpan={2} className={styles.tr__day_of_week_td}>День недели</th>
                             <th rowSpan={2} className={styles.tr__lesson_time_td}>Время занятия</th>
-                            <th colSpan={classes?.length}>Номер аудитории</th>
+                            <th colSpan={classes && classes.length > 0 ? classes.length : undefined}>Номер аудитории</th>
                         </tr>
-                        <tr>
-                            {classes?.map(value => <th key={value}>{value}</th>)}
-                        </tr>
+                        {classes && classes.length > 0 ?
+                            <tr>
+                                {classes?.map(value => <th key={value}>{value}</th>)}
+                            </tr> : null
+                        }
                         </thead>
                     </table>
                 </div>
@@ -164,7 +160,7 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                         <table className={styles.table_body_container__table_body_no_content}>
                             <tbody className={`${styles.table_body__body} ${styles.table_body__body_no_content}`}>
                             <tr>
-                                <td colSpan={!!classes ? classes.length + 2 : 4}>
+                                <td colSpan={classes && classes.length ? classes.length + 2 : 4}>
                                     На этой неделе нету пар!
                                 </td>
                             </tr>
@@ -176,8 +172,8 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                             {Object.keys(schedule).map((dayAndLessonNumber, index, array) => {
                                 return (
                                     <tr key={dayAndLessonNumber}>
-                                        <td rowSpan={index > 0 && parseKey(array[index])?.day === parseKey(array[index - 1])?.day ? 1 : mergeDayOfWeekRowsNumber(schedule, dayAndLessonNumber)}
-                                            className={`${styles.tr__day_of_week_td}${index > 0 && parseKey(array[index])?.day === parseKey(array[index - 1])?.day ? ' ' + styles.td_display_none : ''}`}>{`${switchByDayNumber(parseKey(dayAndLessonNumber)?.day)}`}</td>
+                                        {index > 0 && parseKey(array[index])?.day === parseKey(array[index - 1])?.day ? null : <td rowSpan={mergeDayOfWeekRowsNumber(schedule, dayAndLessonNumber)}
+                                            className={styles.tr__day_of_week_td}>{`${switchByDayNumber(parseKey(dayAndLessonNumber)?.day)}`}</td>}
                                         <td className={styles.tr__lesson_time_td}>{`${switchByLessonNumber(parseKey(dayAndLessonNumber)?.lessonNumber)}`}</td>
                                         {classes?.map(classNumber => {
                                             return (
@@ -216,7 +212,7 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                             </tbody>
                         </table>}
                 </div>
-            </div>
+            </div>}
         </>
     )
 }

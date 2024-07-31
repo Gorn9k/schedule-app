@@ -76,10 +76,6 @@ td, th {
     width: 10%;
 }
 
-.td_display_none {
-    display: none
-}
-
 ::-webkit-scrollbar {
     width: 5px
 }
