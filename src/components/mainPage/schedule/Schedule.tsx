@@ -12,25 +12,20 @@ const Schedule : FC = () => {
     const frame = queryParams.get('frame')
 
     const _generateQueryDatePeriod = (date : Date) => {
-        const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1
-        const lastDayOfWeek = firstDayOfWeek + 6
-        const firstDayOfWeekDate = new Date(date.setDate(firstDayOfWeek))
-        const lastDayOfWeekDate = new Date(date.setDate(lastDayOfWeek))
+        const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1;
+        const firstDayOfWeekDate = new Date(new Date(date).setDate(firstDayOfWeek));
+        const firstDayOfWeekString = `${firstDayOfWeekDate.getFullYear()}-${(firstDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
 
-        const firstDayOfWeekString = `${firstDayOfWeekDate.getFullYear()}-${(firstDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfWeekDate.getDate().toString().padStart(2, '0')}`
-        const lastDayOfWeekString = `${lastDayOfWeekDate.getFullYear()}-${(lastDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${lastDayOfWeekDate.getDate().toString().padStart(2, '0')}`
+        const lastDayOfWeek = firstDayOfWeekDate.getDate() + 6;
+        const lastDayOfWeekDate = new Date(firstDayOfWeekDate.setDate(lastDayOfWeek));
+        const lastDayOfWeekString = `${lastDayOfWeekDate.getFullYear()}-${(lastDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${lastDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
 
         return `startDate=${firstDayOfWeekString}&endDate=${lastDayOfWeekString}`
     }
 
-    const generateNextQueryDatePeriod = (date : Date) => {
-        date.setDate(date.getDate() + 7)
-        return _generateQueryDatePeriod(date)
-    }
-    const generatePrevQueryDatePeriod = (date : Date) => {
-        date.setDate(date.getDate() - 7)
-        return _generateQueryDatePeriod(date)
-    }
+    const generateNextQueryDatePeriod = (date : Date) => _generateQueryDatePeriod(new Date(new Date(endDate).setDate(date.getDate() + 7)))
+
+    const generatePrevQueryDatePeriod = (date : Date) => _generateQueryDatePeriod(new Date(new Date(startDate).setDate(date.getDate() - 7)))
 
     const generateContainerDatePeriod = (startDate : Date, endDate : Date) => {
 
@@ -56,9 +51,9 @@ const Schedule : FC = () => {
                 <div className={styles.main__date_period_container}>
                     Период занятий
                     <div>
-                        <Link to={`/schedule?${generatePrevQueryDatePeriod(new Date(startDate))}&frame=${frame === 'FIRST' ? 'FIRST' : 'FOURTH'}`}>{'<<'}</Link>
-                        <div>{`${generateContainerDatePeriod(new Date(startDate), new Date(endDate))}`}</div>
-                        <Link to={`/schedule?${generateNextQueryDatePeriod(new Date(startDate))}&frame=${frame === 'FIRST' ? 'FIRST' : 'FOURTH'}`}>{'>>'}</Link>
+                        <Link to={`/schedule?${generatePrevQueryDatePeriod(startDate)}&frame=${frame === 'FIRST' ? 'FIRST' : 'FOURTH'}`}>{'<<'}</Link>
+                        <div>{`${generateContainerDatePeriod(startDate, endDate)}`}</div>
+                        <Link to={`/schedule?${generateNextQueryDatePeriod(endDate)}&frame=${frame === 'FIRST' ? 'FIRST' : 'FOURTH'}`}>{'>>'}</Link>
                     </div>
                 </div>
                 <ScheduleTable startDate={startDate.toISOString().split('T')[0]}

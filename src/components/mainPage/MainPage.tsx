@@ -6,11 +6,11 @@ const MainPage : FC = () => {
 
     const generateQueryDatePeriod = (date: Date): string => {
         const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1;
-        const lastDayOfWeek = firstDayOfWeek + 6;
-        const firstDayOfWeekDate = new Date(date.setDate(firstDayOfWeek));
-        const lastDayOfWeekDate = new Date(date.setDate(lastDayOfWeek));
-
+        const firstDayOfWeekDate = new Date(new Date().setDate(firstDayOfWeek));
         const firstDayOfWeekString = `${firstDayOfWeekDate.getFullYear()}-${(firstDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
+
+        const lastDayOfWeek = firstDayOfWeekDate.getDate() + 6;
+        const lastDayOfWeekDate = new Date(firstDayOfWeekDate.setDate(lastDayOfWeek));
         const lastDayOfWeekString = `${lastDayOfWeekDate.getFullYear()}-${(lastDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${lastDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
 
         return `startDate=${firstDayOfWeekString}&endDate=${lastDayOfWeekString}`
@@ -27,7 +27,10 @@ const MainPage : FC = () => {
     useEffect(() => {
         // console.log(`Date changed ${currentDate}`)
         const timerId = setInterval(() => {
-            setCurrentDate(resetTimeInDate(new Date()));
+            setCurrentDate((prevDate) => {
+                const newDate = resetTimeInDate(new Date())
+                return newDate.getTime() !== prevDate.getTime() ? newDate : prevDate;
+            });
         }, 1000);
 
         return () => clearInterval(timerId);
