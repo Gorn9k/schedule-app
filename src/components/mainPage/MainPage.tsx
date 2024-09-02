@@ -51,7 +51,7 @@ const MainPage : FC = () => {
                         <Link to={`/schedule?${queryDatePeriod}&frame=FOURTH`}>Расписание аудиторий в 4-ом учебном корпусе</Link>
                     </p>
                     <p>
-                        <Link to={`/class-room/number/219/loads-info/list?${queryDatePeriod}`}>Расписание занятости в 219
+                        <Link to={`/schedule/219?${queryDatePeriod}`}>Расписание занятости в 219
                             аудитории</Link>
                     </p>
                 </div>

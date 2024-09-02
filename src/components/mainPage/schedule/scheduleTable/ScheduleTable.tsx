@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react'
-import getSchedule, {DayAndLessonNumber, Lesson, Schedule} from "../../../../api/schedule-backend-api";
+import {DayAndLessonNumber, getSchedule, Lesson, Schedule} from "../../../../api/schedule-backend-api";
 import styles from './ScheduleTable.module.css'
 import Preloader from "../../../preloader/Preloader";
 
