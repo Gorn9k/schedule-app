@@ -2,6 +2,22 @@ import React, {FC, useEffect, useState} from 'react';
 import styles from './MainPage.module.css';
 import {Link} from "react-router-dom";
 
+export const generateCurrentStartDate = (): Date => {
+    const today = new Date()
+
+    const firstDayOfWeek = today.getDate() - (today.getDay() === 0 ? 7 : today.getDay()) + 1
+
+    return new Date(today.setDate(firstDayOfWeek))
+}
+
+export const generateCurrentEndDate = (): Date => {
+    const today = new Date();
+
+    const lastDayOfWeek = today.getDate() + (today.getDay() === 0 ? 0 : 7 - today.getDay())
+
+    return new Date(today.setDate(lastDayOfWeek))
+}
+
 const MainPage : FC = () => {
 
     const generateQueryDatePeriod = (date: Date): string => {

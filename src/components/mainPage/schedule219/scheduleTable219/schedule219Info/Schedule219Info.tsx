@@ -58,7 +58,6 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                 .max(15, 'Must be 15 characters or less')
                                 .required('Required'),
                             time: Yup.string()
-                                .email('Invalid email address')
                                 .required('Required'),
                         })}
                         onSubmit={(values, {setSubmitting}) => {
