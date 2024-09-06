@@ -52,6 +52,11 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
         }
     };
 
+    const _switchByDayNumber = (stringDate : string) => {
+        const date = new Date(stringDate).getDay()
+        return switchByDayNumber(date === 0 ? 6 : date - 1)
+    }
+
     const switchByLessonNumber = (value: number | undefined): string => {
         switch (value) {
             case 1:
@@ -73,10 +78,10 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
         }
     };
 
-    const mergeDayOfWeekRowsNumber = (schedule: Array<Schedule219>, day: number) => {
+    const mergeDayOfWeekRowsNumber = (schedule: Array<Schedule219>, date: string) => {
         let count = 0
         schedule.forEach(value => {
-            if (value?.day === day)
+            if (value?.date === date)
                 count++
         })
         return count
@@ -121,9 +126,9 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                             <tbody className={styles.table_body__body}>
                             {schedule.map((value, index, array) => {
                                     return (
-                                        <tr key={value.id}>{index > 0 && array[index]?.day === array[index - 1]?.day ? null :
-                                            <td rowSpan={mergeDayOfWeekRowsNumber(schedule, value.day)}
-                                                className={styles.tr__day_of_week_td}>{`${switchByDayNumber(value?.day)}`}</td>}
+                                        <tr key={value.id}>{index > 0 && array[index]?.date === array[index - 1]?.date ? null :
+                                            <td rowSpan={mergeDayOfWeekRowsNumber(schedule, value.date)}
+                                                className={styles.tr__day_of_week_td}>{_switchByDayNumber(value?.date)}</td>}
                                             <td className={styles.tr__lesson_time_td}>{value.time}</td>
                                             <td>{value.type}</td>
                                             <td>{value.responsible}</td>

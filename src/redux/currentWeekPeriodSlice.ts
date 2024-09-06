@@ -1,14 +1,29 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {generateCurrentEndDate, generateCurrentStartDate} from "../components/mainPage/MainPage"
+
+export const generateCurrentStartDate = (): number => {
+    const today = new Date()
+
+    const firstDayOfWeek = today.getDate() - (today.getDay() === 0 ? 7 : today.getDay()) + 1
+
+    return today.setDate(firstDayOfWeek)
+}
+
+export const generateCurrentEndDate = (): number => {
+    const today = new Date();
+
+    const lastDayOfWeek = today.getDate() + (today.getDay() === 0 ? 0 : 7 - today.getDay())
+
+    return today.setDate(lastDayOfWeek)
+}
 
 type CurrentWeekPeriodState = {
-    startDate: Date
-    endDate: Date
+    startDateTime: number
+    endDateTime: number
 }
 
 const initialState: CurrentWeekPeriodState = {
-    startDate: generateCurrentStartDate(),
-    endDate: generateCurrentEndDate(),
+    startDateTime: generateCurrentStartDate(),
+    endDateTime: generateCurrentEndDate(),
 }
 
 const currentWeekPeriodSlice = createSlice({
@@ -16,16 +31,16 @@ const currentWeekPeriodSlice = createSlice({
     initialState,
     reducers: {
         reset: (state: CurrentWeekPeriodState) => {
-            state.startDate = generateCurrentStartDate()
-            state.endDate = generateCurrentEndDate()
+            state.startDateTime = generateCurrentStartDate()
+            state.endDateTime = generateCurrentEndDate()
         },
         next: (state: CurrentWeekPeriodState) => {
-            state.startDate = new Date(new Date().setDate(state.startDate.getDate() + 7))
-            state.endDate = new Date(new Date().setDate(state.endDate.getDate() + 7))
+            state.startDateTime += 7 * 24 * 60 * 60 * 1000
+            state.endDateTime += 7 * 24 * 60 * 60 * 1000
         },
         prev: (state: CurrentWeekPeriodState) => {
-            state.startDate = new Date(new Date().setDate(state.startDate.getDate() - 7))
-            state.endDate = new Date(new Date().setDate(state.endDate.getDate() - 7))
+            state.startDateTime -= 7 * 24 * 60 * 60 * 1000
+            state.endDateTime -= 7 * 24 * 60 * 60 * 1000
         }
     }
 })

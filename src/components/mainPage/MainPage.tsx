@@ -1,27 +1,14 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 import styles from './MainPage.module.css';
 import {Link} from "react-router-dom";
-
-export const generateCurrentStartDate = (): Date => {
-    const today = new Date()
-
-    const firstDayOfWeek = today.getDate() - (today.getDay() === 0 ? 7 : today.getDay()) + 1
-
-    return new Date(today.setDate(firstDayOfWeek))
-}
-
-export const generateCurrentEndDate = (): Date => {
-    const today = new Date();
-
-    const lastDayOfWeek = today.getDate() + (today.getDay() === 0 ? 0 : 7 - today.getDay())
-
-    return new Date(today.setDate(lastDayOfWeek))
-}
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../redux/store";
+import {reset} from "../../redux/currentWeekPeriodSlice";
 
 const MainPage : FC = () => {
 
-    const generateQueryDatePeriod = (date: Date): string => {
-        const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1;
+    const generateQueryWeekPeriod = (startDate: Date, endDate : Date): string => {
+        const firstDayOfWeek = startDate.getDate() - (startDate.getDay() === 0 ? 7 : startDate.getDay()) + 1;
         const firstDayOfWeekDate = new Date(new Date().setDate(firstDayOfWeek));
         const firstDayOfWeekString = `${firstDayOfWeekDate.getFullYear()}-${(firstDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
 
@@ -32,25 +19,18 @@ const MainPage : FC = () => {
         return `startDate=${firstDayOfWeekString}&endDate=${lastDayOfWeekString}`
     }
 
-    const resetTimeInDate = (date: Date): Date => {
-        date.setHours(0, 0, 0, 0)
-        return date
-    }
-
-    const [currentDate, setCurrentDate] = useState(resetTimeInDate(new Date()));
-    const queryDatePeriod = generateQueryDatePeriod(currentDate);
+    const currentWeekPeriod = useSelector((state : RootState) => state.currentWeekPeriod);
+    const dispatch = useDispatch<AppDispatch>();
+    const queryDatePeriod = generateQueryWeekPeriod(new Date(currentWeekPeriod.startDateTime), new Date(currentWeekPeriod.endDateTime));
 
     useEffect(() => {
         // console.log(`Date changed ${currentDate}`)
         const timerId = setInterval(() => {
-            setCurrentDate((prevDate) => {
-                const newDate = resetTimeInDate(new Date())
-                return newDate.getTime() !== prevDate.getTime() ? newDate : prevDate;
-            });
+            dispatch(reset())
         }, 1000);
 
         return () => clearInterval(timerId);
-    }, []);
+    }, [dispatch]);
 
     return (
         <>

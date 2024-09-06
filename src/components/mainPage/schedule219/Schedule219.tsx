@@ -2,6 +2,9 @@ import React, {FC} from 'react'
 import {Link, NavLink, useLocation} from "react-router-dom"
 import styles from "./Schedule219.module.css"
 import ScheduleTable219 from './scheduleTable219/ScheduleTable219';
+import {next, prev} from "../../../redux/currentWeekPeriodSlice";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../../../redux/store";
 
 const Schedule219 : FC = () => {
 
@@ -9,6 +12,8 @@ const Schedule219 : FC = () => {
     const queryParams = new URLSearchParams(location.search)
     const startDate = new Date(queryParams.get('startDate') || Date.now())
     const endDate = new Date(queryParams.get('endDate') || Date.now())
+
+    const dispatch = useDispatch<AppDispatch>()
 
     const _generateQueryDatePeriod = (date : Date) => {
         const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1;
@@ -49,9 +54,9 @@ const Schedule219 : FC = () => {
                 <div className={styles.main__date_period_container}>
                     Период занятости
                     <div>
-                        <Link to={`/schedule/219?${generatePrevQueryDatePeriod(startDate)}`}>{'<<'}</Link>
+                        <Link onClick={() => dispatch(prev())} to={`/schedule/219?${generatePrevQueryDatePeriod(startDate)}`}>{'<<'}</Link>
                         <div>{`${generateContainerDatePeriod(startDate, endDate)}`}</div>
-                        <Link to={`/schedule/219?${generateNextQueryDatePeriod(endDate)}`}>{'>>'}</Link>
+                        <Link onClick={() => dispatch(next())} to={`/schedule/219?${generateNextQueryDatePeriod(endDate)}`}>{'>>'}</Link>
                     </div>
                 </div>
                 <ScheduleTable219 startDate={startDate.toISOString().split('T')[0]}
