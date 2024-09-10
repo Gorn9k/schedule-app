@@ -42,17 +42,17 @@ const Schedule : FC = () => {
 
     return (
         <>
-            <header className={styles.header}>
+            <header>
                 <div className={styles.button}>
-                    <NavLink className={styles.button__link} to='/'>В главное меню</NavLink>
+                    <Link to='/'>В главное меню</Link>
                 </div>
-                <div className={styles.header__title}>{`${frame === 'FIRST' ? 
+                <div className={styles.title}>{`${frame === 'FIRST' ? 
                     'Расписание аудиторий(ЦИТ) в первом учебном корпусе' : 
                     'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе'}`}
                 </div>
             </header>
 
-            <main className={styles.main}>
+            <main>
                 <div className={styles.main__date_period_container}>
                     Период занятий
                     <div>

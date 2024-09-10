@@ -138,7 +138,8 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
             {!loading && error && <h2 style={{ color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center' }}>{error}</h2>}
             {!loading && schedule && <div className={styles.main__table_schedule_container}>
                 <div
-                    className={schedule && Object.keys(schedule).length === 0 ? '' : styles.table_schedule_container__table_header_container}
+                    className={`${styles.table_schedule_container__table_header_container_margin} ${schedule && Object.keys(schedule).length === 0 ? '' : 
+                        styles.table_schedule_container__table_header_container}`}
                     id="table-header-container">
                     <table className={styles.table_header_container__table_header}>
                         <thead className={styles.table_header__header}>

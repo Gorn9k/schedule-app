@@ -54,11 +54,14 @@ const Schedule219 : FC = () => {
                 <div className={styles.main__date_period_container}>
                     Период занятости
                     <div>
-                        <Link onClick={() => dispatch(prev())} to={`/schedule/219?${generatePrevQueryDatePeriod(startDate)}`}>{'<<'}</Link>
+                        <Link onClick={() => dispatch(prev())}
+                              to={`/schedule/219?${generatePrevQueryDatePeriod(startDate)}`}>{'<<'}</Link>
                         <div>{`${generateContainerDatePeriod(startDate, endDate)}`}</div>
-                        <Link onClick={() => dispatch(next())} to={`/schedule/219?${generateNextQueryDatePeriod(endDate)}`}>{'>>'}</Link>
+                        <Link onClick={() => dispatch(next())}
+                              to={`/schedule/219?${generateNextQueryDatePeriod(endDate)}`}>{'>>'}</Link>
                     </div>
                 </div>
+
                 <ScheduleTable219 startDate={startDate.toISOString().split('T')[0]}
                                   endDate={endDate.toISOString().split('T')[0]}/>
             </main>

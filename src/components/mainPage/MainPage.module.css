@@ -1,20 +1,16 @@
 .header {
-    background: #434c63;
-    height: 10vh;
     font-size: 30px;
     text-align: center;
     color: #FFFFFF;
-    align-content: center
+    justify-content: center
 }
 
 .main {
-    display: flex;
     align-items: center;
     justify-content: center;
-    height: 80vh
 }
 
-.main div {
+.main > div {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -23,12 +19,10 @@
     padding: 30px
 }
 
-.main div p {
+.main > div > p {
     border-bottom: 1px solid #c1c1c1
 }
 
-.main div p a {
+.main > div > p > a {
     font-size: 20px;
-    color: #434c63;
-    text-decoration: none
 }

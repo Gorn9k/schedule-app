@@ -1,33 +1,9 @@
-*, *::after, *::before {
-    box-sizing: border-box;
-}
-
-.header {
-    background: #434c63;
-    height: 10vh;
-    display: flex;
-    align-items: center
-}
-
-.main {
-    display: flex;
-    flex-direction: column;
-    height: 80vh
-}
-
-.header, .main {
-    padding-left: 30px;
-    padding-right: 30px;
-}
-
 .button {
     background: #353f57;
-    border: 1px;
     border-radius: 7px;
-    text-align: center
 }
 
-.button__link {
+.button > a {
     color: #FFFFFF;
     display: block;
     font-size: 20px;
@@ -35,7 +11,7 @@
     text-decoration: none
 }
 
-.header__title {
+.title {
     font-size: 30px;
     text-align: center;
     color: #FFFFFF;
@@ -148,13 +124,4 @@ td, th {
 
 .tr__day-of-week-td, .tr__lesson-time-td {
     width: 10%;
-}
-
-::-webkit-scrollbar {
-    width: 5px
-}
-
-::-webkit-scrollbar-thumb {
-    background: #495471;
-    border-radius: 5px
 }

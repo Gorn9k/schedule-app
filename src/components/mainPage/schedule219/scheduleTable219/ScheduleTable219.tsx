@@ -93,8 +93,13 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
             {!loading && error &&
                 <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>}
             {!loading && schedule && <div className={styles.main__table_schedule_container}>
+                <div className={`${styles.button} ${styles.button__margin_left}`}>
+                    <NavLink className={styles.button__link} to={`/schedule/219/load-info/create`}>Добавить
+                        нагрузку</NavLink>
+                </div>
                 <div
-                    className={schedule && schedule.length === 0 ? '' : styles.table_schedule_container__table_header_container}
+                    className={`${styles.table_schedule_container__table_header_container_margin} ${schedule && schedule.length === 0 ? '' :
+                        styles.table_schedule_container__table_header_container}`}
                     id="table-header-container">
                     <table className={styles.table_header_container__table_header}>
                         <thead className={styles.table_header__header}>
@@ -135,7 +140,8 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                                             <td>{value.description}</td>
                                             <td>
                                                 <div className={styles.button}>
-                                                    <NavLink className={styles.button__link} to={`/schedule/219/load-info/${value.id}/edit`}>Изменить</NavLink>
+                                                    <NavLink className={styles.button__link}
+                                                             to={`/schedule/219/load-info/${value.id}/edit`}>Изменить</NavLink>
                                                 </div>
                                             </td>
                                         </tr>

@@ -6,6 +6,9 @@ import MainPage from "./components/mainPage/MainPage";
 import Schedule from "./components/mainPage/schedule/Schedule";
 import Schedule219 from './components/mainPage/schedule219/Schedule219';
 import Schedule219Info from "./components/mainPage/schedule219/scheduleTable219/schedule219Info/Schedule219Info";
+import Modal from "react-modal";
+
+Modal.setAppElement('#root');
 
 const App : FC = () => {
 
@@ -16,7 +19,7 @@ const App : FC = () => {
                 <Route path="/schedule" element={<Schedule />} />
                 <Route path="/schedule/219" element={<Schedule219 />} />
                 <Route path="/schedule/219/load-info/:id/edit" element={<Schedule219Info action={'edit'}/>} />
-                <Route path="/schedule/219/load-info/:id/create" element={<Schedule219Info action={'create'}/>} />
+                <Route path="/schedule/219/load-info/create" element={<Schedule219Info action={'create'}/>} />
             </Routes>
             <Footer/>
         </Router>

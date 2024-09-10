@@ -2,11 +2,16 @@
     overflow: auto;
     flex: 1;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .table_schedule_container__table_header_container {
     padding-right: 5px
+}
+
+.table_schedule_container__table_header_container_margin {
+    margin-top: 10px;
 }
 
 .table_header_container__table_header {
@@ -99,4 +104,8 @@ td, th {
     font-size: 20px;
     padding: 10px;
     text-decoration: none
+}
+
+.button__margin_left {
+    margin-left: 20px
 }

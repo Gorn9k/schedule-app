@@ -1,4 +1,39 @@
-body {
-    font-family: sans-serif;
-    margin: auto
+::-webkit-scrollbar {
+    width: 5px
+}
+
+::-webkit-scrollbar-thumb {
+    background: #495471;
+    border-radius: 5px
+}
+
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+header {
+    background: #434c63;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+}
+
+header, main, footer {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+a {
+    text-decoration: none;
+    color: #434c63
+}
+
+h2 {
+    text-align: center
 }
