@@ -53,7 +53,7 @@ const Schedule : FC = () => {
             </header>
 
             <main>
-                <div className={styles.main__date_period_container}>
+                <div className={styles.weekPeriodBlock}>
                     Период занятий
                     <div>
                         <Link onClick={() => dispatch(prev())} to={`/schedule?${generatePrevQueryDatePeriod(startDate)}&frame=${frame === 'FIRST' ? 'FIRST' : 'FOURTH'}`}>{'<<'}</Link>

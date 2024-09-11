@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useRef, useState} from 'react'
 import {DayAndLessonNumber, getSchedule, Lesson, Schedule} from "../../../../api/schedule-backend-api";
 import styles from './ScheduleTable.module.css'
 import Preloader from "../../../preloader/Preloader";
@@ -14,8 +14,22 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
     const [schedule, setSchedule] = useState<Schedule | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const bodyContainerRef = useRef<HTMLDivElement | null>(null);
+    const headerContainerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
+        const checkOverflow = () => {
+            const bodyContainer = bodyContainerRef.current;
+            const headerContainer = headerContainerRef.current;
+            if (bodyContainer && headerContainer) {
+                if (bodyContainer.scrollHeight > bodyContainer.clientHeight)
+                    setIsOverflowing(true)
+                else
+                    setIsOverflowing(false)
+            }
+        };
+
         const fetchSchedule = async () => {
             setLoading(true);
             const data = await getSchedule(props.startDate, props.endDate, props.frame);
@@ -27,8 +41,16 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                 setError(null)
             })
             .catch(() => setError('Не удалось получить расписание из диспетчерской'))
-            .finally(() => setLoading(false))
+            .finally(() => {
+                setLoading(false)
+                setTimeout(checkOverflow)
+            })
 
+        window.addEventListener('resize', checkOverflow)
+
+        return () => {
+            window.removeEventListener('resize', checkOverflow)
+        }
     }, [props.startDate, props.endDate, props.frame])
 
     const getUniqueSortedRoomNumbers = (schedule: Schedule): string[] => {
@@ -135,18 +157,17 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
     return (
         <>
             {loading && <Preloader/>}
-            {!loading && error && <h2 style={{ color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center' }}>{error}</h2>}
-            {!loading && schedule && <div className={styles.main__table_schedule_container}>
-                <div
-                    className={`${styles.table_schedule_container__table_header_container_margin} ${schedule && Object.keys(schedule).length === 0 ? '' : 
-                        styles.table_schedule_container__table_header_container}`}
-                    id="table-header-container">
-                    <table className={styles.table_header_container__table_header}>
-                        <thead className={styles.table_header__header}>
+            {!loading && error &&
+                <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>}
+            {!loading && schedule && <div className={styles.scheduleContainer}>
+                <div ref={headerContainerRef} className={(isOverflowing && `${styles.scheduleContainerHeader}`) || undefined} id="table-header-container">
+                    <table className={styles.scheduleTableHeader}>
+                        <thead className={styles.scheduleHeader}>
                         <tr>
-                            <th rowSpan={2} className={styles.tr__day_of_week_td}>День недели</th>
-                            <th rowSpan={2} className={styles.tr__lesson_time_td}>Время занятия</th>
-                            <th colSpan={classes && classes.length > 0 ? classes.length : undefined}>Номер аудитории</th>
+                            <th rowSpan={2} className={styles.thAndTdDayAndTime}>День недели</th>
+                            <th rowSpan={2} className={styles.thAndTdDayAndTime}>Время занятия</th>
+                            <th colSpan={classes && classes.length > 0 ? classes.length : undefined}>Номер аудитории
+                            </th>
                         </tr>
                         {classes && classes.length > 0 ?
                             <tr>
@@ -156,10 +177,11 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                         </thead>
                     </table>
                 </div>
-                <div className={styles.table_schedule_container__table_body_container} id="table-body-container">
-                    {schedule && Object.keys(schedule).length === 0 &&
-                        <table className={styles.table_body_container__table_body_no_content}>
-                            <tbody className={`${styles.table_body__body} ${styles.table_body__body_no_content}`}>
+                <div ref={bodyContainerRef} className={`${styles.scheduleContainerBody}${(Object.keys(schedule).length === 0 
+                    && ` ${styles.scheduleContainerBodyNoContent}`) || ''}`} id="table-body-container">
+                    {Object.keys(schedule).length === 0 &&
+                        <table className={styles.scheduleTableBodyNoContent}>
+                            <tbody className={`${styles.scheduleBody} ${styles.scheduleBodyNoContent}`}>
                             <tr>
                                 <td colSpan={classes && classes.length ? classes.length + 2 : 4}>
                                     На этой неделе нету пар!
@@ -167,23 +189,24 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                             </tr>
                             </tbody>
                         </table>}
-                    {schedule && Object.keys(schedule).length > 0 &&
-                        <table className={styles.table_body_container__table_body_margin_bottom} id="schedule-table">
-                            <tbody className={styles.table_body__body}>
+                    {Object.keys(schedule).length > 0 &&
+                        <table className={styles.scheduleTableBodyContent} id="schedule-table">
+                            <tbody className={styles.scheduleBody}>
                             {Object.keys(schedule).map((dayAndLessonNumber, index, array) => {
                                 return (
-                                    <tr key={dayAndLessonNumber}>
-                                        {index > 0 && parseKey(array[index])?.day === parseKey(array[index - 1])?.day ? null : <td rowSpan={mergeDayOfWeekRowsNumber(schedule, dayAndLessonNumber)}
-                                            className={styles.tr__day_of_week_td}>{`${switchByDayNumber(parseKey(dayAndLessonNumber)?.day)}`}</td>}
-                                        <td className={styles.tr__lesson_time_td}>{`${switchByLessonNumber(parseKey(dayAndLessonNumber)?.lessonNumber)}`}</td>
+                                    <tr className={((parseKey(dayAndLessonNumber)?.day || 0) % 2 !== 0 && styles.oddRow) || undefined} key={dayAndLessonNumber}>
+                                        {index > 0 && parseKey(array[index])?.day === parseKey(array[index - 1])?.day ? null :
+                                            <td rowSpan={mergeDayOfWeekRowsNumber(schedule, dayAndLessonNumber)}
+                                                className={styles.thAndTdDayAndTime}>{`${switchByDayNumber(parseKey(dayAndLessonNumber)?.day)}`}</td>}
+                                        <td className={styles.thAndTdDayAndTime}>{`${switchByLessonNumber(parseKey(dayAndLessonNumber)?.lessonNumber)}`}</td>
                                         {classes?.map(classNumber => {
                                             return (
-                                                <td key={classNumber} className={styles.tr__td_schedule}>
+                                                <td key={classNumber} className={styles.tdLesson}>
                                                     {findLessonsByRoomNumber(schedule, classNumber, dayAndLessonNumber).map((value, index) => {
                                                             if (index > 0) {
                                                                 return (
                                                                     <div key={value.id}
-                                                                         className={styles.td_schedule__schedule_content_flex}>
+                                                                         className={styles.lessonContentFlex}>
                                                                         <label>{`${value.disciplineName}`}</label><br/>
                                                                         <label>{`${value.teacherFullName}`}</label><br/>
                                                                         <label>{`${value.group}`}</label><br/>
@@ -192,7 +215,7 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                                                             } else {
                                                                 return (
                                                                     <div key={value.id}
-                                                                         className={styles.td_schedule__schedule_content_mono}>
+                                                                         className={styles.lessonContentMono}>
                                                                         <label>{`${value.disciplineName}`}</label><br/>
                                                                         <label>{`${value.teacherFullName}`}</label><br/>
                                                                         <label>{`${value.group}`}</label><br/>

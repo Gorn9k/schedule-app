@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react'
-import {NavLink, useParams} from "react-router-dom";
-import styles from "../../Schedule219.module.css";
+import {Link, NavLink, useParams} from "react-router-dom";
+import styles from "../../../schedule/Schedule.module.css";
 import stylesForInfo from './Schedule219Info.module.css'
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from 'yup'
@@ -51,11 +51,11 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
     }, [id])
 
     return <>
-        <header className={styles.header}>
+        <header>
             <div className={styles.button}>
-                <NavLink className={styles.button__link} to='/'>В главное меню</NavLink>
+                <Link to='/'>В главное меню</Link>
             </div>
-            <div className={styles.header__title}>
+            <div className={styles.title}>
                 {props.action === "edit" ? 'Редактирование нагрузки' : 'Создание новой нагрузки'}
             </div>
         </header>
@@ -70,7 +70,7 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
             }}>{error}</h2>}
         {!loading && (schedule || props.action === 'create')
             && <>
-                <main>
+                <main className={stylesForInfo.main}>
                     <h1>{props.action === "edit" ? 'Текущая нагрузка' : 'Новая нагрузка'}</h1>
                     <Formik
                         initialValues={{
@@ -122,34 +122,34 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                     >
                         {({isSubmitting, errors, touched}) => (
                             <Form className={stylesForInfo.main__create_form}>
-                                <div className={stylesForInfo.form_div}>
+                                <div>
                                     <label htmlFor="localDate">Дата:</label>
                                     <Field name="localDate" type="date" id="localDate"
                                            className={errors.localDate && touched.localDate ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="localDate" component="div"
                                                   className={stylesForInfo.error_message}/>
                                 </div>
-                                <div className={stylesForInfo.form_div}>
+                                <div>
                                     <label htmlFor="localTime">Время:</label>
                                     <Field name="localTime" type="time" id="localTime"
                                            className={errors.localTime && touched.localTime ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="localTime" component="div"
                                                   className={stylesForInfo.error_message}/>
                                 </div>
-                                <div className={stylesForInfo.form_div}>
+                                <div>
                                     <label htmlFor="type">Тип:</label>
                                     <Field name="type" type="text" id="type"
                                            className={errors.type && touched.type ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="type" component="div" className={stylesForInfo.error_message}/>
                                 </div>
-                                <div className={stylesForInfo.form_div}>
+                                <div>
                                     <label htmlFor="responsible">Ответственный:</label>
                                     <Field name="responsible" type="text" id="responsible"
                                            className={errors.responsible && touched.responsible ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="responsible" component="div"
                                                   className={stylesForInfo.error_message}/>
                                 </div>
-                                <div className={stylesForInfo.form_div}>
+                                <div>
                                     <label htmlFor="description">Комментарий:</label>
                                     <Field name="description" type="text" id="description" component="textarea"
                                            className={errors.description && touched.description ? stylesForInfo.error : ''}/>
@@ -157,7 +157,7 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                                   className={stylesForInfo.error_message}/>
                                 </div>
                                 <button type="submit" disabled={isSubmitting}
-                                        className={`${stylesForInfo.button} ${stylesForInfo.create_form__button}`}>
+                                        className={`${styles.button} ${stylesForInfo.createFormButton}`}>
                                     {props.action === 'edit' ? 'Сохранить изменения' : 'Создать'}
                                 </button>
                             </Form>
@@ -176,12 +176,12 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                     } else
                                         setError('Не удалось удалить нагрузку.')
                                 })
-                        }} type="button" className={`${stylesForInfo.button} ${stylesForInfo.create_form__button}`}>
+                        }} type="button" className={`${styles.button} ${stylesForInfo.createFormButton}`}>
                             Удалить нагрузку
                         </button>
                     }
 
-                    <div className={`${styles.button} ${stylesForInfo.button__edit_form_margin_top}`}>
+                    <div className={`${styles.button} ${stylesForInfo.buttonTopMargin}`}>
                         <NavLink className={styles.button__link}
                                  to={`/schedule/219?${generateQueryWeekPeriod(new Date(currentWeekPeriod.startDateTime),
                                      new Date(currentWeekPeriod.endDateTime))}`}>

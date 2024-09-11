@@ -1,8 +1,10 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useRef, useState} from 'react'
 import styles from './ScheduleTable219.module.css'
+import stylesFromScheduleTable from '../../schedule/scheduleTable/ScheduleTable.module.css'
+import stylesFromSchedule from '../../schedule/Schedule.module.css'
 import Preloader from "../../../preloader/Preloader";
 import {getSchedule219, Schedule219} from '../../../../api/schedule-backend-api';
-import {NavLink} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 
 type ScheduleTablePropsType = {
     startDate: string
@@ -15,7 +17,22 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const bodyContainerRef = useRef<HTMLDivElement | null>(null);
+    const headerContainerRef = useRef<HTMLDivElement | null>(null);
+
     useEffect(() => {
+        const checkOverflow = () => {
+            const bodyContainer = bodyContainerRef.current;
+            const headerContainer = headerContainerRef.current;
+            if (bodyContainer && headerContainer) {
+                if (bodyContainer.scrollHeight > bodyContainer.clientHeight)
+                    setIsOverflowing(true)
+                else
+                    setIsOverflowing(false)
+            }
+        };
+
         const fetchSchedule = async () => {
             setLoading(true);
             const data = await getSchedule219(props.startDate, props.endDate);
@@ -27,8 +44,17 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                 setError(null)
             })
             .catch(() => setError('Не удалось получить расписание из диспетчерской'))
-            .finally(() => setLoading(false))
+            .finally(() => {
+                    setLoading(false)
+                    setTimeout(checkOverflow)
+                }
+            )
 
+        window.addEventListener('resize', checkOverflow)
+
+        return () => {
+            window.removeEventListener('resize', checkOverflow)
+        }
     }, [props.startDate, props.endDate])
 
     const switchByDayNumber = (value: number | undefined): string => {
@@ -52,7 +78,7 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
         }
     };
 
-    const _switchByDayNumber = (stringDate : string) => {
+    const _switchByDayNumber = (stringDate: string) => {
         const date = new Date(stringDate).getDay()
         return switchByDayNumber(date === 0 ? 6 : date - 1)
     }
@@ -92,20 +118,18 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
             {loading && <Preloader/>}
             {!loading && error &&
                 <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>}
-            {!loading && schedule && <div className={styles.main__table_schedule_container}>
-                <div className={`${styles.button} ${styles.button__margin_left}`}>
-                    <NavLink className={styles.button__link} to={`/schedule/219/load-info/create`}>Добавить
-                        нагрузку</NavLink>
+            {!loading && schedule && <div className={`${stylesFromScheduleTable.scheduleContainer} ${styles.scheduleContainer}`}>
+                <div className={`${stylesFromSchedule.button} ${styles.buttonAddLoadInfo}`}>
+                    <Link to={`/schedule/219/load-info/create`}>Добавить нагрузку</Link>
                 </div>
-                <div
-                    className={`${styles.table_schedule_container__table_header_container_margin} ${schedule && schedule.length === 0 ? '' :
-                        styles.table_schedule_container__table_header_container}`}
-                    id="table-header-container">
-                    <table className={styles.table_header_container__table_header}>
-                        <thead className={styles.table_header__header}>
+                <div ref={headerContainerRef}
+                     className={`${styles.scheduleContainerHeader}${(isOverflowing && ` ${stylesFromScheduleTable.scheduleContainerHeader}`) || ''}`}
+                     id="table-header-container">
+                    <table className={stylesFromScheduleTable.scheduleTableHeader}>
+                        <thead className={stylesFromScheduleTable.scheduleHeader}>
                         <tr>
-                            <th className={styles.tr__day_of_week_td}>День недели</th>
-                            <th className={styles.tr__lesson_time_td}>Время занятия</th>
+                            <th className={stylesFromScheduleTable.thAndTdDayAndTime}>День недели</th>
+                            <th className={stylesFromScheduleTable.thAndTdDayAndTime}>Время</th>
                             <th>Тип</th>
                             <th>Ответственный</th>
                             <th>Комментарий</th>
@@ -114,10 +138,13 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                         </thead>
                     </table>
                 </div>
-                <div className={styles.table_schedule_container__table_body_container} id="table-body-container">
-                    {schedule && schedule.length === 0 &&
-                        <table className={styles.table_body_container__table_body_no_content}>
-                            <tbody className={`${styles.table_body__body} ${styles.table_body__body_no_content}`}>
+                <div ref={bodyContainerRef}
+                     className={`${stylesFromScheduleTable.scheduleContainerBody}${(Object.keys(schedule).length === 0
+                         && ` ${stylesFromScheduleTable.scheduleContainerBodyNoContent}`) || ''}`} id="table-body-container">
+                    {schedule.length === 0 &&
+                        <table className={stylesFromScheduleTable.scheduleTableBodyNoContent}>
+                            <tbody
+                                className={`${stylesFromScheduleTable.scheduleBody} ${stylesFromScheduleTable.scheduleBodyNoContent}`}>
                             <tr>
                                 <td colSpan={6}>
                                     На этой неделе нагрузки на 219 аудиторию нет!
@@ -126,22 +153,22 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                             </tbody>
                         </table>
                     }
-                    {schedule && schedule.length > 0 &&
-                        <table className={styles.table_body_container__table_body_margin_bottom} id="schedule-table">
-                            <tbody className={styles.table_body__body}>
+                    {schedule.length > 0 &&
+                        <table className={stylesFromScheduleTable.scheduleTableBodyContent}
+                               id="schedule-table">
+                            <tbody className={stylesFromScheduleTable.scheduleBody}>
                             {schedule.map((value, index, array) => {
                                     return (
                                         <tr key={value.id}>{index > 0 && array[index]?.date === array[index - 1]?.date ? null :
                                             <td rowSpan={mergeDayOfWeekRowsNumber(schedule, value.date)}
-                                                className={styles.tr__day_of_week_td}>{_switchByDayNumber(value?.date)}</td>}
-                                            <td className={styles.tr__lesson_time_td}>{value.time}</td>
+                                                className={stylesFromScheduleTable.thAndTdDayAndTime}>{_switchByDayNumber(value?.date)}</td>}
+                                            <td className={stylesFromScheduleTable.thAndTdDayAndTime}>{value.time}</td>
                                             <td>{value.type}</td>
                                             <td>{value.responsible}</td>
                                             <td>{value.description}</td>
                                             <td>
-                                                <div className={styles.button}>
-                                                    <NavLink className={styles.button__link}
-                                                             to={`/schedule/219/load-info/${value.id}/edit`}>Изменить</NavLink>
+                                                <div className={`${stylesFromSchedule.button} ${styles.buttonEditLoadInfo}`}>
+                                                    <Link to={`/schedule/219/load-info/${value.id}/edit`}>Изменить</Link>
                                                 </div>
                                             </td>
                                         </tr>

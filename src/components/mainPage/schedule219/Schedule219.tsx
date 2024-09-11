@@ -1,6 +1,6 @@
 import React, {FC} from 'react'
 import {Link, NavLink, useLocation} from "react-router-dom"
-import styles from "./Schedule219.module.css"
+import styles from "../schedule/Schedule.module.css"
 import ScheduleTable219 from './scheduleTable219/ScheduleTable219';
 import {next, prev} from "../../../redux/currentWeekPeriodSlice";
 import {useDispatch} from "react-redux";
@@ -41,17 +41,17 @@ const Schedule219 : FC = () => {
 
     return (
         <>
-            <header className={styles.header}>
+            <header>
                 <div className={styles.button}>
                     <NavLink className={styles.button__link} to='/'>В главное меню</NavLink>
                 </div>
-                <div className={styles.header__title}>
+                <div className={styles.title}>
                     Расписание занятости в 219 аудитории
                 </div>
             </header>
 
-            <main className={styles.main}>
-                <div className={styles.main__date_period_container}>
+            <main>
+                <div className={styles.weekPeriodBlock}>
                     Период занятости
                     <div>
                         <Link onClick={() => dispatch(prev())}

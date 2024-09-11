@@ -1,17 +1,5 @@
-.buttonLeftMargin {
-    color: #FFFFFF;
-    font-size: 20px;
-    padding: 10px;
-    cursor: pointer;
-    margin: 20px 0
-}
-
-.headerTitle {
-    font-size: 30px;
-    text-align: center;
-    color: #FFFFFF;
-    flex: 1;
-    padding-right: 10%
+.main {
+    align-items: center;
 }
 
 form {
@@ -89,12 +77,15 @@ form div {
     flex-direction: column
 }
 
-.button {
-    background: #353f57;
-    border: 1px;
-    border-radius: 7px
-}
-
 .buttonTopMargin {
     margin: 40px 0 0
+}
+
+.createFormButton {
+    color: #FFFFFF;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    margin: 20px 0 0;
+    border: 1px;
 }
