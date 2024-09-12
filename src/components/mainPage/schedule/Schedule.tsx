@@ -1,11 +1,10 @@
 import React, {FC} from 'react'
-import {Link, NavLink, useLocation} from "react-router-dom"
+import {Link, useLocation} from "react-router-dom"
 import styles from "./Schedule.module.css"
 import ScheduleTable from "./scheduleTable/ScheduleTable";
 import {next, prev} from "../../../redux/currentWeekPeriodSlice";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../redux/store";
-import {date} from "yup";
 import ScheduleTable219 from "../schedule219/scheduleTable219/ScheduleTable219";
 
 const Schedule: FC = () => {
@@ -15,6 +14,8 @@ const Schedule: FC = () => {
     const startDate = new Date(queryParams.get('startDate') || Date.now())
     const endDate = new Date(queryParams.get('endDate') || Date.now())
     const frame = queryParams.get('frame')
+
+    console.log('Schedule render')
 
     const dispatch = useDispatch<AppDispatch>()
 
@@ -50,6 +51,8 @@ const Schedule: FC = () => {
         return `/${(frame && `class-schedule?${weekPeriod}${frame === 'FIRST' ? '&frame=FIRST' : '&frame=FOURTH'}`) || `loads-info?${weekPeriod}`}`
     }
 
+    const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
+
     return (
         <>
             <header>
@@ -62,7 +65,7 @@ const Schedule: FC = () => {
 
             <main>
                 <div className={styles.weekPeriodBlock}>
-                    Период занятий
+                    {weekPeriodBlockName}
                     <div>
                         <Link onClick={() => dispatch(prev())}
                               to={getLinkUri(generatePrevQueryDatePeriod(startDate))}>{'<<'}</Link>
