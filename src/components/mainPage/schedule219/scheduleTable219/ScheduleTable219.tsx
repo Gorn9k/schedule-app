@@ -120,7 +120,7 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                 <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>}
             {!loading && schedule && <div className={`${stylesFromScheduleTable.scheduleContainer} ${styles.scheduleContainer}`}>
                 <div className={`${stylesFromSchedule.button} ${styles.buttonAddLoadInfo}`}>
-                    <Link to={`/schedule/219/load-info/create`}>Добавить нагрузку</Link>
+                    <Link to={`/loads-info/create`}>Добавить нагрузку</Link>
                 </div>
                 <div ref={headerContainerRef}
                      className={`${styles.scheduleContainerHeader}${(isOverflowing && ` ${stylesFromScheduleTable.scheduleContainerHeader}`) || ''}`}
@@ -168,7 +168,7 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                                             <td>{value.description}</td>
                                             <td>
                                                 <div className={`${stylesFromSchedule.button} ${styles.buttonEditLoadInfo}`}>
-                                                    <Link to={`/schedule/219/load-info/${value.id}/edit`}>Изменить</Link>
+                                                    <Link to={`/loads-info/${value.id}/edit`}>Изменить</Link>
                                                 </div>
                                             </td>
                                         </tr>

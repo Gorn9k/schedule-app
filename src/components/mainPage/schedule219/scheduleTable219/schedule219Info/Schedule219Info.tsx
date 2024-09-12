@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react'
-import {Link, NavLink, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import styles from "../../../schedule/Schedule.module.css";
 import stylesForInfo from './Schedule219Info.module.css'
 import {ErrorMessage, Field, Form, Formik} from "formik";
@@ -32,9 +32,13 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
 
     const currentWeekPeriod = useSelector((state: RootState) => state.currentWeekPeriod)
     const {id} = useParams();
+    const navigate = useNavigate();
+
+    const tablePageAddress = `/loads-info?${generateQueryWeekPeriod(new Date(currentWeekPeriod.startDateTime),
+        new Date(currentWeekPeriod.endDateTime))}`
 
     useEffect(() => {
-         if(props.action === 'edit') {
+        if (props.action === 'edit') {
             const fetchSchedule = async () => {
                 setLoading(true);
                 const data = await getSchedule219LoadInfoById(id);
@@ -59,18 +63,18 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                 {props.action === "edit" ? 'Редактирование нагрузки' : 'Создание новой нагрузки'}
             </div>
         </header>
-        {loading && <Preloader/>}
-        {!loading && error &&
-            <h2 style={{
-                color: 'red',
-                textAlign: 'center',
-                height: '80vh',
-                alignContent: 'center',
-                margin: '0'
-            }}>{error}</h2>}
-        {!loading && (schedule || props.action === 'create')
-            && <>
-                <main className={stylesForInfo.main}>
+        <main className={(!loading && stylesForInfo.main) || undefined}>
+            {loading && <Preloader/>}
+            {!loading && error &&
+                <h2 style={{
+                    color: 'red',
+                    textAlign: 'center',
+                    height: '80vh',
+                    alignContent: 'center',
+                    margin: '0'
+                }}>{error}</h2>}
+            {!loading && (schedule || props.action === 'create')
+                && <>
                     <h1>{props.action === "edit" ? 'Текущая нагрузка' : 'Новая нагрузка'}</h1>
                     <Formik
                         initialValues={{
@@ -98,66 +102,71 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                 .required()
                         })}
                         onSubmit={(values, {setSubmitting, setFieldError}) => {
-                            props.action === 'edit' ?
+                            setLoading(true);
+                            (props.action === 'edit' ?
                                 editSchedule219(values, localStorage.getItem('authToken')) :
-                                createSchedule219(values, localStorage.getItem('authToken'))
-                                    .then(() => {
-                                        setError(null)
-                                    })
-                                    .catch((reason) => {
-                                        if (reason.response.status === 403) {
-                                            setShowModal(true)
-                                            setFormSchedule(values)
-                                        } else if (reason.response.status === 400) {
-                                            for (const [field, message] of Object.entries(reason.response.data as {
-                                                [key: string]: string
-                                            })) {
-                                                setFieldError(field, message)
-                                            }
-                                        } else
-                                            setError(props.action === "edit" ? 'Не удалось изменить нагрузку.' : 'Не удалось создать нагрузку.')
-                                    })
-                                    .finally(() => setSubmitting(false))
+                                createSchedule219(values, localStorage.getItem('authToken')))
+                                .then(() => {
+                                    setError(null)
+                                    navigate(tablePageAddress)
+                                })
+                                .catch((reason) => {
+                                    if (reason.response.status === 403) {
+                                        setShowModal(true)
+                                        setFormSchedule(values)
+                                    } else if (reason.response.status === 400) {
+                                        for (const [field, message] of Object.entries(reason.response.data as {
+                                            [key: string]: string
+                                        })) {
+                                            setFieldError(field, message)
+                                        }
+                                    } else
+                                        setError(props.action === "edit" ? 'Не удалось изменить нагрузку.' : 'Не удалось создать нагрузку.')
+                                })
+                                .finally(() => {
+                                    setLoading(false)
+                                    setSubmitting(false)
+                                })
                         }}
                     >
                         {({isSubmitting, errors, touched}) => (
-                            <Form className={stylesForInfo.main__create_form}>
+                            <Form className={stylesForInfo.formCenter}>
                                 <div>
                                     <label htmlFor="localDate">Дата:</label>
                                     <Field name="localDate" type="date" id="localDate"
                                            className={errors.localDate && touched.localDate ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="localDate" component="div"
-                                                  className={stylesForInfo.error_message}/>
+                                                  className={stylesForInfo.errorMessage}/>
                                 </div>
                                 <div>
                                     <label htmlFor="localTime">Время:</label>
                                     <Field name="localTime" type="time" id="localTime"
                                            className={errors.localTime && touched.localTime ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="localTime" component="div"
-                                                  className={stylesForInfo.error_message}/>
+                                                  className={stylesForInfo.errorMessage}/>
                                 </div>
                                 <div>
                                     <label htmlFor="type">Тип:</label>
                                     <Field name="type" type="text" id="type"
                                            className={errors.type && touched.type ? stylesForInfo.error : ''}/>
-                                    <ErrorMessage name="type" component="div" className={stylesForInfo.error_message}/>
+                                    <ErrorMessage name="type" component="div" className={stylesForInfo.errorMessage}/>
                                 </div>
                                 <div>
                                     <label htmlFor="responsible">Ответственный:</label>
                                     <Field name="responsible" type="text" id="responsible"
                                            className={errors.responsible && touched.responsible ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="responsible" component="div"
-                                                  className={stylesForInfo.error_message}/>
+                                                  className={stylesForInfo.errorMessage}/>
                                 </div>
                                 <div>
                                     <label htmlFor="description">Комментарий:</label>
                                     <Field name="description" type="text" id="description" component="textarea"
                                            className={errors.description && touched.description ? stylesForInfo.error : ''}/>
                                     <ErrorMessage name="description" component="div"
-                                                  className={stylesForInfo.error_message}/>
+                                                  className={stylesForInfo.errorMessage}/>
                                 </div>
                                 <button type="submit" disabled={isSubmitting}
-                                        className={`${styles.button} ${stylesForInfo.createFormButton}`}>
+                                        className={`${styles.button} ${stylesForInfo.formButton}`}>
                                     {props.action === 'edit' ? 'Сохранить изменения' : 'Создать'}
                                 </button>
                             </Form>
@@ -166,9 +175,11 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
 
                     {
                         props.action === 'edit' && <button onClick={() => {
+                            setLoading(true)
                             deleteSchedule219(Number(id), localStorage.getItem('authToken'))
                                 .then(() => {
                                     setError(null)
+                                    navigate(tablePageAddress)
                                 })
                                 .catch((reason) => {
                                     if (reason.response.status === 403) {
@@ -176,27 +187,26 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                     } else
                                         setError('Не удалось удалить нагрузку.')
                                 })
-                        }} type="button" className={`${styles.button} ${stylesForInfo.createFormButton}`}>
+                                .finally(() => setLoading(false))
+                        }} type="button" className={`${styles.button} ${stylesForInfo.formButton}`}>
                             Удалить нагрузку
                         </button>
                     }
 
                     <div className={`${styles.button} ${stylesForInfo.buttonTopMargin}`}>
-                        <NavLink className={styles.button__link}
-                                 to={`/schedule/219?${generateQueryWeekPeriod(new Date(currentWeekPeriod.startDateTime),
-                                     new Date(currentWeekPeriod.endDateTime))}`}>
+                        <Link to={tablePageAddress}>
                             Назад
-                        </NavLink>
+                        </Link>
                     </div>
 
-                    <Modal className={stylesForInfo.form_content}
+                    <Modal className={stylesForInfo.content}
                            isOpen={showModal}
                            onRequestClose={() => {
                                setFormLoginError(false)
                                setShowModal(false)
                            }}
                            contentLabel="Ошибка 403"
-                           overlayClassName={stylesForInfo.dialog_content}
+                           overlayClassName={stylesForInfo.dialogContent}
                     >
                         <h2>Авторизация</h2>
                         <Formik
@@ -208,15 +218,17 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                     .required('Поле не может быть пустым'),
                             })}
                             onSubmit={(values, {setSubmitting, setFieldError}) => {
+                                setLoading(true)
                                 const authToken = localStorage.getItem('authToken') || b64EncodeUnicode(`${values.login}:${values.password}`);
-                                props.action === 'edit' ?
+                                (props.action === 'edit' ?
                                     editSchedule219(formSchedule, authToken) :
-                                    createSchedule219(formSchedule, authToken)
+                                    createSchedule219(formSchedule, authToken))
                                     .then(() => {
                                         setError(null)
                                         setFormLoginError(false)
                                         setShowModal(false)
                                         !localStorage.getItem('authToken') && localStorage.setItem('authToken', authToken)
+                                        navigate(tablePageAddress)
                                     })
                                     .catch((reason) => {
                                         if (reason.response.status === 403) {
@@ -232,38 +244,41 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                         } else
                                             setError(props.action === "edit" ? 'Не удалось изменить нагрузку.' : 'Не удалось создать нагрузку.')
                                     })
-                                    .finally(() => setSubmitting(false))
+                                    .finally(() => {
+                                        setLoading(false)
+                                        setSubmitting(false)
+                                    })
                             }}
                         >
                             {({isSubmitting, errors, touched}) => (
                                 <Form>
                                     <div>
-                                        <div className={stylesForInfo.form_div}>
+                                        <div>
                                             <label htmlFor='login'>Логин:</label>
                                             <Field name='login' type='text' id='login'
                                                    className={errors.login && touched.login ? stylesForInfo.error : ''}/>
                                             <ErrorMessage name='login' component='div'
-                                                          className={stylesForInfo.error_message}/>
+                                                          className={stylesForInfo.errorMessage}/>
                                         </div>
-                                        <div className={stylesForInfo.form_div}>
+                                        <div>
                                             <label htmlFor='password'>Пароль:</label>
                                             <Field name='password' type='password' id='password'
                                                    className={errors.password && touched.password ? stylesForInfo.error : ''}/>
                                             <ErrorMessage name='password' component='div'
-                                                          className={stylesForInfo.error_message}/>
+                                                          className={stylesForInfo.errorMessage}/>
                                         </div>
                                         {formLoginError &&
-                                            <p className={stylesForInfo.error_message_without_margin}>Неверно введены
+                                            <p className={stylesForInfo.labelError}>Неверно введены
                                                 логин или пароль.</p>}
                                     </div>
-                                    <div className={stylesForInfo.login_form__buttons}>
+                                    <div className={stylesForInfo.formLoginButtonsBlock}>
                                         <button
-                                            className={`${stylesForInfo.button} ${stylesForInfo.create_form__button}`}
+                                            className={`${styles.button} ${stylesForInfo.formButton}`}
                                             type='submit'
                                             disabled={isSubmitting}>Ок
                                         </button>
                                         <button
-                                            className={`${stylesForInfo.button} ${stylesForInfo.create_form__button}`}
+                                            className={`${styles.button} ${stylesForInfo.formButton}`}
                                             type="button"
                                             onClick={() => {
                                                 setFormLoginError(false)
@@ -275,9 +290,10 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                             )}
                         </Formik>
                     </Modal>
-                </main>
-            </>
-        }
+                </>
+
+            }
+        </main>
     </>
 }
 

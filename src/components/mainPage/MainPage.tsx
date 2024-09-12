@@ -41,13 +41,13 @@ const MainPage : FC = () => {
             <main className={styles.main}>
                 <div>
                     <p>
-                        <Link to={`/schedule?${queryDatePeriod}&frame=FIRST`}>Расписание аудиторий в 1-ом учебном корпусе</Link>
+                        <Link to={`/class-schedule?${queryDatePeriod}&frame=FIRST`}>Расписание аудиторий в 1-ом учебном корпусе</Link>
                     </p>
                     <p>
-                        <Link to={`/schedule?${queryDatePeriod}&frame=FOURTH`}>Расписание аудиторий в 4-ом учебном корпусе</Link>
+                        <Link to={`/class-schedule?${queryDatePeriod}&frame=FOURTH`}>Расписание аудиторий в 4-ом учебном корпусе</Link>
                     </p>
                     <p>
-                        <Link to={`/schedule/219?${queryDatePeriod}`}>Расписание занятости в 219
+                        <Link to={`/loads-info?${queryDatePeriod}`}>Расписание занятости в 219
                             аудитории</Link>
                     </p>
                 </div>
