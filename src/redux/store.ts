@@ -1,8 +1,10 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import currentWeekPeriodReducer from './currentWeekPeriodSlice';
+import connectionErrorMessageReducer from "./connectionErrorMessageSlice";
 
 const rootReducer = combineReducers({
-    currentWeekPeriod: currentWeekPeriodReducer
+    currentWeekPeriod: currentWeekPeriodReducer,
+    connectionErrorMessage: connectionErrorMessageReducer
 });
 
 const store = configureStore({

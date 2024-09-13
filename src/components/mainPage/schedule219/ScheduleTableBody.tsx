@@ -9,6 +9,9 @@ import {
     switchByLessonNumber
 } from "../schedule/scheduleTable/ScheduleTable";
 import Preloader from "../../preloader/Preloader";
+import {setError} from "../../../redux/connectionErrorMessageSlice";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../../../redux/store";
 
 type ScheduleTableBodyProps = {
     bodyContainerRef: React.MutableRefObject<HTMLDivElement | null>
@@ -16,32 +19,36 @@ type ScheduleTableBodyProps = {
     startDate: string
     endDate: string
     frame: string
-    setError: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export const ScheduleTableBody: FC<ScheduleTableBodyProps> = (props) => {
 
     const [schedule, setSchedule] = useState<Schedule | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    
+    const dispatch = useDispatch<AppDispatch>()
 
-    console.log('ScheduleBody render')
-
-    const fetchSchedule = async () => {
-        setLoading(true);
-        const data = await getSchedule(props.startDate, props.endDate, props.frame);
-        setSchedule(data);
-    };
+    console.log(`ScheduleBody render`)
 
     useEffect(() => {
+        const fetchSchedule = async () => {
+            setLoading(true);
+            const data = await getSchedule(props.startDate, props.endDate, props.frame);
+            setSchedule(data);
+        };
+
         fetchSchedule()
             .then(() => {
-                props.setError(null)
+                dispatch(setError({error: null}))
             })
-            .catch(() => props.setError('Не удалось получить расписание из диспетчерской'))
+            .catch(() => dispatch(setError({error: 'Не удалось получить расписание из диспетчерской'})))
             .finally(() => {
                 setLoading(false)
             })
-    }, [props.startDate, props.endDate]);
+        return () => {
+            console.log("ScheduleBody unmounted");
+        };
+    }, [dispatch, props]);
 
     return <>
         {loading && <Preloader/>}

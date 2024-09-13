@@ -4,6 +4,9 @@ import styles from './ScheduleTable.module.css'
 import Preloader from "../../../preloader/Preloader";
 import {ScheduleTableHeader} from "../../schedule219/ScheduleTableHeader";
 import {ScheduleTableBody} from "../../schedule219/ScheduleTableBody";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store";
+import {setError} from "../../../../redux/connectionErrorMessageSlice";
 
 type ScheduleTablePropsType = {
     startDate: string
@@ -113,15 +116,21 @@ export const parseKey = (key: string): DayAndLessonNumber | null => {
 
 const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
 
-    const [error, setError] = useState<string | null>(null);
+    const error = useSelector((state: RootState) => state.connectionErrorMessage.error)
 
     const bodyContainerRef = useRef<HTMLDivElement | null>(null);
     const headerContainerRef = useRef<HTMLDivElement | null>(null);
 
     console.log('ScheduleTable render')
 
-    return error &&
-            <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>
+    useEffect(() => {
+        return () => {
+            console.log("ScheduleTable unmounted");
+        };
+    }, []);
+
+    return (error &&
+            <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>)
         || <div className={styles.scheduleContainer}>
             <ScheduleTableHeader headerContainerRef={headerContainerRef}
                                  bodyContainerRef={bodyContainerRef}
@@ -133,8 +142,7 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
                                    ['122', '212', '221', '417'] : ['214', '310', '312', '318']) || null}
                                startDate={props.startDate}
                                endDate={props.endDate}
-                               frame={props.frame}
-                               setError={setError}/>
+                               frame={props.frame}/>
         </div>
 
 

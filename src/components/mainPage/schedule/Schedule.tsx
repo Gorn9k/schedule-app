@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {Link, useLocation} from "react-router-dom"
 import styles from "./Schedule.module.css"
 import ScheduleTable from "./scheduleTable/ScheduleTable";
@@ -6,6 +6,7 @@ import {next, prev} from "../../../redux/currentWeekPeriodSlice";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../redux/store";
 import ScheduleTable219 from "../schedule219/scheduleTable219/ScheduleTable219";
+import {setError} from "../../../redux/connectionErrorMessageSlice";
 
 const Schedule: FC = () => {
 
@@ -16,6 +17,12 @@ const Schedule: FC = () => {
     const frame = queryParams.get('frame')
 
     console.log('Schedule render')
+
+    useEffect(() => {
+        return () => {
+            console.log("Schedule unmounted");
+        };
+    }, []);
 
     const dispatch = useDispatch<AppDispatch>()
 
@@ -67,10 +74,16 @@ const Schedule: FC = () => {
                 <div className={styles.weekPeriodBlock}>
                     {weekPeriodBlockName}
                     <div>
-                        <Link onClick={() => dispatch(prev())}
+                        <Link onClick={() => {
+                            dispatch(setError({error: null}))
+                            dispatch(prev())
+                        }}
                               to={getLinkUri(generatePrevQueryDatePeriod(startDate))}>{'<<'}</Link>
                         <div>{`${generateContainerDatePeriod(startDate, endDate)}`}</div>
-                        <Link onClick={() => dispatch(next())}
+                        <Link onClick={() => {
+                            dispatch(setError({error: null}))
+                            dispatch(next())
+                        }}
                               to={getLinkUri(generateNextQueryDatePeriod(endDate))}>{'>>'}</Link>
                     </div>
                 </div>

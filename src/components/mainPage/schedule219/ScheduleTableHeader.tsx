@@ -1,8 +1,8 @@
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, memo, useEffect, useState} from "react";
 import styles from "../schedule/scheduleTable/ScheduleTable.module.css";
+import stylesFromScheduleTable from "../schedule/scheduleTable/ScheduleTable.module.css";
 import stylesFromSchedule from "../schedule/Schedule.module.css";
 import {Link} from "react-router-dom";
-import stylesFromScheduleTable from "../schedule/scheduleTable/ScheduleTable.module.css";
 
 type ScheduleTableHeaderPropsType = {
     headerContainerRef: React.MutableRefObject<HTMLDivElement | null>
@@ -11,7 +11,7 @@ type ScheduleTableHeaderPropsType = {
     frame: string | null
 }
 
-export const ScheduleTableHeader: FC<ScheduleTableHeaderPropsType> = (props) => {
+export const ScheduleTableHeader: FC<ScheduleTableHeaderPropsType> = memo((props) => {
 
     const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -33,11 +33,12 @@ export const ScheduleTableHeader: FC<ScheduleTableHeaderPropsType> = (props) => 
 
         return () => {
             window.removeEventListener('resize', checkOverflow)
+            console.log("ScheduleHeader unmounted");
         }
     }, [])
 
     return <>
-        {props.frame
+        {(props.frame
             && <div ref={props.headerContainerRef}
                     className={(isOverflowing && `${styles.scheduleContainerHeader}`) || undefined}
                     id="table-header-container">
@@ -57,7 +58,7 @@ export const ScheduleTableHeader: FC<ScheduleTableHeaderPropsType> = (props) => 
                     }
                     </thead>
                 </table>
-            </div>
+            </div>)
             || <>
                 <div className={`${stylesFromSchedule.button} ${styles.buttonAddLoadInfo}`}>
                     <Link to={`/loads-info/create`}>Добавить нагрузку</Link>
@@ -81,4 +82,6 @@ export const ScheduleTableHeader: FC<ScheduleTableHeaderPropsType> = (props) => 
             </>
         }
     </>
-}
+}, (prevProps, nextProps) => {
+    return true
+})
