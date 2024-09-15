@@ -1,10 +1,12 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import currentWeekPeriodReducer from './currentWeekPeriodSlice';
 import connectionErrorMessageReducer from "./connectionErrorMessageSlice";
+import overflowTableBodyReducer from "./overflowTableBodySlice";
 
 const rootReducer = combineReducers({
     currentWeekPeriod: currentWeekPeriodReducer,
-    connectionErrorMessage: connectionErrorMessageReducer
+    connectionErrorMessage: connectionErrorMessageReducer,
+    overflowTableBody: overflowTableBodyReducer
 });
 
 const store = configureStore({

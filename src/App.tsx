@@ -4,7 +4,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Footer from "./components/footer/Footer";
 import MainPage from "./components/mainPage/MainPage";
 import Schedule from "./components/mainPage/schedule/Schedule";
-import Schedule219Info from "./components/mainPage/schedule219/scheduleTable219/schedule219Info/Schedule219Info";
+import Schedule219Info from "./components/mainPage/schedule/scheduleTable/scheduleTableBody/scheduleTableBodyLoadsInfo/scheduleLoadInfo/Schedule219Info";
 import Modal from "react-modal";
 
 Modal.setAppElement('#root');

@@ -1,12 +1,10 @@
-import React, {FC, useEffect, useRef, useState} from 'react'
-import {DayAndLessonNumber, getSchedule, Lesson, Schedule} from "../../../../api/schedule-backend-api";
+import React, {FC, useState} from 'react'
+import {DayAndLessonNumber, Lesson, Schedule} from "../../../../api/schedule-backend-api";
 import styles from './ScheduleTable.module.css'
-import Preloader from "../../../preloader/Preloader";
-import {ScheduleTableHeader} from "../../schedule219/ScheduleTableHeader";
-import {ScheduleTableBody} from "../../schedule219/ScheduleTableBody";
+import {ScheduleTableHeader} from "./scheduleTableHeader/ScheduleTableHeader";
+import {ScheduleTableBody} from "./scheduleTableBody/ScheduleTableBody";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../redux/store";
-import {setError} from "../../../../redux/connectionErrorMessageSlice";
 
 type ScheduleTablePropsType = {
     startDate: string
@@ -117,29 +115,20 @@ export const parseKey = (key: string): DayAndLessonNumber | null => {
 const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
 
     const error = useSelector((state: RootState) => state.connectionErrorMessage.error)
+    const [classes, setClasses] = useState<string[]>(
+        props.frame && props.frame === 'FIRST'
+            ? ['122', '212', '221', '417']
+            : ['214', '310', '312', '318']
+    )
 
-    const bodyContainerRef = useRef<HTMLDivElement | null>(null);
-    const headerContainerRef = useRef<HTMLDivElement | null>(null);
-
-    console.log('ScheduleTable render')
-
-    useEffect(() => {
-        return () => {
-            console.log("ScheduleTable unmounted");
-        };
-    }, []);
+    console.log(`ScheduleTable render`)
 
     return (error &&
             <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>)
         || <div className={styles.scheduleContainer}>
-            <ScheduleTableHeader headerContainerRef={headerContainerRef}
-                                 bodyContainerRef={bodyContainerRef}
-                                 frame={props.frame}
-                                 classes={(props.frame && props.frame === 'FIRST' ?
-                                     ['122', '212', '221', '417'] : ['214', '310', '312', '318']) || null}/>
-            <ScheduleTableBody bodyContainerRef={bodyContainerRef}
-                               classes={(props.frame && props.frame === 'FIRST' ?
-                                   ['122', '212', '221', '417'] : ['214', '310', '312', '318']) || null}
+            <ScheduleTableHeader frame={props.frame}
+                                 classes={classes}/>
+            <ScheduleTableBody classes={classes}
                                startDate={props.startDate}
                                endDate={props.endDate}
                                frame={props.frame}/>

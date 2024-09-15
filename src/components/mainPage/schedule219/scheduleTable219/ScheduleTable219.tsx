@@ -141,43 +141,7 @@ const ScheduleTable219: FC<ScheduleTablePropsType> = (props) => {
                 <div ref={bodyContainerRef}
                      className={`${stylesFromScheduleTable.scheduleContainerBody}${(Object.keys(schedule).length === 0
                          && ` ${stylesFromScheduleTable.scheduleContainerBodyNoContent}`) || ''}`} id="table-body-container">
-                    {schedule.length === 0 &&
-                        <table className={stylesFromScheduleTable.scheduleTableBodyNoContent}>
-                            <tbody
-                                className={`${stylesFromScheduleTable.scheduleBody} ${stylesFromScheduleTable.scheduleBodyNoContent}`}>
-                            <tr>
-                                <td colSpan={6}>
-                                    На этой неделе нагрузки на 219 аудиторию нет!
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    }
-                    {schedule.length > 0 &&
-                        <table className={stylesFromScheduleTable.scheduleTableBodyContent}
-                               id="schedule-table">
-                            <tbody className={stylesFromScheduleTable.scheduleBody}>
-                            {schedule.map((value, index, array) => {
-                                    return (
-                                        <tr key={value.id}>{index > 0 && array[index]?.date === array[index - 1]?.date ? null :
-                                            <td rowSpan={mergeDayOfWeekRowsNumber(schedule, value.date)}
-                                                className={stylesFromScheduleTable.thAndTdDayAndTime}>{_switchByDayNumber(value?.date)}</td>}
-                                            <td className={stylesFromScheduleTable.thAndTdDayAndTime}>{value.time}</td>
-                                            <td>{value.type}</td>
-                                            <td>{value.responsible}</td>
-                                            <td>{value.description}</td>
-                                            <td>
-                                                <div className={`${stylesFromSchedule.button} ${styles.buttonEditLoadInfo}`}>
-                                                    <Link to={`/loads-info/${value.id}/edit`}>Изменить</Link>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                            )
-                            }
-                            </tbody>
-                        </table>}
+
                 </div>
             </div>}
         </>

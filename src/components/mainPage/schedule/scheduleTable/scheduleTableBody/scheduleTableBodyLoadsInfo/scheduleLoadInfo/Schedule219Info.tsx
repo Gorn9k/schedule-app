@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react'
 import {Link, useNavigate, useParams} from "react-router-dom";
-import styles from "../../../schedule/Schedule.module.css";
+import styles from "../../../../Schedule.module.css";
 import stylesForInfo from './Schedule219Info.module.css'
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from 'yup'
@@ -10,12 +10,12 @@ import {
     getSchedule219LoadInfoById,
     Schedule219,
     Schedule219Payload
-} from '../../../../../api/schedule-backend-api';
-import Preloader from "../../../../preloader/Preloader";
+} from '../../../../../../../api/schedule-backend-api';
+import Preloader from "../../../../../../preloader/Preloader";
 import Modal from 'react-modal';
 import {useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/store";
-import {generateQueryWeekPeriod} from "../../../MainPage";
+import {RootState} from "../../../../../../../redux/store";
+import {generateQueryWeekPeriod} from "../../../../../MainPage";
 
 type Schedule219InfoProps = {
     action: 'create' | 'edit'

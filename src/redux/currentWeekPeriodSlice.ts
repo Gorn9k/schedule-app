@@ -2,6 +2,10 @@ import {createSlice} from '@reduxjs/toolkit'
 
 export const generateCurrentStartDate = (): number => {
     const today = new Date()
+    today.setMilliseconds(0)
+    today.setSeconds(0)
+    today.setMinutes(0)
+    today.setHours(0)
 
     const firstDayOfWeek = today.getDate() - (today.getDay() === 0 ? 7 : today.getDay()) + 1
 
@@ -10,6 +14,10 @@ export const generateCurrentStartDate = (): number => {
 
 export const generateCurrentEndDate = (): number => {
     const today = new Date();
+    today.setMilliseconds(0)
+    today.setSeconds(0)
+    today.setMinutes(0)
+    today.setHours(0)
 
     const lastDayOfWeek = today.getDate() + (today.getDay() === 0 ? 0 : 7 - today.getDay())
 
