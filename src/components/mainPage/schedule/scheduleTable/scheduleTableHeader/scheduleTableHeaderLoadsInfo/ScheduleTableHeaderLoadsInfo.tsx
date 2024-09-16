@@ -5,17 +5,12 @@ import {Link} from "react-router-dom";
 import stylesFromScheduleTable from "../../ScheduleTable.module.css";
 
 type ScheduleTableHeaderLoadsInfoProps = {
-    isOverflowing: boolean
+
 }
 
 export const ScheduleTableHeaderLoadsInfo: FC<ScheduleTableHeaderLoadsInfoProps> = (props) => {
 
     return <>
-        <div className={`${stylesFromSchedule.button} ${styles.buttonAddLoadInfo}`}>
-            <Link to={`/loads-info/create`}>Добавить нагрузку</Link>
-        </div>
-        <table className={stylesFromScheduleTable.scheduleTableHeader}>
-            <thead className={stylesFromScheduleTable.scheduleHeader}>
             <tr>
                 <th className={stylesFromScheduleTable.thAndTdDayAndTime}>День недели</th>
                 <th className={stylesFromScheduleTable.thAndTdDayAndTime}>Время</th>
@@ -24,7 +19,5 @@ export const ScheduleTableHeaderLoadsInfo: FC<ScheduleTableHeaderLoadsInfoProps>
                 <th>Комментарий</th>
                 <th>Действие</th>
             </tr>
-            </thead>
-        </table>
     </>
 }

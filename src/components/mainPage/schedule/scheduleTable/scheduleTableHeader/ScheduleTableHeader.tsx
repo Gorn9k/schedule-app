@@ -7,9 +7,10 @@ import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/store";
 import {ScheduleTableHeaderClassSchedule} from "./scheduleTableHeaderClassShedule/ScheduleTableHeaderClassSchedule";
 import {ScheduleTableHeaderLoadsInfo} from "./scheduleTableHeaderLoadsInfo/ScheduleTableHeaderLoadsInfo";
+import {ScheduleTableBody} from "../scheduleTableBody/ScheduleTableBody";
 
 type ScheduleTableHeaderPropsType = {
-    classes: string[] | null
+    classes: string[]
     frame: string | null
 }
 
@@ -25,9 +26,12 @@ export const ScheduleTableHeader: FC<ScheduleTableHeaderPropsType> = (props) => 
         }
     }, [])
 
-    return (props.frame
-            && <ScheduleTableHeaderClassSchedule isOverflowing={isOverflowing}
-                                                             classes={(props.frame && props.frame === 'FIRST' ?
-                                                                 ['122', '212', '221', '417'] : ['214', '310', '312', '318'])}/>)
-            || <ScheduleTableHeaderLoadsInfo isOverflowing={isOverflowing}/>
+    return (
+        <table className={styles.scheduleTableHeader}>
+            <thead className={styles.scheduleHeader}>
+                <ScheduleTableHeaderClassSchedule classes={props.classes}/>
+                <ScheduleTableHeaderLoadsInfo/>
+            </thead>
+        </table>
+    )
 }

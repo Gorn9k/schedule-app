@@ -14,9 +14,12 @@ import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../redux/store";
 import {prev} from "../../../../../redux/currentWeekPeriodSlice";
 import {setOverflowing} from "../../../../../redux/overflowTableBodySlice";
+import {
+    ScheduleTableBodyClassScheduleNotEmpty
+} from "./scheduleTableBodyClassSchedule/scheduleTableBodyClassScheduleNotEmpty/ScheduleTableBodyClassScheduleNotEmpty";
 
 type ScheduleTableBodyProps = {
-    classes: string[] | null
+    classes: string[]
     startDate: string
     endDate: string
     frame: string
@@ -72,10 +75,6 @@ export const ScheduleTableBody: FC<ScheduleTableBodyProps> = (props) => {
     }, [dispatch, props.startDate]);
 
     return (
-        <table className={styles.scheduleTableBodyNoContent}>
-            <tbody className={`${styles.scheduleBody} ${styles.scheduleBodyNoContent}`}>
-
-            </tbody>
-        </table>
+        <ScheduleTableBodyClassScheduleNotEmpty classes={props.classes} schedule={schedule}/>
     )
 }

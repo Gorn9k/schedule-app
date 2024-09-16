@@ -13,11 +13,11 @@ type ScheduleTableBodyClassScheduleProps = {}
 export const ScheduleTableBodyClassSchedule: FC<ScheduleTableBodyClassScheduleProps> = () => {
 
     return <>
-        (Object.keys(schedule).length === 0 &&
-        ||
-        (Object.keys(schedule).length > 0) &&
-        (
+        {/*(Object.keys(schedule).length === 0 &&*/}
+        {/*||*/}
+        {/*(Object.keys(schedule).length > 0) &&*/}
+        {/*(*/}
 
-        ))
+        {/*))*/}
     </>
 }

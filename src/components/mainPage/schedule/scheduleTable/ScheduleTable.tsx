@@ -4,7 +4,9 @@ import styles from './ScheduleTable.module.css'
 import {ScheduleTableHeader} from "./scheduleTableHeader/ScheduleTableHeader";
 import {ScheduleTableBody} from "./scheduleTableBody/ScheduleTableBody";
 import {useSelector} from "react-redux";
-import {RootState} from "../../../../redux/store";
+import Store, {RootState} from "../../../../redux/store";
+import stylesFromSchedule from "../Schedule.module.css";
+import {Link} from "react-router-dom";
 
 type ScheduleTablePropsType = {
     startDate: string
@@ -125,16 +127,23 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
 
     return (error &&
             <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>)
-        || <div className={styles.scheduleContainer}>
-            <ScheduleTableHeader frame={props.frame}
-                                 classes={classes}/>
-            <ScheduleTableBody classes={classes}
-                               startDate={props.startDate}
-                               endDate={props.endDate}
-                               frame={props.frame}/>
-        </div>
-
-
+        ||
+        <>
+            <div className={`${stylesFromSchedule.button} ${styles.buttonAddLoadInfo}`}>
+                <Link to={`/loads-info/create`}>Добавить нагрузку</Link>
+            </div>
+            <ScheduleTableHeader classes={classes} frame={props.frame}/>
+            <div className={styles.scheduleContainerBody}>
+                <table className={styles.scheduleTableBodyNoContent}>
+                    <tbody className={`${styles.scheduleBody} ${styles.scheduleBodyNoContent}`}>
+                        <ScheduleTableBody classes={classes}
+                                           startDate={props.startDate}
+                                           endDate={props.endDate}
+                                           frame={props.frame}/>
+                    </tbody>
+                </table>
+            </div>
+        </>
 }
 
 export default ScheduleTable;

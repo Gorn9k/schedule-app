@@ -7,6 +7,7 @@ import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../redux/store";
 import ScheduleTable219 from "../schedule219/scheduleTable219/ScheduleTable219";
 import {setError} from "../../../redux/connectionErrorMessageSlice";
+import {WeekPeriodBlock} from "./weekPeriodBlock/WeekPeriodBlock";
 
 const Schedule: FC = () => {
 
@@ -26,37 +27,9 @@ const Schedule: FC = () => {
 
     const dispatch = useDispatch<AppDispatch>()
 
-    const _generateQueryDatePeriod = (date: Date) => {
-        const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1;
-        const firstDayOfWeekDate = new Date(new Date(date).setDate(firstDayOfWeek));
-        const firstDayOfWeekString = `${firstDayOfWeekDate.getFullYear()}-${(firstDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
-
-        const lastDayOfWeek = firstDayOfWeekDate.getDate() + 6;
-        const lastDayOfWeekDate = new Date(firstDayOfWeekDate.setDate(lastDayOfWeek));
-        const lastDayOfWeekString = `${lastDayOfWeekDate.getFullYear()}-${(lastDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${lastDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
-
-        return `startDate=${firstDayOfWeekString}&endDate=${lastDayOfWeekString}`
-    }
-
-    const generateNextQueryDatePeriod = (date: Date) => _generateQueryDatePeriod(new Date(new Date(endDate).setDate(date.getDate() + 7)))
-
-    const generatePrevQueryDatePeriod = (date: Date) => _generateQueryDatePeriod(new Date(new Date(startDate).setDate(date.getDate() - 7)))
-
-    const generateContainerDatePeriod = (startDate: Date, endDate: Date) => {
-
-        const firstDayOfWeekString = `${startDate.getDate().toString().padStart(2, '0')}.${(startDate.getMonth() + 1).toString().padStart(2, '0')}.${startDate.getFullYear()}`;
-        const lastDayOfWeekString = `${endDate.getDate().toString().padStart(2, '0')}.${(endDate.getMonth() + 1).toString().padStart(2, '0')}.${endDate.getFullYear()}`;
-
-        return `${firstDayOfWeekString} - ${lastDayOfWeekString}`;
-    }
-
     const title = (frame && (frame === 'FIRST' ?
         'Расписание аудиторий(ЦИТ) в первом учебном корпусе' :
         'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе')) || 'Расписание занятости в 219 аудитории';
-
-    const getLinkUri = (weekPeriod: string) => {
-        return `/${(frame && `class-schedule?${weekPeriod}${frame === 'FIRST' ? '&frame=FIRST' : '&frame=FOURTH'}`) || `loads-info?${weekPeriod}`}`
-    }
 
     const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
 
@@ -73,19 +46,22 @@ const Schedule: FC = () => {
             <main>
                 <div className={styles.weekPeriodBlock}>
                     {weekPeriodBlockName}
-                    <div>
-                        <Link onClick={() => {
-                            dispatch(setError({error: null}))
-                            dispatch(prev())
-                        }}
-                              to={getLinkUri(generatePrevQueryDatePeriod(startDate))}>{'<<'}</Link>
-                        <div>{`${generateContainerDatePeriod(startDate, endDate)}`}</div>
-                        <Link onClick={() => {
-                            dispatch(setError({error: null}))
-                            dispatch(next())
-                        }}
-                              to={getLinkUri(generateNextQueryDatePeriod(endDate))}>{'>>'}</Link>
-                    </div>
+
+                        <WeekPeriodBlock startDate={startDate}
+                                         endDate={endDate}
+                                         href={'/class-schedule'}
+                                         requestParams={(frame && {frame: frame}) || undefined}
+                                         onClickNext={() => {
+                                             dispatch(setError({error: null}))
+                                             dispatch(next())
+                                         }}
+                                         onClickPrev={() => {
+                                             dispatch(setError({error: null}))
+                                             dispatch(prev())
+                                         }}
+                                         />
+
+
                 </div>
                 {(frame && <ScheduleTable startDate={startDate.toISOString().split('T')[0]}
                                           endDate={endDate.toISOString().split('T')[0]}
