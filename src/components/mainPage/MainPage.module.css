@@ -1,16 +1,16 @@
-.header {
+.title {
     font-size: 30px;
     text-align: center;
     color: #FFFFFF;
     justify-content: center
 }
 
-.main {
+.content {
     align-items: center;
     justify-content: center;
 }
 
-.main > div {
+.containerLinks {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -19,10 +19,6 @@
     padding: 30px
 }
 
-.main > div > p {
+.paragraph {
     border-bottom: 1px solid #c1c1c1
-}
-
-.main > div > p > a {
-    font-size: 20px;
 }

@@ -1,18 +1,8 @@
 import React, {FC, useEffect, useLayoutEffect, useRef, useState} from "react";
-import styles from "../ScheduleTable.module.css";
 import {getSchedule, Schedule} from "../../../../../api/schedule-backend-api";
-import {
-    findLessonsByRoomNumber,
-    mergeDayOfWeekRowsNumber,
-    parseKey,
-    switchByDayNumber,
-    switchByLessonNumber
-} from "../ScheduleTable";
-import Preloader from "../../../../preloader/Preloader";
 import {setError} from "../../../../../redux/connectionErrorMessageSlice";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../redux/store";
-import {prev} from "../../../../../redux/currentWeekPeriodSlice";
 import {setOverflowing} from "../../../../../redux/overflowTableBodySlice";
 import {
     ScheduleTableBodyClassScheduleNotEmpty

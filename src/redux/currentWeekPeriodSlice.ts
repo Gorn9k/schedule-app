@@ -1,5 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {generateCurrentEndDateMilliseconds, generateCurrentStartDateMilliseconds} from "../utils/dates";
+import {
+    generateCurrentEndDateMilliseconds,
+    generateCurrentStartDateMilliseconds,
+    generateNewWeekPeriodDateMilliseconds
+} from "../utils/dates";
 
 type CurrentWeekPeriodState = {
     startDateTime: number
@@ -20,12 +24,12 @@ const currentWeekPeriodSlice = createSlice({
             state.endDateTime = generateCurrentEndDateMilliseconds()
         },
         next: (state: CurrentWeekPeriodState) => {
-            state.startDateTime += 7 * 24 * 60 * 60 * 1000
-            state.endDateTime += 7 * 24 * 60 * 60 * 1000
+            state.startDateTime = generateNewWeekPeriodDateMilliseconds(state.startDateTime, 1)
+            state.endDateTime = generateNewWeekPeriodDateMilliseconds(state.endDateTime, 1)
         },
         prev: (state: CurrentWeekPeriodState) => {
-            state.startDateTime -= 7 * 24 * 60 * 60 * 1000
-            state.endDateTime -= 7 * 24 * 60 * 60 * 1000
+            state.startDateTime = generateNewWeekPeriodDateMilliseconds(state.startDateTime, -1)
+            state.endDateTime = generateNewWeekPeriodDateMilliseconds(state.endDateTime, -1)
         }
     }
 })

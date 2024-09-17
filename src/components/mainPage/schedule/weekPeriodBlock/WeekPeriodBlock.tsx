@@ -1,48 +1,51 @@
 import React, {FC} from "react";
 import {Link} from "react-router-dom";
-import {
-    generateCurrentEndDateMilliseconds,
-    generateCurrentStartDateMilliseconds,
-    generateRequestParamWeekPeriodByDate
-} from "../../../../utils/dates";
+import {generateNewWeekPeriodDateMilliseconds} from "../../../../utils/dates";
+import {setError} from "../../../../redux/connectionErrorMessageSlice";
+import {next, prev} from "../../../../redux/currentWeekPeriodSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../../redux/store";
 
 type WeekPeriodBlockProps = {
-    startDate?: Date | undefined
-    endDate?: Date | undefined
     requestParams?: Record<string, string> | undefined
-    href: string
-    className?: string | undefined
-    onClickPrev?: () => void | undefined
-    onClickNext?: () => void | undefined
+    to: string
 }
 
 export const WeekPeriodBlock: FC<WeekPeriodBlockProps> = (props) => {
 
-    const generateNextQueryDatePeriod = (date: Date) => generateRequestParamWeekPeriodByDate(new Date(new Date(date).setDate(date.getDate() + 7)))
+    const currentWeekPeriod = useSelector((state: RootState) => state.currentWeekPeriod)
+    const dispatch = useDispatch<AppDispatch>()
 
-    const generatePrevQueryDatePeriod = (date: Date) => generateRequestParamWeekPeriodByDate(new Date(new Date(date).setDate(date.getDate() - 7)))
-
-    const generateContainerDatePeriod = (startDate: Date, endDate: Date) => {
-
-        const firstDayOfWeekString = `${startDate.getDate().toString().padStart(2, '0')}.${(startDate.getMonth() + 1).toString().padStart(2, '0')}.${startDate.getFullYear()}`;
-        const lastDayOfWeekString = `${endDate.getDate().toString().padStart(2, '0')}.${(endDate.getMonth() + 1).toString().padStart(2, '0')}.${endDate.getFullYear()}`;
-
-        return `${firstDayOfWeekString} - ${lastDayOfWeekString}`;
-    }
-
-    const getLinkUri = (weekPeriod: string) => {
-        return `${props.href}?${weekPeriod}${(props.requestParams &&
-            Object.keys(props.requestParams).map((value) => props.requestParams && `&${value}=${props.requestParams[value]}`)) || ''}`
+    const containerDatePeriod = `${new Date(currentWeekPeriod.startDateTime)
+        .toLocaleDateString('ru-RU')} - ${new Date(currentWeekPeriod.endDateTime).toLocaleDateString('ru-RU')}`
+    const getLinkUri = (startDate: Date, endDate: Date) => {
+        return `${props.to}?${new URLSearchParams(
+            {
+                startDate: startDate.toLocaleDateString('en-CA'),
+                endDate: endDate.toLocaleDateString('en-CA'),
+                ...props.requestParams
+            }).toString()}`
     }
 
     return (
-        <div className={props.className}>
-            <Link onClick={props.onClickPrev}
-                  to={getLinkUri(generatePrevQueryDatePeriod((props.startDate && props.startDate) || new Date()))}>{'<<'}</Link>
-            <div>{`${generateContainerDatePeriod((props.startDate && props.startDate) || new Date(generateCurrentStartDateMilliseconds()),
-                (props.endDate && props.endDate) || new Date(generateCurrentEndDateMilliseconds()))}`}</div>
-            <Link onClick={props.onClickNext}
-                  to={getLinkUri(generateNextQueryDatePeriod((props.endDate && props.endDate) || new Date()))}>{'>>'}</Link>
+        <div>
+            <Link onClick={() => {
+                dispatch(setError({error: null}))
+                dispatch(prev())
+            }}
+                  to={getLinkUri(
+                      new Date(generateNewWeekPeriodDateMilliseconds(currentWeekPeriod.startDateTime, -1)),
+                      new Date(generateNewWeekPeriodDateMilliseconds(currentWeekPeriod.endDateTime, -1)))
+                  }>{'<<'}</Link>
+            <div>{containerDatePeriod}</div>
+            <Link onClick={() => {
+                dispatch(setError({error: null}))
+                dispatch(next())
+            }}
+                  to={getLinkUri(
+                      new Date(generateNewWeekPeriodDateMilliseconds(currentWeekPeriod.startDateTime, 1)),
+                      new Date(generateNewWeekPeriodDateMilliseconds(currentWeekPeriod.endDateTime, 1)))
+                  }>{'>>'}</Link>
         </div>
     )
 }

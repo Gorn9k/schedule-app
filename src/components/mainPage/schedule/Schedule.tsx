@@ -8,6 +8,7 @@ import {AppDispatch} from "../../../redux/store";
 import ScheduleTable219 from "../schedule219/scheduleTable219/ScheduleTable219";
 import {setError} from "../../../redux/connectionErrorMessageSlice";
 import {WeekPeriodBlock} from "./weekPeriodBlock/WeekPeriodBlock";
+import styles3 from '../MainPage.module.css'
 
 const Schedule: FC = () => {
 
@@ -25,8 +26,6 @@ const Schedule: FC = () => {
         };
     }, []);
 
-    const dispatch = useDispatch<AppDispatch>()
-
     const title = (frame && (frame === 'FIRST' ?
         'Расписание аудиторий(ЦИТ) в первом учебном корпусе' :
         'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе')) || 'Расписание занятости в 219 аудитории';
@@ -35,33 +34,19 @@ const Schedule: FC = () => {
 
     return (
         <>
-            <header>
+            <header className={styles3.title}>
                 <div className={styles.button}>
                     <Link to='/'>В главное меню</Link>
                 </div>
-                <div className={styles.title}>{title}
-                </div>
+                {title}
             </header>
 
             <main>
                 <div className={styles.weekPeriodBlock}>
                     {weekPeriodBlockName}
 
-                        <WeekPeriodBlock startDate={startDate}
-                                         endDate={endDate}
-                                         href={'/class-schedule'}
-                                         requestParams={(frame && {frame: frame}) || undefined}
-                                         onClickNext={() => {
-                                             dispatch(setError({error: null}))
-                                             dispatch(next())
-                                         }}
-                                         onClickPrev={() => {
-                                             dispatch(setError({error: null}))
-                                             dispatch(prev())
-                                         }}
-                                         />
-
-
+                        <WeekPeriodBlock to={'/class-schedule'}
+                                         requestParams={(frame && {frame: frame}) || undefined}/>
                 </div>
                 {(frame && <ScheduleTable startDate={startDate.toISOString().split('T')[0]}
                                           endDate={endDate.toISOString().split('T')[0]}

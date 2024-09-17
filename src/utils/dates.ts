@@ -1,13 +1,5 @@
-export const generateRequestParamWeekPeriodByDate = (date: Date) => {
-    const firstDayOfWeek = date.getDate() - (date.getDay() === 0 ? 7 : date.getDay()) + 1;
-    const firstDayOfWeekDate = new Date(new Date(date).setDate(firstDayOfWeek));
-    const firstDayOfWeekString = `${firstDayOfWeekDate.getFullYear()}-${(firstDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
-
-    const lastDayOfWeek = firstDayOfWeekDate.getDate() + 6;
-    const lastDayOfWeekDate = new Date(firstDayOfWeekDate.setDate(lastDayOfWeek));
-    const lastDayOfWeekString = `${lastDayOfWeekDate.getFullYear()}-${(lastDayOfWeekDate.getMonth() + 1).toString().padStart(2, '0')}-${lastDayOfWeekDate.getDate().toString().padStart(2, '0')}`;
-
-    return `startDate=${firstDayOfWeekString}&endDate=${lastDayOfWeekString}`
+export const generateNewWeekPeriodDateMilliseconds = (dateMilliseconds: number, direction: 1 | -1) => {
+    return dateMilliseconds + 7 * 24 * 60 * 60 * 1000 * direction
 }
 
 export const generateCurrentStartDateMilliseconds = (): number => {

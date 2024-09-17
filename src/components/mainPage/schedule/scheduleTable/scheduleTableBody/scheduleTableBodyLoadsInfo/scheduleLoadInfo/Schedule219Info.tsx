@@ -15,7 +15,6 @@ import Preloader from "../../../../../../preloader/Preloader";
 import Modal from 'react-modal';
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../../../redux/store";
-import {generateRequestParamWeekPeriodByDate} from "../../../../../../../utils/dates";
 
 type Schedule219InfoProps = {
     action: 'create' | 'edit'
@@ -34,7 +33,11 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
     const {id} = useParams();
     const navigate = useNavigate();
 
-    const tablePageAddress = `/loads-info?${generateRequestParamWeekPeriodByDate(new Date(currentWeekPeriod.startDateTime))}`
+    const tablePageAddress = `/loads-info?${new URLSearchParams(
+        {
+            startDate: new Date(currentWeekPeriod.startDateTime).toLocaleDateString('en-CA'),
+            endDate: new Date(currentWeekPeriod.endDateTime).toLocaleDateString('en-CA'),
+        })}`
 
     useEffect(() => {
         if (props.action === 'edit') {
