@@ -16,6 +16,10 @@ const App : FC = () => {
             <Routes>
                 <Route path="/" element={<MainPage />} />
                 <Route path="/class-schedule" element={<Schedule />} />
+            </Routes>
+            <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/class-schedule" element={<Schedule />} />
                 <Route path="/loads-info" element={<Schedule />} />
                 <Route path="/loads-info/:id/edit" element={<Schedule219Info action={'edit'}/>} />
                 <Route path="/loads-info/create" element={<Schedule219Info action={'create'}/>} />

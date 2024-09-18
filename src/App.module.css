@@ -37,3 +37,9 @@ a {
 h1, h2 {
     text-align: center
 }
+
+.title {
+    font-size: 30px;
+    color: #FFFFFF;
+    justify-content: center;
+}

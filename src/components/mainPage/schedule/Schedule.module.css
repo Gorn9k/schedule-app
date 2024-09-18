@@ -46,3 +46,11 @@
     border-radius: 10px;
     margin: 5px 10px
 }
+
+.link {
+    background: #353f57;
+    border-radius: 7px;
+    color: #FFFFFF;
+    font-size: 20px;
+    padding: 10px;
+}

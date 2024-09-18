@@ -2,8 +2,9 @@ import React, {FC, useEffect} from 'react';
 import styles from './MainPage.module.css';
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../redux/store";
-import {reset} from "../../redux/currentWeekPeriodSlice";
+import {reset} from "../../redux/scheduleSlice";
 import {MainPageNavLink} from "./mainPageNavLink/MainPageNavLink";
+import generalStyles from './../../App.module.css'
 
 const MainPage: FC = () => {
 
@@ -20,7 +21,7 @@ const MainPage: FC = () => {
 
     return (
         <>
-            <header className={styles.title}>
+            <header className={generalStyles.title}>
                 Расписание занятости в аудиториях(ЦИТ)
             </header>
 

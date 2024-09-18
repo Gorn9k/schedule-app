@@ -2,7 +2,7 @@ import React, {FC} from "react";
 import {Link} from "react-router-dom";
 import {generateNewWeekPeriodDateMilliseconds} from "../../../../utils/dates";
 import {setError} from "../../../../redux/connectionErrorMessageSlice";
-import {next, prev} from "../../../../redux/currentWeekPeriodSlice";
+import {next, prev} from "../../../../redux/scheduleSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../../redux/store";
 
