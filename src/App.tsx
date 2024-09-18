@@ -4,7 +4,8 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Footer from "./components/footer/Footer";
 import MainPage from "./components/mainPage/MainPage";
 import Schedule from "./components/mainPage/schedule/Schedule";
-import Schedule219Info from "./components/mainPage/schedule/scheduleTable/scheduleTableBody/scheduleTableBodyLoadsInfo/scheduleLoadInfo/Schedule219Info";
+import Schedule219Info
+    from "./components/mainPage/schedule/scheduleMain/scheduleTable/scheduleTableBody/scheduleTableBodyLoadsInfo/scheduleLoadInfo/Schedule219Info";
 import Modal from "react-modal";
 
 Modal.setAppElement('#root');
@@ -13,10 +14,6 @@ const App : FC = () => {
 
     return (
         <Router>
-            <Routes>
-                <Route path="/" element={<MainPage />} />
-                <Route path="/class-schedule" element={<Schedule />} />
-            </Routes>
             <Routes>
                 <Route path="/" element={<MainPage />} />
                 <Route path="/class-schedule" element={<Schedule />} />

@@ -22,7 +22,7 @@ export const ScheduleTableHeader: FC<ScheduleTableHeaderPropsType> = (props) => 
 
     useEffect(() => {
         return () => {
-            console.log("ScheduleHeader unmounted");
+            console.log("Header unmounted");
         }
     }, [])
 

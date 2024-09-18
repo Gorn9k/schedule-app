@@ -1,50 +1,33 @@
-import React, {FC, useEffect} from 'react'
-import {Link, NavLink, useLocation} from "react-router-dom"
-import styles from "./Schedule.module.css"
-import ScheduleTable from "./scheduleTable/ScheduleTable";
-import {next, prev} from "../../../redux/scheduleSlice";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../../../redux/store";
-import ScheduleTable219 from "../schedule219/scheduleTable219/ScheduleTable219";
-import {setError} from "../../../redux/connectionErrorMessageSlice";
-import {WeekPeriodBlock} from "./weekPeriodBlock/WeekPeriodBlock";
-import generalStyles from './../../../App.module.css'
-import {ScheduleHeader} from "./scheduleHeader/ScheduleHeader";
+import React, {FC} from 'react'
+import {NavLink, useLocation, useNavigate} from "react-router-dom"
+import {Header} from "../header/Header";
+import {ScheduleMain} from "./scheduleMain/ScheduleMain";
+import styles from "./Schedule.module.css";
 
 const Schedule: FC = () => {
 
     const location = useLocation()
+    const queryParams = new URLSearchParams(location.search)
 
-    console.log('Schedule render')
+    const startDate = queryParams.get('startDate')
+    const endDate = queryParams.get('endDate')
+    const frame = queryParams.get('frame')
 
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search)
+    isNaN(new Date(!startDate ? '' : startDate).valueOf()) ||
+    isNaN(new Date(!endDate ? '' : endDate).valueOf()) ||
+    (frame && (frame !== 'FIRST' && frame !== 'FOURTH')) &&
+    useNavigate()('/')
 
-        const startDate = queryParams.get('startDate')
-        const endDate = queryParams.get('endDate')
-        const frame = queryParams.get('frame')
-
-
-
-    }, [location.search]);
-
-    const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
+    const title = (!frame && 'Расписание занятости в 219 аудитории')
+        || (frame === 'FIRST' && 'Расписание аудиторий(ЦИТ) в первом учебном корпусе') || 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе'
 
     return (
         <>
-            <ScheduleHeader />
-            <main>
-                <div className={styles.weekPeriodBlock}>
-                    {weekPeriodBlockName}
-
-                        <WeekPeriodBlock to={'/class-schedule'}
-                                         requestParams={(frame && {frame: frame}) || undefined}/>
-                </div>
-                {(frame && <ScheduleTable/>)
-                    || <ScheduleTable219 startDate={startDate.toISOString().split('T')[0]}
-                                         endDate={endDate.toISOString().split('T')[0]}/>
-                }
-            </main>
+            <Header>
+                <NavLink to='/' className={styles.link}>В главное меню</NavLink>
+                {title}
+            </Header>
+            <ScheduleMain/>
         </>
     )
 }
