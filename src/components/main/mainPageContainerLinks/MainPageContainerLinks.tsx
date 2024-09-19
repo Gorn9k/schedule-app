@@ -1,4 +1,4 @@
-import styles from "../MainPage.module.css";
+import styles from "../mainPageContainerLinks/MainPageContainerLinks.module.css";
 import {MainPageNavLink} from "./mainPageNavLink/MainPageNavLink";
 import React, {useEffect} from "react";
 import {generateCurrentEndDateMilliseconds, generateCurrentStartDateMilliseconds} from "../../../utils/dates";

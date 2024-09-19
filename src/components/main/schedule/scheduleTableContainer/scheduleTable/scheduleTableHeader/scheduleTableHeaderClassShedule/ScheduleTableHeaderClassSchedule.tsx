@@ -2,7 +2,7 @@ import React, {FC} from "react";
 import styles from "../../ScheduleTable.module.css";
 
 type ScheduleTableHeaderClassScheduleProps = {
-    classes: string[]
+    classes: string[] | null
 }
 
 export const ScheduleTableHeaderClassSchedule: FC<ScheduleTableHeaderClassScheduleProps> = (props) => {

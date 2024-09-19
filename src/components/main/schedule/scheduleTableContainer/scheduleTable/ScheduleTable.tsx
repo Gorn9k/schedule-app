@@ -129,20 +129,7 @@ const ScheduleTable: FC<ScheduleTablePropsType> = (props) => {
             <h2 style={{color: 'red', textAlign: 'center', height: '100vh', alignContent: 'center'}}>{error}</h2>)
         ||
         <>
-            <div className={`${stylesFromSchedule.button} ${styles.buttonAddLoadInfo}`}>
-                <Link to={`/loads-info/create`}>Добавить нагрузку</Link>
-            </div>
-            <ScheduleTableHeader classes={classes} frame={props.frame}/>
-            <div className={styles.scheduleContainerBody}>
-                <table className={styles.scheduleTableBodyNoContent}>
-                    <tbody className={`${styles.scheduleBody} ${styles.scheduleBodyNoContent}`}>
-                        <ScheduleTableBody classes={classes}
-                                           startDate={props.startDate}
-                                           endDate={props.endDate}
-                                           frame={props.frame}/>
-                    </tbody>
-                </table>
-            </div>
+
         </>
 }
 

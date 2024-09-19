@@ -1,31 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
-import {number} from "yup";
-import schedule from "../components/mainPage/schedule/Schedule";
-
-const getCsrfToken = () => {
-    const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
-    return match ? match[2] : '';
-};
 
 const instance = axios.create({
     baseURL: 'http://localhost:8099'
 });
-
-// instance.interceptors.request.use(config => {
-//     const csrfToken = getCsrfToken();
-//     if (csrfToken && ['put', 'delete', 'post'].includes(config.method || '')) {
-//         config.headers.set('X-XSRF-TOKEN', csrfToken)
-//         console.log(config.headers.get('X-XSRF-TOKEN'));
-//         config.data = {
-//             ...config.data,  // Добавляем существующие данные
-//             _csrf: csrfToken // Добавляем CSRF токен
-//         };
-//         console.log(config.data)
-//     }
-//     return config;
-// }, error => {
-//     return Promise.reject(error);
-// });
 
 export type Lesson = {
     id: number
