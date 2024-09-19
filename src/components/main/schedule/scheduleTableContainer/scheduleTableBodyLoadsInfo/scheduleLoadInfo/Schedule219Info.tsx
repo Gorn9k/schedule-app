@@ -1,20 +1,20 @@
 import React, {FC, useEffect, useState} from 'react'
 import {Link, useNavigate, useParams} from "react-router-dom";
-import styles from "../../../../Schedule.module.css";
+import styles from "../../../Schedule.module.css";
 import stylesForInfo from './Schedule219Info.module.css'
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from 'yup'
+import Modal from 'react-modal';
 import {
-    b64EncodeUnicode, createSchedule219, deleteSchedule219,
+    b64EncodeUnicode,
+    createSchedule219,
+    deleteSchedule219,
     editSchedule219,
     getSchedule219LoadInfoById,
     Schedule219,
     Schedule219Payload
-} from '../../../../../../../api/schedule-backend-api';
-import Preloader from "../../../../../../preloader/Preloader";
-import Modal from 'react-modal';
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../../../redux/store";
+} from "../../../../../../api/schedule-backend-api";
+import Preloader from "../../../../../preloader/Preloader";
 
 type Schedule219InfoProps = {
     action: 'create' | 'edit'
@@ -29,15 +29,14 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
     const [loading, setLoading] = useState<boolean>(props.action === 'edit');
     const [error, setError] = useState<string | null>(null);
 
-    const currentWeekPeriod = useSelector((state: RootState) => state.currentWeekPeriod)
     const {id} = useParams();
     const navigate = useNavigate();
 
-    const tablePageAddress = `/loads-info?${new URLSearchParams(
-        {
-            startDate: new Date(currentWeekPeriod.startDateTime).toLocaleDateString('en-CA'),
-            endDate: new Date(currentWeekPeriod.endDateTime).toLocaleDateString('en-CA'),
-        })}`
+    // const tablePageAddress = `/loads-info?${new URLSearchParams(
+    //     {
+    //         startDate: new Date(currentWeekPeriod.startDateTime).toLocaleDateString('en-CA'),
+    //         endDate: new Date(currentWeekPeriod.endDateTime).toLocaleDateString('en-CA'),
+    //     })}`
 
     useEffect(() => {
         if (props.action === 'edit') {
@@ -110,7 +109,7 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                 createSchedule219(values, localStorage.getItem('authToken')))
                                 .then(() => {
                                     setError(null)
-                                    navigate(tablePageAddress)
+                                    navigate(-1)
                                 })
                                 .catch((reason) => {
                                     if (reason.response.status === 403) {
@@ -181,7 +180,7 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                             deleteSchedule219(Number(id), localStorage.getItem('authToken'))
                                 .then(() => {
                                     setError(null)
-                                    navigate(tablePageAddress)
+                                    navigate(-1)
                                 })
                                 .catch((reason) => {
                                     if (reason.response.status === 403) {
@@ -196,7 +195,7 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                     }
 
                     <div className={`${styles.button} ${stylesForInfo.buttonTopMargin}`}>
-                        <Link to={tablePageAddress}>
+                        <Link onClick={() => navigate(-1)} to={''}>
                             Назад
                         </Link>
                     </div>
@@ -230,7 +229,7 @@ const Schedule219Info: FC<Schedule219InfoProps> = (props) => {
                                         setFormLoginError(false)
                                         setShowModal(false)
                                         !localStorage.getItem('authToken') && localStorage.setItem('authToken', authToken)
-                                        navigate(tablePageAddress)
+                                        navigate(-1)
                                     })
                                     .catch((reason) => {
                                         if (reason.response.status === 403) {

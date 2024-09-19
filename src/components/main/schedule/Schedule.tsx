@@ -1,9 +1,8 @@
-import React, {FC} from 'react'
-import {Link, useLocation, useNavigate} from "react-router-dom"
+import React, {FC, useEffect} from 'react'
+import {Link, NavLink, useLocation, useNavigate} from "react-router-dom"
 import styles from "./Schedule.module.css";
 import {WeekPeriodBlock} from "./weekPeriodBlock/WeekPeriodBlock";
 import {ScheduleTableContainer} from "./scheduleTableContainer/ScheduleTableContainer";
-import stylesFromSchedule from "*.module.css";
 
 const Schedule: FC = () => {
 
@@ -18,14 +17,18 @@ const Schedule: FC = () => {
     const endDate = (endDateParam && new Date(endDateParam)) || null
     const frame = queryParams.get('frame') as 'FIRST' | 'FOURTH' | null
 
-    if (!startDate || !endDate || startDate > endDate) {
-        navigate('/')
-        return null
-    }
+    const badRequest = !startDate || isNaN(startDate.valueOf()) || !endDate || isNaN(endDate.valueOf())
+        || startDate > endDate
+
+    useEffect(() => {
+        if (badRequest) {
+            navigate('/')
+        }
+    }, []);
 
     const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
 
-    return <>
+    return !badRequest && <>
         <div className={styles.weekPeriodBlock}>
             {weekPeriodBlockName}
             <WeekPeriodBlock to={'/class-schedule'}
@@ -34,14 +37,12 @@ const Schedule: FC = () => {
                              requestParams={(frame && {frame: frame}) || undefined}/>
         </div>
         {
-            !frame && <div className={`${stylesFromSchedule.button} ${styles.buttonAddLoadInfo}`}>
-                <Link to={`/loads-info/create`}>Добавить нагрузку</Link>
-            </div>
+            !frame && <NavLink to={`/loads-info/create`} className={styles.link}>Добавить нагрузку</NavLink>
         }
         <ScheduleTableContainer startDate={startDate}
                                 endDate={endDate}
                                 frame={frame}/>
-    </>
+    </> || null
 }
 
 export default Schedule;

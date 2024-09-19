@@ -81,3 +81,19 @@ td, th {
 .oddRow {
     background: #f1f1f1;
 }
+
+.scheduleContainer {
+    align-items: flex-start;
+}
+
+.scheduleContainerHeader {
+    margin-top: 10px;
+}
+
+.buttonAddLoadInfo {
+    margin-left: 20px
+}
+
+.buttonEditLoadInfo {
+    display: inline-block;
+}

@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {Link} from "react-router-dom";
-import {generateNewWeekPeriodDateMilliseconds} from "../../../../../utils/dates";
+import {generateNewWeekPeriodDateMilliseconds} from "../../../../utils/dates";
 
 type WeekPeriodBlockProps = {
     startDate: Date,
@@ -24,13 +24,13 @@ export const WeekPeriodBlock: FC<WeekPeriodBlockProps> = (props) => {
     return (
         <div>
             <Link to={getLinkUri(
-                      new Date(generateNewWeekPeriodDateMilliseconds(props.startDate.getMilliseconds(), -1)),
-                      new Date(generateNewWeekPeriodDateMilliseconds(props.endDate.getMilliseconds(), -1)))
+                      new Date(generateNewWeekPeriodDateMilliseconds(props.startDate.getTime(), -1)),
+                      new Date(generateNewWeekPeriodDateMilliseconds(props.endDate.getTime(), -1)))
                   }>{'<<'}</Link>
             <div>{containerDatePeriod}</div>
             <Link to={getLinkUri(
-                      new Date(generateNewWeekPeriodDateMilliseconds(props.startDate.getMilliseconds(), 1)),
-                      new Date(generateNewWeekPeriodDateMilliseconds(props.endDate.getMilliseconds(), 1)))
+                      new Date(generateNewWeekPeriodDateMilliseconds(props.startDate.getTime(), 1)),
+                      new Date(generateNewWeekPeriodDateMilliseconds(props.endDate.getTime(), 1)))
                   }>{'>>'}</Link>
         </div>
     )

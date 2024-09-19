@@ -1,8 +1,10 @@
 import React, {FC} from "react";
-import styles from "../../ScheduleTable.module.css";
+import styles from "../ScheduleTableContainer.module.css";
+import Preloader from "../../../../preloader/Preloader";
 
 type ScheduleTableHeaderClassScheduleProps = {
     classes: string[] | null
+    isLoading: boolean
 }
 
 export const ScheduleTableHeaderClassSchedule: FC<ScheduleTableHeaderClassScheduleProps> = (props) => {
@@ -15,10 +17,14 @@ export const ScheduleTableHeaderClassSchedule: FC<ScheduleTableHeaderClassSchedu
                 аудитории
             </th>
         </tr>
-        {props.classes && props.classes.length > 0 ?
-            <tr>
-                {props.classes?.map(value => <th key={value}>{value}</th>)}
-            </tr> : null
-        }
+        <tr>
+            {
+                !props.isLoading && props.classes && props.classes.length > 0 ?
+                    props.classes?.map(value => <th key={value}>{value}</th>)
+                    : <th>
+                        <Preloader/>
+                    </th>
+            }
+        </tr>
     </>
 }

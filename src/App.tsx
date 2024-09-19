@@ -3,11 +3,11 @@ import './App.module.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Footer from "./components/footer/Footer";
 import Schedule from "./components/main/schedule/Schedule";
-import Schedule219Info
-    from "./components/main/schedule/scheduleMain/scheduleTableContainer/scheduleTable/scheduleTableBody/scheduleTableBodyLoadsInfo/scheduleLoadInfo/Schedule219Info";
 import Modal from "react-modal";
 import {HeaderContainer} from "./components/headerContainer/HeaderContainer";
 import {MainPageContainerLinks} from "./components/main/mainPageContainerLinks/MainPageContainerLinks";
+import Schedule219Info
+    from "./components/main/schedule/scheduleTableContainer/scheduleTableBodyLoadsInfo/scheduleLoadInfo/Schedule219Info";
 
 Modal.setAppElement('#root');
 
