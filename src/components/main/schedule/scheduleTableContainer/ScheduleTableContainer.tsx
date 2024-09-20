@@ -24,78 +24,94 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
     const bodyContainerRef = useRef<HTMLDivElement | null>(null);
     const requestIdRef = useRef(0);
 
-    const fetchSchedule = async () => {
-        const requestId = ++requestIdRef.current;
-        const data = await ((props.frame &&
-                getSchedule(props.startDate.toLocaleDateString('en-CA'),
-                    props.endDate.toLocaleDateString('en-CA'),
-                    props.frame))
-            || getSchedule219(props.startDate.toLocaleDateString('en-CA'),
-                props.endDate.toLocaleDateString('en-CA')))
-        if (requestId === requestIdRef.current) {
-            setSchedule(data as Schedule | Schedule219);
-            return data
-        }
-    }
-
     useEffect(() => {
-        fetchSchedule()
-            .then((data) => {
-                Object.keys(data as Schedule | Schedule219).length > 0
-                && setNoContentMessage('На этой неделе расписания нет.')
-            })
-            .catch(() => {
-                setErrorMessage('Не удалось получить расписание из диспетчерской.')
-            })
-            .finally(() => {
-                prevPropsRef.current = props
-            })
+        const requestId = ++requestIdRef.current;
+        const fetchSchedule = async () => {
+            setNoContentMessage(null)
+            setErrorMessage(null)
+            return await ((props.frame &&
+                    getSchedule(props.startDate.toLocaleDateString('en-CA'),
+                        props.endDate.toLocaleDateString('en-CA'),
+                        props.frame))
+                || getSchedule219(props.startDate.toLocaleDateString('en-CA'),
+                    props.endDate.toLocaleDateString('en-CA')))
+        }
+
+        if (requestId === requestIdRef.current) {
+            fetchSchedule()
+                .then((data) => {
+                    (Object.keys(data as Schedule | Schedule219).length === 0
+                        && setNoContentMessage('На этой неделе расписания нет.'))
+                    || setSchedule(data as Schedule | Schedule219);
+                })
+                .catch((reason) => {
+                    console.log(reason)
+                    setErrorMessage('Не удалось получить расписание из диспетчерской.')
+                })
+                .finally(() => {
+                    prevPropsRef.current = props
+                })
+        }
     }, [props]);
 
     useLayoutEffect(() => {
+        const currentRef = bodyContainerRef.current
+
         const handleOverflowCheck = () => {
-            if (bodyContainerRef.current) {
-                const isOverflowing = bodyContainerRef.current.scrollHeight > bodyContainerRef.current.clientHeight;
+            if (currentRef) {
+                const isOverflowing = currentRef.scrollHeight > currentRef.clientHeight;
                 setIsOverflowing(isOverflowing)
             }
         };
 
         const resizeObserver = new ResizeObserver(handleOverflowCheck);
-        if (bodyContainerRef.current) {
-            resizeObserver.observe(bodyContainerRef.current);
+        if (currentRef) {
+            resizeObserver.observe(currentRef);
         }
 
         return () => {
-            if (bodyContainerRef.current) {
-                resizeObserver.unobserve(bodyContainerRef.current);
+            if (currentRef) {
+                resizeObserver.unobserve(currentRef);
             }
             resizeObserver.disconnect();
         };
     }, [props, schedule]);
 
-    return <>
-        <table className={styles.scheduleTableHeader}>
-            <thead className={styles.scheduleHeader}>
-            {
-                (props.frame && <ScheduleTableHeaderClassSchedule
-                    isLoading={!(schedule && prevPropsRef.current === props)}
-                    classes={(schedule && getUniqueSortedRoomNumbers(schedule as Schedule)) || null}/>)
-                || <ScheduleTableHeaderLoadsInfo/>
-            }
-            </thead>
-        </table>
-        <div ref={bodyContainerRef} className={styles.scheduleContainerBody}>
-            <table className={styles.scheduleTableBodyNoContent}>
-                <tbody className={`${styles.scheduleBody} ${styles.scheduleBodyNoContent}`}>
+    return (
+        (errorMessage &&
+            <h2 style={{
+                color: 'red',
+                textAlign: 'center',
+                height: '100vh',
+                alignContent: 'center'
+            }}>{errorMessage}</h2>)
+        || (noContentMessage &&
+            <h2 style={{textAlign: 'center', height: '100vh', alignContent: 'center'}}>{noContentMessage}</h2>)
+        || <>
+            <table
+                className={`${styles.scheduleTableHeader}${(isOverflowing && ` ${styles.scheduleContainerHeaderr}`) || ''}`}>
+                <thead className={styles.scheduleHeader}>
                 {
-                    (props.frame && <ScheduleTableBodyClassesSchedule
-                        classes={(schedule && getUniqueSortedRoomNumbers(schedule as Schedule)) || null}
-                        schedule={schedule as Schedule | null}
-                        isLoading={!(schedule && prevPropsRef.current === props)}/>)
-                    || <ScheduleTableBodyLoadsInfo schedule={schedule as Schedule219[] | null}/>
+                    (props.frame && <ScheduleTableHeaderClassSchedule
+                        isLoading={!(schedule && prevPropsRef.current === props)}
+                        classes={(schedule && getUniqueSortedRoomNumbers(schedule as Schedule)) || null}/>)
+                    || <ScheduleTableHeaderLoadsInfo/>
                 }
-                </tbody>
+                </thead>
             </table>
-        </div>
-    </>
+            <div ref={bodyContainerRef} className={`${styles.scheduleContainerBody} ${styles.scheduleContainerBodyNoContent}`}>
+                <table className={styles.scheduleTableBodyNoContent}>
+                    <tbody className={`${styles.scheduleBody}`}>
+                    {
+                        (props.frame && <ScheduleTableBodyClassesSchedule
+                            classes={(schedule && getUniqueSortedRoomNumbers(schedule as Schedule)) || null}
+                            schedule={schedule as Schedule | null}
+                            isLoading={!(schedule && prevPropsRef.current === props)}/>)
+                        || <ScheduleTableBodyLoadsInfo schedule={schedule as Schedule219[] | null}/>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </>
+    )
 }

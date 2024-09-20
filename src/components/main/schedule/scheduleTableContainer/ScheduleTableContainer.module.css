@@ -29,8 +29,9 @@ td, th {
     flex: 1
 }
 
-.scheduleContainerHeader {
-    padding-right: 5px
+.scheduleContainerHeaderr {
+    margin-right: 5px;
+    width: auto;
 }
 
 .scheduleTableHeader {
