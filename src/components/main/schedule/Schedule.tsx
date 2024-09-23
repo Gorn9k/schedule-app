@@ -1,5 +1,5 @@
 import React, {FC, useEffect} from 'react'
-import {Link, NavLink, useLocation, useNavigate} from "react-router-dom"
+import {NavLink, useLocation, useNavigate} from "react-router-dom"
 import styles from "./Schedule.module.css";
 import {WeekPeriodBlock} from "./weekPeriodBlock/WeekPeriodBlock";
 import {ScheduleTableContainer} from "./scheduleTableContainer/ScheduleTableContainer";
@@ -24,11 +24,11 @@ const Schedule: FC = () => {
         if (badRequest) {
             navigate('/')
         }
-    }, []);
+    }, [badRequest, navigate]);
 
     const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
 
-    return !badRequest && <>
+    return (!badRequest && <>
         <div className={styles.weekPeriodBlock}>
             {weekPeriodBlockName}
             <WeekPeriodBlock to={'/class-schedule'}
@@ -42,7 +42,7 @@ const Schedule: FC = () => {
         <ScheduleTableContainer startDate={startDate}
                                 endDate={endDate}
                                 frame={frame}/>
-    </> || null
+    </>) || null
 }
 
 export default Schedule;

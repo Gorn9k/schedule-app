@@ -109,10 +109,10 @@ export const findLessonsByRoomNumber = (schedule: Schedule, roomNumber: string, 
     return results;
 };
 
-export const mergeDayOfWeekRowsNumber = (schedule: Schedule, dayAndLessonNumber: string) => {
+export const mergeDayOfWeekRowsNumber = (scheduleList: Lesson[], day: number) => {
     let count = 0
-    for (const dayLesson in schedule) {
-        if (parseKey(dayLesson)?.day === parseKey(dayAndLessonNumber)?.day)
+    for (const schedule of scheduleList) {
+        if (schedule.day === day)
             count++
     }
     return count

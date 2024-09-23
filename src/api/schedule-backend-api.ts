@@ -15,17 +15,11 @@ export type Lesson = {
     group: string;
 }
 
-type DaySchedule = {
-    [roomNumber: string]: Array<Lesson>;
-}
-
-export type DayAndLessonNumber = {
-    day: number
-    lessonNumber: number
-}
-
 export type Schedule = {
-    [dayAndLessonNumberObject: string]: DaySchedule;
+    schedules: Lesson[],
+    classesNumbers: string[],
+    days: number[],
+    lessonsNumbers: number[]
 }
 
 export type Schedule219 = {

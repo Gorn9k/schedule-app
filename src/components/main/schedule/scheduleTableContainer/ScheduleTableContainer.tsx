@@ -6,6 +6,7 @@ import {getUniqueSortedRoomNumbers} from "../../../../utils/dates";
 import {ScheduleTableHeaderClassSchedule} from "./scheduleTableHeaderClassShedule/ScheduleTableHeaderClassSchedule";
 import {ScheduleTableBodyClassesSchedule} from "./scheduleTableBodyClassesSchedule/ScheduleTableBodyClassesSchedule";
 import {ScheduleTableBodyLoadsInfo} from "./scheduleTableBodyLoadsInfo/ScheduleTableBodyLoadsInfo";
+import Preloader from "../../../preloader/Preloader";
 
 type ScheduleTableContainerProps = {
     startDate: Date
@@ -15,7 +16,7 @@ type ScheduleTableContainerProps = {
 
 export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) => {
 
-    const [schedule, setSchedule] = useState<Schedule | Schedule219 | null>(null);
+    const [schedule, setSchedule] = useState<Schedule | Schedule219[] | null>(null);
     const [noContentMessage, setNoContentMessage] = useState<string | null>(null)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [isOverflowing, setIsOverflowing] = useState<boolean>(false)
@@ -40,9 +41,9 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
         if (requestId === requestIdRef.current) {
             fetchSchedule()
                 .then((data) => {
-                    (Object.keys(data as Schedule | Schedule219).length === 0
+                    (((data as Schedule).schedules.length === 0 || Object.keys(data as Schedule219[]).length === 0)
                         && setNoContentMessage('На этой неделе расписания нет.'))
-                    || setSchedule(data as Schedule | Schedule219);
+                    || setSchedule(data as Schedule | Schedule219[]);
                 })
                 .catch((reason) => {
                     console.log(reason)
@@ -85,6 +86,9 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
                 height: '100vh',
                 alignContent: 'center'
             }}>{errorMessage}</h2>)
+        || ((prevPropsRef.current !== props || !schedule)
+            && <Preloader/>
+        )
         || (noContentMessage &&
             <h2 style={{textAlign: 'center', height: '100vh', alignContent: 'center'}}>{noContentMessage}</h2>)
         || <>
@@ -93,21 +97,19 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
                 <thead className={styles.scheduleHeader}>
                 {
                     (props.frame && <ScheduleTableHeaderClassSchedule
-                        isLoading={!(schedule && prevPropsRef.current === props)}
-                        classes={(schedule && getUniqueSortedRoomNumbers(schedule as Schedule)) || null}/>)
+                        classes={(schedule as Schedule).classesNumbers}/>)
                     || <ScheduleTableHeaderLoadsInfo/>
                 }
                 </thead>
             </table>
-            <div ref={bodyContainerRef} className={`${styles.scheduleContainerBody} ${styles.scheduleContainerBodyNoContent}`}>
+            <div ref={bodyContainerRef}
+                 className={`${styles.scheduleContainerBody} ${styles.scheduleContainerBodyNoContent}`}>
                 <table className={styles.scheduleTableBodyNoContent}>
                     <tbody className={`${styles.scheduleBody}`}>
                     {
                         (props.frame && <ScheduleTableBodyClassesSchedule
-                            classes={(schedule && getUniqueSortedRoomNumbers(schedule as Schedule)) || null}
-                            schedule={schedule as Schedule | null}
-                            isLoading={!(schedule && prevPropsRef.current === props)}/>)
-                        || <ScheduleTableBodyLoadsInfo schedule={schedule as Schedule219[] | null}/>
+                            schedule={schedule as Schedule}/>)
+                        || <ScheduleTableBodyLoadsInfo schedule={schedule as Schedule219[]}/>
                     }
                     </tbody>
                 </table>

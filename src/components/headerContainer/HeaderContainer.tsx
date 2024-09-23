@@ -14,14 +14,14 @@ export const HeaderContainer = () => {
 
     useEffect(() => {
         badRequest && navigate('/');
-    }, []);
+    }, [badRequest, navigate]);
 
     const title = (!frame && 'Расписание занятости в 219 аудитории')
         || (frame === 'FIRST' && 'Расписание аудиторий(ЦИТ) в первом учебном корпусе')
         || 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе';
 
     return (
-        !badRequest && <Header>
+        (!badRequest && <Header>
             {location.pathname === '/' && 'Расписание занятости в аудиториях(ЦИТ)'}
             {location.pathname === '/class-schedule' && (
                 <>
@@ -47,6 +47,6 @@ export const HeaderContainer = () => {
                     {'Создание новой нагрузки'}
                 </>
             )}
-        </Header> || null
+        </Header>) || null
     );
 };
