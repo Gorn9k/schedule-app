@@ -1,4 +1,4 @@
-import {DayAndLessonNumber, Lesson, Schedule, Schedule219} from "../api/schedule-backend-api";
+import {Schedule219} from "../api/schedule-backend-api";
 
 export const generateNewWeekPeriodDateMilliseconds = (dateMilliseconds: number, direction: 1 | -1) => {
     return dateMilliseconds + 7 * 24 * 60 * 60 * 1000 * direction
@@ -26,27 +26,6 @@ export const generateCurrentEndDateMilliseconds = (): number => {
     const lastDayOfWeek = today.getDate() + (today.getDay() === 0 ? 0 : 7 - today.getDay())
 
     return today.setDate(lastDayOfWeek)
-}
-
-export const getUniqueSortedRoomNumbers = (schedule: Schedule): string[] => {
-    const roomNumbersSet = new Set<string>();
-
-    for (const dayLesson in schedule) {
-        if (schedule.hasOwnProperty(dayLesson)) {
-            const daySchedule = schedule[dayLesson];
-
-            for (const room in daySchedule) {
-                if (daySchedule.hasOwnProperty(room)) {
-                    roomNumbersSet.add(room);
-                }
-            }
-        }
-    }
-
-    const roomNumbersArray = Array.from(roomNumbersSet);
-    roomNumbersArray.sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
-
-    return roomNumbersArray;
 }
 
 export const switchByDayNumber = (value: number | undefined): string => {
@@ -90,42 +69,6 @@ export const switchByLessonNumber = (value: number | undefined): string => {
             return 'Not Found';
     }
 };
-
-export const findLessonsByRoomNumber = (schedule: Schedule, roomNumber: string, day: string) => {
-    const results: Lesson[] = [];
-
-    for (const dayLesson in schedule) {
-        if (schedule.hasOwnProperty(dayLesson) && dayLesson === day) {
-            const daySchedule = schedule[dayLesson];
-
-            for (const room in daySchedule) {
-                if (daySchedule.hasOwnProperty(room) && room === roomNumber) {
-                    results.push(...daySchedule[room]);
-                }
-            }
-        }
-    }
-
-    return results;
-};
-
-export const mergeDayOfWeekRowsNumber = (scheduleList: Lesson[], day: number) => {
-    let count = 0
-    for (const schedule of scheduleList) {
-        if (schedule.day === day)
-            count++
-    }
-    return count
-}
-
-export const parseKey = (key: string): DayAndLessonNumber | null => {
-    try {
-        return JSON.parse(key) as DayAndLessonNumber;
-    } catch (e) {
-        console.error("Error parsing key:", e);
-        return null;
-    }
-}
 
 export const _switchByDayNumber = (stringDate: string) => {
     const date = new Date(stringDate).getDay()

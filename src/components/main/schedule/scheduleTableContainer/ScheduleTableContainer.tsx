@@ -2,7 +2,6 @@ import React, {FC, useEffect, useLayoutEffect, useRef, useState} from "react";
 import styles from './/ScheduleTableContainer.module.css'
 import {getSchedule, getSchedule219, Schedule, Schedule219} from "../../../../api/schedule-backend-api";
 import {ScheduleTableHeaderLoadsInfo} from "./scheduleTableHeaderLoadsInfo/ScheduleTableHeaderLoadsInfo";
-import {getUniqueSortedRoomNumbers} from "../../../../utils/dates";
 import {ScheduleTableHeaderClassSchedule} from "./scheduleTableHeaderClassShedule/ScheduleTableHeaderClassSchedule";
 import {ScheduleTableBodyClassesSchedule} from "./scheduleTableBodyClassesSchedule/ScheduleTableBodyClassesSchedule";
 import {ScheduleTableBodyLoadsInfo} from "./scheduleTableBodyLoadsInfo/ScheduleTableBodyLoadsInfo";
@@ -41,7 +40,7 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
         if (requestId === requestIdRef.current) {
             fetchSchedule()
                 .then((data) => {
-                    (((data as Schedule).schedules.length === 0 || Object.keys(data as Schedule219[]).length === 0)
+                    ((Object.keys((data as Schedule).schedules).length === 0 || Object.keys(data as Schedule219[]).length === 0)
                         && setNoContentMessage('На этой неделе расписания нет.'))
                     || setSchedule(data as Schedule | Schedule219[]);
                 })

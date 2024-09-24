@@ -11,9 +11,7 @@ export const ScheduleTableHeaderClassSchedule: FC<ScheduleTableHeaderClassSchedu
         <tr>
             <th rowSpan={2} className={styles.thAndTdDayAndTime}>День недели</th>
             <th rowSpan={2} className={styles.thAndTdDayAndTime}>Время занятия</th>
-            <th colSpan={props.classes.length}>Номер
-                аудитории
-            </th>
+            <th colSpan={props.classes.length}>Номер аудитории</th>
         </tr>
         <tr>
             {

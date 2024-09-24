@@ -7,7 +7,7 @@ import Modal from "react-modal";
 import {HeaderContainer} from "./components/headerContainer/HeaderContainer";
 import {MainPageContainerLinks} from "./components/main/mainPageContainerLinks/MainPageContainerLinks";
 import Schedule219Info
-    from "./components/main/schedule/scheduleTableContainer/scheduleTableBodyLoadsInfo/scheduleLoadInfo/Schedule219Info";
+    from "./components/main/loadInfoContainer/Schedule219Info";
 
 Modal.setAppElement('#root');
 
