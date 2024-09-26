@@ -29,13 +29,12 @@ const Schedule: FC = () => {
     const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
 
     return (!badRequest && <>
-        <div className={styles.weekPeriodBlock}>
-            {weekPeriodBlockName}
-            <WeekPeriodBlock to={'/class-schedule'}
+            <h2>{weekPeriodBlockName}</h2>
+            <WeekPeriodBlock to={(frame && '/class-schedule') || '/loads-info'}
                              startDate={startDate as Date}
                              endDate={endDate as Date}
                              requestParams={(frame && {frame: frame}) || undefined}/>
-        </div>
+
         {
             !frame && <NavLink to={`/loads-info/create`} className={styles.link}>Добавить нагрузку</NavLink>
         }

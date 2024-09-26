@@ -6,8 +6,7 @@ import Schedule from "./components/main/schedule/Schedule";
 import Modal from "react-modal";
 import {HeaderContainer} from "./components/headerContainer/HeaderContainer";
 import {MainPageContainerLinks} from "./components/main/mainPageContainerLinks/MainPageContainerLinks";
-import Schedule219Info
-    from "./components/main/loadInfoContainer/Schedule219Info";
+import {LoadInfoContainer} from "./components/main/loadInfoContainer/LoadInfoContainer";
 
 Modal.setAppElement('#root');
 
@@ -21,8 +20,8 @@ const App: FC = () => {
                     <Route path="/" element={<MainPageContainerLinks/>}/>
                     <Route path="/class-schedule" element={<Schedule/>}/>
                     <Route path="/loads-info" element={<Schedule/>}/>
-                    <Route path="/loads-info/:id/edit" element={<Schedule219Info action={'edit'}/>}/>
-                    <Route path="/loads-info/create" element={<Schedule219Info action={'create'}/>}/>
+                    <Route path="/loads-info/:id/edit" element={<LoadInfoContainer/>}/>
+                    <Route path="/loads-info/create" element={<LoadInfoContainer/>}/>
                 </Routes>
             </main>
         </Router>
@@ -30,4 +29,4 @@ const App: FC = () => {
     </>
 }
 
-export default App;
+export default App

@@ -1,29 +1,33 @@
-import React, {FC} from "react";
+import React, {FC, memo} from "react";
 import * as Yup from "yup";
-import {createSchedule219, editSchedule219} from "../../../../../api/schedule-backend-api";
+import {Schedule219} from "../../../../api/schedule-backend-api";
 import {ErrorMessage, Field, Form, Formik} from "formik";
-import stylesForInfo from "../../Schedule219Info.module.css";
+import stylesForInfo from "../Schedule219Info.module.css";
 
 type LoadInfoProps = {
     renderButton: (props: { disabled: boolean }) => React.ReactNode
+    onSubmit: (values: Schedule219, setSubmitting: (isSubmitting: boolean) => void,
+               setFieldError: (field: string, message: (string | undefined)) => void) => void
+    schedule?: Schedule219
 }
 
-export const LoadInfoForm: FC<LoadInfoProps> = (props) => {
+export const LoadInfoForm: FC<LoadInfoProps> = memo((props) => {
+    console.log('Load Info Form');
     return (
         <Formik
             initialValues={{
-                id: schedule?.id,
-                localDate: schedule?.date,
-                localTime: schedule?.time,
-                type: schedule?.type,
-                responsible: schedule?.responsible,
-                description: schedule?.description
+                id: props.schedule?.id,
+                date: props.schedule?.date || '',
+                time: props.schedule?.time || '',
+                type: props.schedule?.type || '',
+                responsible: props.schedule?.responsible || '',
+                description: props.schedule?.description || ''
             }}
             validationSchema={Yup.object({
-                localDate: Yup.string()
+                date: Yup.string()
                     .max(15, 'Must be 15 characters or less')
                     .required('Required'),
-                localTime: Yup.string()
+                time: Yup.string()
                     .required('Required'),
                 type: Yup.string()
                     .max(60)
@@ -36,47 +40,23 @@ export const LoadInfoForm: FC<LoadInfoProps> = (props) => {
                     .required()
             })}
             onSubmit={(values, {setSubmitting, setFieldError}) => {
-                setLoading(true);
-                (props.action === 'edit' ?
-                    editSchedule219(values, localStorage.getItem('authToken')) :
-                    createSchedule219(values, localStorage.getItem('authToken')))
-                    .then(() => {
-                        setError(null)
-                        navigate(-1)
-                    })
-                    .catch((reason) => {
-                        if (reason.response.status === 403) {
-                            setShowModal(true)
-                            setFormSchedule(values)
-                        } else if (reason.response.status === 400) {
-                            for (const [field, message] of Object.entries(reason.response.data as {
-                                [key: string]: string
-                            })) {
-                                setFieldError(field, message)
-                            }
-                        } else
-                            setError(props.action === "edit" ? 'Не удалось изменить нагрузку.' : 'Не удалось создать нагрузку.')
-                    })
-                    .finally(() => {
-                        setLoading(false)
-                        setSubmitting(false)
-                    })
+                props.onSubmit(values, setSubmitting, setFieldError)
             }}
         >
             {({isSubmitting, errors, touched}) => (
                 <Form className={stylesForInfo.formCenter}>
                     <div>
-                        <label htmlFor="localDate">Дата:</label>
-                        <Field name="localDate" type="date" id="localDate"
-                               className={errors.localDate && touched.localDate ? stylesForInfo.error : ''}/>
-                        <ErrorMessage name="localDate" component="div"
+                        <label htmlFor="date">Дата:</label>
+                        <Field name="date" type="date" id="date"
+                               className={errors.date && touched.date ? stylesForInfo.error : ''}/>
+                        <ErrorMessage name="date" component="div"
                                       className={stylesForInfo.errorMessage}/>
                     </div>
                     <div>
-                        <label htmlFor="localTime">Время:</label>
-                        <Field name="localTime" type="time" id="localTime"
-                               className={errors.localTime && touched.localTime ? stylesForInfo.error : ''}/>
-                        <ErrorMessage name="localTime" component="div"
+                        <label htmlFor="time">Время:</label>
+                        <Field name="time" type="time" id="time"
+                               className={errors.time && touched.time ? stylesForInfo.error : ''}/>
+                        <ErrorMessage name="time" component="div"
                                       className={stylesForInfo.errorMessage}/>
                     </div>
                     <div>
@@ -104,4 +84,4 @@ export const LoadInfoForm: FC<LoadInfoProps> = (props) => {
             )}
         </Formik>
     )
-}
+})

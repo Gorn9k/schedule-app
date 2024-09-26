@@ -11,46 +11,25 @@
     text-decoration: none
 }
 
-.title {
-    font-size: 30px;
-    text-align: center;
-    color: #FFFFFF;
-    flex: 1;
-    padding-right: 10%
-}
-
 .weekPeriodBlock {
-    margin: 15px 0 15px;
-    color: #434c63;
-    font-size: 20px;
+    font-size: 1.25em;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    margin-bottom: 1.5em;
 }
 
-.weekPeriodBlock > div {
-    display: flex;
-    align-items: baseline
-}
-
-.weekPeriodBlock > div > a {
-    cursor: pointer;
-    font-size: 20px;
-    text-decoration: none;
-    color: #434c63
-}
-
-.weekPeriodBlock > div > div {
+.weekPeriodBlock > p {
     padding: 5px;
     border: 1px solid #E2E8F0;
     border-radius: 10px;
-    margin: 5px 10px
+    margin: 0 10px
 }
 
 .link {
     background: #353f57;
     border-radius: 7px;
     color: #FFFFFF;
-    font-size: 20px;
+    font-size: 1.25em;
     padding: 10px;
+    min-width: max-content;
 }

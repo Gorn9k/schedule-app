@@ -45,32 +45,21 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
                                 className={styles.thAndTdDayAndTime}>{`${switchByDayNumber(lesson.day)}`}</td>}
                         <td className={styles.thAndTdDayAndTime}>{`${switchByLessonNumber(lesson.lessonNumber)}`}</td>
                         {props.schedule.classesNumbers.map(classNumber => {
+                            const cellContent = props.schedule.schedules.filter(value => value.roomNumber === classNumber && value.day === lesson.day &&
+                                value.lessonNumber === lesson.lessonNumber).map((value, lessonIndex) => {
+                                    return (
+                                        <ul key={value.id}
+                                            className={`${styles.lessonContent}${lessonIndex > 0 ? ` ${styles.lessonContentFlex}` : ''}`}>
+                                            <li>{`${value.disciplineName}`}</li>
+                                            <li>{`${value.teacherFullName}`}</li>
+                                            <li>{`${value.group}`}</li>
+                                        </ul>
+                                    )
+                                }
+                            )
                             return (
                                 <td key={classNumber} className={styles.tdLesson}>
-                                    {props.schedule.schedules.filter(value => value.roomNumber === classNumber && value.day === lesson.day &&
-                                        value.lessonNumber === lesson.lessonNumber).map((value, lessonIndex) => {
-                                            if (lessonIndex > 0) {
-                                                return (
-                                                    <div key={value.id}
-                                                         className={styles.lessonContentFlex}>
-                                                        <label>{`${value.disciplineName}`}</label><br/>
-                                                        <label>{`${value.teacherFullName}`}</label><br/>
-                                                        <label>{`${value.group}`}</label><br/>
-                                                    </div>
-                                                )
-                                            } else {
-                                                return (
-                                                    <div key={value.id}
-                                                         className={styles.lessonContentMono}>
-                                                        <label>{`${value.disciplineName}`}</label><br/>
-                                                        <label>{`${value.teacherFullName}`}</label><br/>
-                                                        <label>{`${value.group}`}</label><br/>
-                                                    </div>
-                                                )
-                                            }
-                                        }
-                                    )
-                                    }
+                                    {cellContent}
                                 </td>
                             )
                         })

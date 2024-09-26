@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, NavLink } from 'react-router-dom';
+import {useLocation, useNavigate, NavLink} from 'react-router-dom';
 
 import styles from '../main/schedule/Schedule.module.css';
 import {Header} from "./header/Header";
@@ -16,37 +16,19 @@ export const HeaderContainer = () => {
         badRequest && navigate('/');
     }, [badRequest, navigate]);
 
-    const title = (!frame && 'Расписание занятости в 219 аудитории')
-        || (frame === 'FIRST' && 'Расписание аудиторий(ЦИТ) в первом учебном корпусе')
-        || 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе';
+    const title = (location.pathname === '/loads-info' && 'Расписание занятости в 219 аудитории')
+        || (frame && (frame === 'FIRST' ? 'Расписание аудиторий(ЦИТ) в первом учебном корпусе' : 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе'))
+        || (location.pathname.match(/^\/loads-info\/\d+\/edit$/) && 'Редактирование нагрузки')
+        || (location.pathname === '/loads-info/create' && 'Создание новой нагрузки') || (location.pathname === '/' && 'Расписание занятости в аудиториях(ЦИТ)')
+        || ''
 
     return (
-        (!badRequest && <Header>
-            {location.pathname === '/' && 'Расписание занятости в аудиториях(ЦИТ)'}
-            {location.pathname === '/class-schedule' && (
-                <>
-                    <NavLink to='/' className={styles.link}>В главное меню</NavLink>
-                    {title}
-                </>
-            )}
-            {location.pathname === '/loads-info' && (
-                <>
-                    <NavLink to='/' className={styles.link}>В главное меню</NavLink>
-                    {title}
-                </>
-            )}
-            {location.pathname === '/loads-info/:id/edit' && (
-                <>
-                    <NavLink to='/' className={styles.link}>В главное меню</NavLink>
-                    {'Редактирование нагрузки'}
-                </>
-            )}
-            {location.pathname === '/loads-info/create' && (
-                <>
-                    <NavLink to='/' className={styles.link}>В главное меню</NavLink>
-                    {'Создание новой нагрузки'}
-                </>
-            )}
-        </Header>) || null
+        (!badRequest &&
+            <Header title={title}>
+                {
+                    location.pathname !== '/' && <NavLink to='/' className={styles.link}>В главное меню</NavLink>
+                }
+            </Header>)
+        || null
     );
 };

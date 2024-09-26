@@ -23,21 +23,12 @@ export type Schedule = {
 }
 
 export type Schedule219 = {
-    id: number
+    id?: number
     date: string
     time: string
     type: string
     responsible: string
     description: string
-}
-
-export type Schedule219Payload = {
-    id: number | undefined
-    localDate: string | undefined
-    localTime: string | undefined
-    type: string | undefined
-    responsible: string | undefined
-    description: string | undefined
 }
 
 export const getSchedule = async (startDate: string, endDate: string, frame: string): Promise<Schedule> => {
@@ -58,7 +49,7 @@ export const getSchedule219LoadInfoById = async (id: string | undefined): Promis
     return response.data;
 }
 
-export const createSchedule219 = async (schedule: Schedule219Payload | null, authToken: string | null) => {
+export const createSchedule219 = async (schedule: Schedule219 | null, authToken: string | null) => {
     return await instance.post(`/class-room/number/219/loads-info/create`, schedule, authToken ? {
         headers: {
             Authorization: `Basic ${authToken}`,
@@ -66,7 +57,7 @@ export const createSchedule219 = async (schedule: Schedule219Payload | null, aut
     } : undefined);
 }
 
-export const editSchedule219 = async (schedule: Schedule219Payload | null, authToken: string | null): Promise<AxiosResponse<any, any>> => {
+export const editSchedule219 = async (schedule: Schedule219 | null, authToken: string | null): Promise<AxiosResponse<any, any>> => {
     return await instance.put(`/class-room/number/219/load-info/${schedule?.id}/edit`, schedule, authToken ? {
         headers: {
             Authorization: `Basic ${authToken}`,

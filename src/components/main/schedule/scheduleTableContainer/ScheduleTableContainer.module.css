@@ -11,7 +11,6 @@ table, th, td {
 td, th {
     word-wrap: break-word;
     padding: 10px;
-    text-align: center;
 }
 
 .thAndTdDayAndTime {
@@ -29,7 +28,7 @@ td, th {
     flex: 1
 }
 
-.scheduleContainerHeaderr {
+.scheduleTableHeaderScroll {
     margin-right: 5px;
     width: calc(100% - 5px);
 }
@@ -41,21 +40,19 @@ td, th {
 }
 
 .scheduleHeader {
-    font-size: 18px;
+    font-size: 1.125em;
     background: #434C63;
     color: #FFFFFF
 }
 
 .scheduleContainerBody {
-    overflow: auto
+    overflow: auto;
+    flex: 1;
+    padding-bottom: 1px;
 }
 
-.scheduleContainerBodyNoContent {
-    flex: 1
-}
-
-.scheduleTableBodyNoContent {
-    height: 100%
+.scheduleTableBody {
+    height: 100%;
 }
 
 .scheduleTableBodyContent {
@@ -66,17 +63,12 @@ td, th {
     background: #EFEFEF;
 }
 
-.scheduleBody {
-    color: #434c63
-}
-
-.lessonContentMono {
+.lessonContent {
     padding: 10px
 }
 
 .lessonContentFlex {
     border-top: 1px solid #E2E8F0;
-    padding: 10px
 }
 
 .oddRow {

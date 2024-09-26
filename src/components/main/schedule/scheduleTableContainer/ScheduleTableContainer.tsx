@@ -40,7 +40,8 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
         if (requestId === requestIdRef.current) {
             fetchSchedule()
                 .then((data) => {
-                    ((Object.keys((data as Schedule).schedules).length === 0 || Object.keys(data as Schedule219[]).length === 0)
+                    ((((data as Schedule).schedules && (Object.keys((data as Schedule).schedules).length === 0))
+                            || Object.keys(data as Schedule219[]).length === 0)
                         && setNoContentMessage('На этой неделе расписания нет.'))
                     || setSchedule(data as Schedule | Schedule219[]);
                 })
@@ -69,6 +70,8 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
             resizeObserver.observe(currentRef);
         }
 
+        handleOverflowCheck();
+
         return () => {
             if (currentRef) {
                 resizeObserver.unobserve(currentRef);
@@ -92,7 +95,7 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
             <h2 style={{textAlign: 'center', height: '100vh', alignContent: 'center'}}>{noContentMessage}</h2>)
         || <>
             <table
-                className={`${styles.scheduleTableHeader}${(isOverflowing && ` ${styles.scheduleContainerHeaderr}`) || ''}`}>
+                className={`${styles.scheduleTableHeader}${(isOverflowing && ` ${styles.scheduleTableHeaderScroll}`) || ''}`}>
                 <thead className={styles.scheduleHeader}>
                 {
                     (props.frame && <ScheduleTableHeaderClassSchedule
@@ -102,9 +105,9 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
                 </thead>
             </table>
             <div ref={bodyContainerRef}
-                 className={`${styles.scheduleContainerBody} ${styles.scheduleContainerBodyNoContent}`}>
-                <table className={styles.scheduleTableBodyNoContent}>
-                    <tbody className={`${styles.scheduleBody}`}>
+                 className={styles.scheduleContainerBody}>
+                <table className={styles.scheduleTableBody}>
+                    <tbody>
                     {
                         (props.frame && <ScheduleTableBodyClassesSchedule
                             schedule={schedule as Schedule}/>)

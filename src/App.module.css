@@ -21,6 +21,8 @@ header {
 main {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: 80vh;
 }
 
@@ -35,11 +37,20 @@ a {
 }
 
 h1, h2 {
-    text-align: center
+    font-weight: normal;
+}
+
+header > :nth-child(2) {
+    margin: 0 8% 0 0;
+    width: 100%;
 }
 
 .title {
-    font-size: 30px;
     color: #FFFFFF;
     justify-content: center;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
 }

@@ -2,16 +2,20 @@ import React, {FC} from "react";
 import stylesForInfo from "../Schedule219Info.module.css";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import {b64EncodeUnicode, createSchedule219, editSchedule219} from "../../../../api/schedule-backend-api";
 import styles from "../../schedule/Schedule.module.css";
 import Modal from "react-modal";
 
 type AuthModalFormProps = {
-
+    formLoginError: boolean
+    showModal: boolean
+    setFormLoginError: (flag: boolean) => void
+    setShowModal: (flag: boolean) => void
+    onSubmit: (values: { login: string, password: string }, setSubmitting: (isSubmitting: boolean) => void,
+               setFieldError: (field: string, message: (string | undefined)) => void) => void
 }
 
-export const AuthModalForm: FC<AuthModalFormProps> = () => {
-
+export const AuthModalForm: FC<AuthModalFormProps> = ({formLoginError, onSubmit, showModal, setShowModal, setFormLoginError}) => {
+    console.log('Auth Modal Form');
     return (
         <Modal className={stylesForInfo.content}
                isOpen={showModal}
@@ -32,36 +36,7 @@ export const AuthModalForm: FC<AuthModalFormProps> = () => {
                         .required('Поле не может быть пустым'),
                 })}
                 onSubmit={(values, {setSubmitting, setFieldError}) => {
-                    setLoading(true)
-                    const authToken = localStorage.getItem('authToken') || b64EncodeUnicode(`${values.login}:${values.password}`);
-                    (props.action === 'edit' ?
-                        editSchedule219(formSchedule, authToken) :
-                        createSchedule219(formSchedule, authToken))
-                        .then(() => {
-                            setError(null)
-                            setFormLoginError(false)
-                            setShowModal(false)
-                            !localStorage.getItem('authToken') && localStorage.setItem('authToken', authToken)
-                            navigate(-1)
-                        })
-                        .catch((reason) => {
-                            if (reason.response.status === 403) {
-                                setShowModal(true)
-                                setFormLoginError(true)
-                                localStorage.getItem('authToken') && localStorage.removeItem('authToken')
-                            } else if (reason.response.status === 400) {
-                                for (const [field, message] of Object.entries(reason.response.data as {
-                                    [key: string]: string
-                                })) {
-                                    setFieldError(field, message)
-                                }
-                            } else
-                                setError(props.action === "edit" ? 'Не удалось изменить нагрузку.' : 'Не удалось создать нагрузку.')
-                        })
-                        .finally(() => {
-                            setLoading(false)
-                            setSubmitting(false)
-                        })
+                    onSubmit(values, setSubmitting, setFieldError)
                 }}
             >
                 {({isSubmitting, errors, touched}) => (
