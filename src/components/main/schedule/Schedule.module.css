@@ -3,14 +3,6 @@
     border-radius: 7px;
 }
 
-.button > a {
-    color: #FFFFFF;
-    display: block;
-    font-size: 20px;
-    padding: 10px;
-    text-decoration: none
-}
-
 .weekPeriodBlock {
     font-size: 1.25em;
     display: flex;
@@ -32,4 +24,9 @@
     font-size: 1.25em;
     padding: 10px;
     min-width: max-content;
+}
+
+.addLoadInfoLink {
+    margin: 0 0 10px 20px;
+    align-self: flex-start;
 }

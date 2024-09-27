@@ -1,5 +1,6 @@
-import React, {FC, useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, {FC, useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import styles from './/ScheduleTableContainer.module.css'
+import stylesFromSchedule from '../Schedule.module.css'
 import {getSchedule, getSchedule219, Schedule, Schedule219} from "../../../../api/schedule-backend-api";
 import {ScheduleTableHeaderLoadsInfo} from "./scheduleTableHeaderLoadsInfo/ScheduleTableHeaderLoadsInfo";
 import {ScheduleTableHeaderClassSchedule} from "./scheduleTableHeaderClassShedule/ScheduleTableHeaderClassSchedule";
@@ -19,14 +20,15 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
     const [noContentMessage, setNoContentMessage] = useState<string | null>(null)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [isOverflowing, setIsOverflowing] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
-    const prevPropsRef = useRef(props);
     const bodyContainerRef = useRef<HTMLDivElement | null>(null);
     const requestIdRef = useRef(0);
-
-    useEffect(() => {
+    
+    const fetchData = useCallback(() => {
         const requestId = ++requestIdRef.current;
         const fetchSchedule = async () => {
+            setIsLoading(true)
             setNoContentMessage(null)
             setErrorMessage(null)
             return await ((props.frame &&
@@ -50,10 +52,14 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
                     setErrorMessage('Не удалось получить расписание из диспетчерской.')
                 })
                 .finally(() => {
-                    prevPropsRef.current = props
+                    setIsLoading(false)
                 })
         }
-    }, [props]);
+    }, [props])
+
+    useEffect(() => {
+        fetchData()
+    }, [fetchData, props]);
 
     useLayoutEffect(() => {
         const currentRef = bodyContainerRef.current
@@ -82,17 +88,18 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
 
     return (
         (errorMessage &&
-            <h2 style={{
-                color: 'red',
-                textAlign: 'center',
-                height: '100vh',
-                alignContent: 'center'
-            }}>{errorMessage}</h2>)
-        || ((prevPropsRef.current !== props || !schedule)
+            <div className={styles.noFetchDataBlock}>
+                <h2 style={{
+                    color: 'red'
+                }}>{errorMessage}</h2>
+                <button onClick={fetchData} className={stylesFromSchedule.link}>{'Повторить попытку'}</button>
+            </div>
+        )
+        || ((isLoading || !schedule)
             && <Preloader/>
         )
         || (noContentMessage &&
-            <h2 style={{textAlign: 'center', height: '100vh', alignContent: 'center'}}>{noContentMessage}</h2>)
+            <h2 style={{textAlign: 'center', height: '100%', alignContent: 'center'}}>{noContentMessage}</h2>)
         || <>
             <table
                 className={`${styles.scheduleTableHeader}${(isOverflowing && ` ${styles.scheduleTableHeaderScroll}`) || ''}`}>
@@ -106,7 +113,7 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
             </table>
             <div ref={bodyContainerRef}
                  className={styles.scheduleContainerBody}>
-                <table className={styles.scheduleTableBody}>
+                <table>
                     <tbody>
                     {
                         (props.frame && <ScheduleTableBodyClassesSchedule

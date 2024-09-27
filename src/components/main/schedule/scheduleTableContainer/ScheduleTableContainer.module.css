@@ -51,10 +51,6 @@ td, th {
     padding-bottom: 1px;
 }
 
-.scheduleTableBody {
-    height: 100%;
-}
-
 .scheduleTableBodyContent {
     margin-bottom: 1px
 }
@@ -89,4 +85,12 @@ td, th {
 
 .buttonEditLoadInfo {
     display: inline-block;
+}
+
+.noFetchDataBlock {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }

@@ -36,7 +36,7 @@ const Schedule: FC = () => {
                              requestParams={(frame && {frame: frame}) || undefined}/>
 
         {
-            !frame && <NavLink to={`/loads-info/create`} className={styles.link}>Добавить нагрузку</NavLink>
+            !frame && <NavLink to={`/loads-info/create`} className={`${styles.link} ${styles.addLoadInfoLink}`}>Добавить нагрузку</NavLink>
         }
         <ScheduleTableContainer startDate={startDate}
                                 endDate={endDate}

@@ -1,9 +1,9 @@
 import React, {FC} from "react";
-import stylesFromSchedule from "../../Schedule.module.css";
-import {Link} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {Schedule219} from "../../../../../api/schedule-backend-api";
-import {mergeDayOfWeekRowsNumber219, _switchByDayNumber} from "../../../../../utils/dates";
+import {_switchByDayNumber, mergeDayOfWeekRowsNumber219} from "../../../../../utils/dates";
 import styles from '../ScheduleTableContainer.module.css'
+import stylesFromSchedule from "../../Schedule.module.css";
 
 type ScheduleTableBodyLoadsInfoProps = {
     schedule: Schedule219[]
@@ -22,9 +22,10 @@ export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = (
                         <td>{value.responsible}</td>
                         <td>{value.description}</td>
                         <td>
-                            <div className={`${stylesFromSchedule.button} ${styles.buttonEditLoadInfo}`}>
-                                <Link to={`/loads-info/${value.id}/edit`}>Изменить</Link>
-                            </div>
+                            <NavLink className={`${styles.buttonEditLoadInfo} ${stylesFromSchedule.link}`}
+                                     to={`/loads-info/${value.id}/edit`}>
+                                Изменить
+                            </NavLink>
                         </td>
                     </tr>
                 )

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {NavLink, useNavigate, useParams} from "react-router-dom";
 import {
     b64EncodeUnicode,
     createSchedule219,
@@ -12,6 +12,7 @@ import Preloader from "../../preloader/Preloader";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
 import styles from "../schedule/Schedule.module.css";
 import stylesForInfo from "./Schedule219Info.module.css";
+import mainStyles from './LoadInfoContainer.module.css'
 import {AuthModalForm} from "./authForm/AuthModalForm";
 
 export const LoadInfoContainer = () => {
@@ -106,7 +107,7 @@ export const LoadInfoContainer = () => {
 
     }, [id])
 
-    return <>
+    return <div className={mainStyles.loadInfoContainer}>
         {
             (loading && <Preloader/>)
             || (!loading && error &&
@@ -119,7 +120,7 @@ export const LoadInfoContainer = () => {
                 }}>{error}</h2>)
             || (!loading &&
                 <>
-                    <h1>{`${(id && 'Текущая') || 'Новая'} нагрузка`}</h1>
+                    <h2>{`${(id && 'Текущая') || 'Новая'} нагрузка`}</h2>
                     <LoadInfoForm schedule={schedule ? schedule : undefined} onSubmit={onSubmit} renderButton={
                         (props: { disabled: boolean }) =>
                             <button type="submit" disabled={props.disabled}
@@ -153,8 +154,8 @@ export const LoadInfoContainer = () => {
                 </>
             )
         }
-        <Link onClick={() => navigate(-1)} to={''}>
+        <NavLink className={`${styles.button} ${stylesForInfo.formButton}`} onClick={() => navigate(-1)} to={''}>
             Назад
-        </Link>
-    </>
+        </NavLink>
+    </div>
 }
