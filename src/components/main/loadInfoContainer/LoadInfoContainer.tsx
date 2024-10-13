@@ -14,6 +14,7 @@ import styles from "../schedule/Schedule.module.css";
 import stylesForInfo from "./Schedule219Info.module.css";
 import mainStyles from './LoadInfoContainer.module.css'
 import {AuthModalForm} from "./authForm/AuthModalForm";
+import Modal from "react-modal";
 
 export const LoadInfoContainer = () => {
 
@@ -41,7 +42,6 @@ export const LoadInfoContainer = () => {
                 if (reason.response && reason.response.status === 403) {
                     setShowModal(true)
                     setFormSchedule(values)
-                    setSchedule(values)
                 } else if (reason.response && reason.response.status === 400) {
                     for (const [field, message] of Object.entries(reason.response.data as {
                         [key: string]: string
@@ -54,6 +54,7 @@ export const LoadInfoContainer = () => {
             .finally(() => {
                 setLoading(false)
                 setSubmitting(false)
+                setSchedule(values)
             })
     }
 
@@ -110,14 +111,6 @@ export const LoadInfoContainer = () => {
     return <div className={mainStyles.loadInfoContainer}>
         {
             (loading && <Preloader/>)
-            || (!loading && error &&
-                <h2 style={{
-                    color: 'red',
-                    textAlign: 'center',
-                    height: '80vh',
-                    alignContent: 'center',
-                    margin: '0'
-                }}>{error}</h2>)
             || (!loading &&
                 <>
                     <h2>{`${(id && 'Текущая') || 'Новая'} нагрузка`}</h2>
@@ -135,7 +128,7 @@ export const LoadInfoContainer = () => {
                                     navigate(-1)
                                 })
                                 .catch((reason) => {
-                                    if (reason.response.status === 403) {
+                                    if (reason.response && reason.response.status === 403) {
                                         setShowModal(true)
                                     } else
                                         setError('Не удалось удалить нагрузку.')
@@ -150,6 +143,22 @@ export const LoadInfoContainer = () => {
                                                  setShowModal={setShowModal}
                                                  setFormLoginError={setFormLoginError}
                                                  onSubmit={onSubmitAuth}/>
+                    }
+                    {error && <Modal className={stylesForInfo.content}
+                                     isOpen={!!error}
+                                     onRequestClose={() => {
+                                         setError(null)
+                                     }}
+                                     overlayClassName={stylesForInfo.dialogContent}>
+                        <h2 style={{
+                            color: 'red',
+                            textAlign: 'center',
+                            alignContent: 'center',
+                            margin: '0'
+                        }}>{error}</h2>
+                        <button className={`${styles.button} ${stylesForInfo.formButton}`}
+                                onClick={() => setError(null)}>Закрыть</button>
+                    </Modal>
                     }
                 </>
             )
