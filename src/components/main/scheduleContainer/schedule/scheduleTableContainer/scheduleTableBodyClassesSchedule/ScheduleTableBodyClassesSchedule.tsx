@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import styles from "../ScheduleTableContainer.module.css";
-import {Lesson, Schedule} from "../../../../../api/schedule-backend-api";
-import {switchByDayNumber, switchByLessonNumber} from "../../../../../utils/dates";
+import {Lesson, Schedule} from "../../../../../../api/schedule-backend-api";
+import {switchByDayNumber, switchByLessonNumber} from "../../../../../../utils/dates";
 
 type ScheduleTableBodyClassScheduleNotEmptyProps = {
     schedule: Schedule

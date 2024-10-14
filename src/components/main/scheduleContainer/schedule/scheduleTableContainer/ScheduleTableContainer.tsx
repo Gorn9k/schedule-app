@@ -1,12 +1,12 @@
 import React, {FC, useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
-import styles from './/ScheduleTableContainer.module.css'
-import stylesFromSchedule from '../Schedule.module.css'
-import {getSchedule, getSchedule219, Schedule, Schedule219} from "../../../../api/schedule-backend-api";
+import styles from './ScheduleTableContainer.module.css'
+import stylesFromSchedule from '../../ScheduleContainer.module.css'
+import {getSchedule, getSchedule219, Schedule, Schedule219} from "../../../../../api/schedule-backend-api";
 import {ScheduleTableHeaderLoadsInfo} from "./scheduleTableHeaderLoadsInfo/ScheduleTableHeaderLoadsInfo";
 import {ScheduleTableHeaderClassSchedule} from "./scheduleTableHeaderClassShedule/ScheduleTableHeaderClassSchedule";
 import {ScheduleTableBodyClassesSchedule} from "./scheduleTableBodyClassesSchedule/ScheduleTableBodyClassesSchedule";
 import {ScheduleTableBodyLoadsInfo} from "./scheduleTableBodyLoadsInfo/ScheduleTableBodyLoadsInfo";
-import Preloader from "../../../preloader/Preloader";
+import Preloader from "../../../../preloader/Preloader";
 
 type ScheduleTableContainerProps = {
     startDate: Date

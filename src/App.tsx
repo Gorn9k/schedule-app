@@ -2,10 +2,10 @@ import React, {FC} from 'react';
 import './App.module.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Footer from "./components/footer/Footer";
-import Schedule from "./components/main/schedule/Schedule";
+import ScheduleContainer from "./components/main/scheduleContainer/ScheduleContainer";
 import Modal from "react-modal";
 import {HeaderContainer} from "./components/headerContainer/HeaderContainer";
-import {MainPageContainerLinks} from "./components/main/mainPageContainerLinks/MainPageContainerLinks";
+import {MainPageContainer} from "./components/main/mainPageContainer/MainPageContainer";
 import {LoadInfoContainer} from "./components/main/loadInfoContainer/LoadInfoContainer";
 
 Modal.setAppElement('#root');
@@ -17,9 +17,9 @@ const App: FC = () => {
             <HeaderContainer/>
             <main>
                 <Routes>
-                    <Route path="/" element={<MainPageContainerLinks/>}/>
-                    <Route path="/class-schedule" element={<Schedule/>}/>
-                    <Route path="/loads-info" element={<Schedule/>}/>
+                    <Route path="/" element={<MainPageContainer/>}/>
+                    <Route path="/class-schedule" element={<ScheduleContainer/>}/>
+                    <Route path="/loads-info" element={<ScheduleContainer/>}/>
                     <Route path="/loads-info/:id/edit" element={<LoadInfoContainer/>}/>
                     <Route path="/loads-info/create" element={<LoadInfoContainer/>}/>
                 </Routes>

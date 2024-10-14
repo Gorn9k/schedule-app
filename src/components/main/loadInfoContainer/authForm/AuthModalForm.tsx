@@ -2,7 +2,7 @@ import React, {FC} from "react";
 import stylesForInfo from "../Schedule219Info.module.css";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import styles from "../../schedule/Schedule.module.css";
+import styles from "../../scheduleContainer/ScheduleContainer.module.css";
 import Modal from "react-modal";
 
 type AuthModalFormProps = {

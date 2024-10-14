@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import {
     b64EncodeUnicode,
@@ -10,11 +10,12 @@ import {
 } from "../../../api/schedule-backend-api";
 import Preloader from "../../preloader/Preloader";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
-import styles from "../schedule/Schedule.module.css";
+import styles from "../scheduleContainer/ScheduleContainer.module.css";
 import stylesForInfo from "./Schedule219Info.module.css";
 import mainStyles from './LoadInfoContainer.module.css'
 import {AuthModalForm} from "./authForm/AuthModalForm";
 import Modal from "react-modal";
+import stylesFromSchedule from "../scheduleContainer/ScheduleContainer.module.css";
 
 export const LoadInfoContainer = () => {
 
@@ -27,6 +28,7 @@ export const LoadInfoContainer = () => {
     const [showModal, setShowModal] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(!!id)
     const [error, setError] = useState<string | null>(null)
+    const [getError, setGetError] = useState<string | null>(null)
 
     console.log('Load Info Container');
 
@@ -89,8 +91,8 @@ export const LoadInfoContainer = () => {
                 setSubmitting(false)
             })
     }
-
-    useEffect(() => {
+    
+    const fetchLoadInfoById = useCallback(() => {
         if (id) {
             const fetchSchedule = async () => {
                 setLoading(true);
@@ -100,17 +102,29 @@ export const LoadInfoContainer = () => {
 
             fetchSchedule()
                 .then(() => {
-                    setError(null)
+                    setGetError(null)
                 })
-                .catch(() => setError('Не удалось получить нагрузку на 219 аудиторию.'))
+                .catch(() => setGetError('Не удалось получить нагрузку на 219 аудиторию.'))
                 .finally(() => setLoading(false))
         }
-
     }, [id])
+
+    useEffect(() => {
+        fetchLoadInfoById()
+    }, [fetchLoadInfoById, id])
 
     return <div className={mainStyles.loadInfoContainer}>
         {
             (loading && <Preloader/>)
+            || (
+                getError &&
+                <div className={styles.noFetchDataBlock}>
+                    <h2 style={{
+                        color: 'red'
+                    }}>{getError}</h2>
+                    <button onClick={fetchLoadInfoById} className={stylesFromSchedule.link}>{'Повторить попытку'}</button>
+                </div>
+            )
             || (!loading &&
                 <>
                     <h2>{`${(id && 'Текущая') || 'Новая'} нагрузка`}</h2>
@@ -157,7 +171,8 @@ export const LoadInfoContainer = () => {
                             margin: '0'
                         }}>{error}</h2>
                         <button className={`${styles.button} ${stylesForInfo.formButton}`}
-                                onClick={() => setError(null)}>Закрыть</button>
+                                onClick={() => setError(null)}>Закрыть
+                        </button>
                     </Modal>
                     }
                 </>
