@@ -7,6 +7,7 @@ const ScheduleContainer: FC = () => {
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search)
     const navigate = useNavigate();
+
     const startDateParam = queryParams.get('startDate')
     const endDateParam = queryParams.get('endDate')
     const frameParam = queryParams.get('frame') as 'FIRST' | 'FOURTH' | null
@@ -16,7 +17,7 @@ const ScheduleContainer: FC = () => {
 
     const badRequest = !startDate || isNaN(startDate.valueOf()) || !endDate || isNaN(endDate.valueOf())
         || startDate > endDate || (location.pathname === '/class-schedule' && !frameParam)
-        || (frameParam && (frameParam !== 'FIRST' && frameParam !== 'FOURTH'))
+        || (frameParam && location.pathname !== '/class-schedule') || (frameParam && frameParam !== 'FIRST' && frameParam !== 'FOURTH')
 
     useEffect(() => {
         badRequest && navigate('/')

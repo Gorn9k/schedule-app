@@ -1,20 +1,22 @@
-import React, {FC} from 'react';
+import React, {FC, useMemo} from 'react';
 import './App.module.css';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Footer from "./components/footer/Footer";
+import {Route, Routes} from 'react-router-dom';
 import ScheduleContainer from "./components/main/scheduleContainer/ScheduleContainer";
 import Modal from "react-modal";
 import {HeaderContainer} from "./components/headerContainer/HeaderContainer";
 import {MainPageContainer} from "./components/main/mainPageContainer/MainPageContainer";
 import {LoadInfoContainer} from "./components/main/loadInfoContainer/LoadInfoContainer";
+import {NotFound} from "./components/main/notFound/NotFound";
 
 Modal.setAppElement('#root');
 
 const App: FC = () => {
 
-    return <>
-        <Router>
-            <HeaderContainer/>
+    return useMemo(() => {
+        return <>
+            <header>
+                <HeaderContainer/>
+            </header>
             <main>
                 <Routes>
                     <Route path="/" element={<MainPageContainer/>}/>
@@ -22,11 +24,18 @@ const App: FC = () => {
                     <Route path="/loads-info" element={<ScheduleContainer/>}/>
                     <Route path="/loads-info/:id/edit" element={<LoadInfoContainer/>}/>
                     <Route path="/loads-info/create" element={<LoadInfoContainer/>}/>
+                    <Route path="*" element={<NotFound/>}/>
                 </Routes>
             </main>
-        </Router>
-        <Footer/>
-    </>
+
+            <footer>
+                <p>Copyright © 2024 | Все права защищены, Поддержка веб-сервиса <a href='https://cit.vstu.by/'
+                                                                                   target='_blank'
+                                                                                   rel='noopener noreferrer'>cit.vstu.by</a>
+                </p>
+            </footer>
+        </>
+    }, [])
 }
 
 export default App

@@ -16,6 +16,8 @@ header {
     height: 10vh;
     display: flex;
     align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
 }
 
 main {
@@ -25,6 +27,12 @@ main {
     justify-content: center;
     align-items: center;
     height: 80vh;
+}
+
+footer {
+    height: 10vh;
+    color: #B8B8B8;
+    align-content: center
 }
 
 header, main, footer {
