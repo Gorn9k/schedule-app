@@ -1,12 +1,20 @@
-import {useLocation} from 'react-router-dom';
-import React from "react";
+import React, {FC} from "react";
 import {Header} from "./header/Header";
+import {useSelector} from "react-redux";
+import {RootState} from "../../redux/store";
 
-export const HeaderContainer = () => {
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+type HeaderContainerProps = {
+    title?: string
+}
 
-    const frame = queryParams.get('frame') as 'FIRST' | 'FOURTH' | null;
+export const HeaderContainer: FC<HeaderContainerProps> = (props) => {
 
-    return <Header pathname={location.pathname} frame={frame}/>
+    const frame = useSelector((state: RootState) => state.schedule.frame);
+
+    if (!frame) return null
+
+    const title = (props.title && props.title) || (frame === 'FIRST' ?
+        'Расписание аудиторий(ЦИТ) в первом учебном корпусе' : frame === 'FOURTH' ? 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе' : '')
+
+    return <Header title={title}/>
 }

@@ -1,29 +1,19 @@
-import React, {FC, useEffect} from 'react'
-import {useLocation, useNavigate} from "react-router-dom"
+import React, {FC} from 'react'
 import {Schedule} from "./schedule/Schedule";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../redux/store";
 
 const ScheduleContainer: FC = () => {
 
-    const location = useLocation()
-    const queryParams = new URLSearchParams(location.search)
-    const navigate = useNavigate();
+    const startDateTime = useSelector((state: RootState) => state.schedule.startDateTime)
+    const endDateTime = useSelector((state: RootState) => state.schedule.endDateTime)
+    const frame = useSelector((state: RootState) => state.schedule.frame);
 
-    const startDateParam = queryParams.get('startDate')
-    const endDateParam = queryParams.get('endDate')
-    const frameParam = queryParams.get('frame') as 'FIRST' | 'FOURTH' | null
+    console.log('schedule')
 
-    const startDate = (startDateParam && new Date(startDateParam)) || null
-    const endDate = (endDateParam && new Date(endDateParam)) || null
+    if (!startDateTime || !endDateTime || !frame) return null
 
-    const badRequest = !startDate || isNaN(startDate.valueOf()) || !endDate || isNaN(endDate.valueOf())
-        || startDate > endDate || (location.pathname === '/class-schedule' && !frameParam)
-        || (frameParam && location.pathname !== '/class-schedule') || (frameParam && frameParam !== 'FIRST' && frameParam !== 'FOURTH')
-
-    useEffect(() => {
-        badRequest && navigate('/')
-    }, [badRequest, navigate]);
-
-    return (!badRequest && <Schedule startDate={startDate} endDate={endDate} frame={frameParam}/>) || null
+    return <Schedule startDate={new Date(startDateTime)} endDate={new Date(endDateTime)} frame={frame}/>
 }
 
 export default ScheduleContainer;

@@ -4,11 +4,12 @@ import {NavLink} from "react-router-dom";
 import generalStyles from "../../../../App.module.css";
 import styles from "../ScheduleContainer.module.css";
 import {ScheduleTableContainer} from "./scheduleTableContainer/ScheduleTableContainer";
+import {FrameType} from "../../../../redux/scheduleSlice";
 
 type ScheduleProps = {
     startDate: Date
     endDate: Date
-    frame: 'FIRST' | 'FOURTH' | null
+    frame: FrameType
 }
 
 export const Schedule: FC<ScheduleProps> = ({startDate, endDate, frame}) => {

@@ -7,11 +7,12 @@ import {ScheduleTableHeaderClassSchedule} from "./scheduleTableHeaderClassShedul
 import {ScheduleTableBodyClassesSchedule} from "./scheduleTableBodyClassesSchedule/ScheduleTableBodyClassesSchedule";
 import {ScheduleTableBodyLoadsInfo} from "./scheduleTableBodyLoadsInfo/ScheduleTableBodyLoadsInfo";
 import Preloader from "../../../../preloader/Preloader";
+import {FrameType} from "../../../../../redux/scheduleSlice";
 
 type ScheduleTableContainerProps = {
     startDate: Date
     endDate: Date
-    frame: 'FIRST' | 'FOURTH' | null
+    frame: FrameType
 }
 
 export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) => {

@@ -1,15 +1,17 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
+export type FrameType = 'FIRST' | 'FOURTH' | 'NONE' | null
+
 type ScheduleState = {
-    classes: string[] | null
-    isOverflowing: boolean
-    errorMessage: string | null
+    startDateTime: number | null
+    endDateTime: number | null
+    frame: FrameType
 }
 
 const initialState: ScheduleState = {
-    classes: null,
-    isOverflowing: false,
-    errorMessage: null
+    startDateTime: null,
+    endDateTime: null,
+    frame: null
 }
 
 const scheduleSlice = createSlice({
@@ -17,27 +19,25 @@ const scheduleSlice = createSlice({
     initialState,
     reducers: {
         resetScheduleState(state: ScheduleState) {
-            state.classes = null
-            state.isOverflowing = false
-            state.errorMessage = null
+            state.startDateTime = state.endDateTime = state.frame = null
         },
-        setIsOverflowing: (state: ScheduleState, action: PayloadAction<boolean>) => {
-            state.isOverflowing = action.payload
+        setStartDateTime(state: ScheduleState, action: PayloadAction<number>) {
+            state.startDateTime = action.payload
         },
-        setError: (state: ScheduleState, action: PayloadAction<string | null>) => {
-            state.errorMessage = action.payload
+        setEndDateTime(state: ScheduleState, action: PayloadAction<number>) {
+            state.endDateTime = action.payload
         },
-        setClasses: (state: ScheduleState, action: PayloadAction<string[] | null>) => {
-            state.classes = action.payload
+        setFrame(state: ScheduleState, action: PayloadAction<FrameType>) {
+            state.frame = action.payload
         }
     }
 })
 
 export const {
     resetScheduleState,
-    setClasses,
-    setIsOverflowing,
-    setError
+    setStartDateTime,
+    setEndDateTime,
+    setFrame
 } = scheduleSlice.actions
 
 export default scheduleSlice.reducer
