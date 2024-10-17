@@ -10,12 +10,10 @@ import {
 } from "../../../api/schedule-backend-api";
 import Preloader from "../../preloader/Preloader";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
-import styles from "../scheduleContainer/ScheduleContainer.module.css";
-import stylesForInfo from "./Schedule219Info.module.css";
-import mainStyles from './LoadInfoContainer.module.css'
+import generalStyles from "../../../App.module.css";
+import styles from './LoadInfoContainer.module.css'
 import {AuthModalForm} from "./authForm/AuthModalForm";
 import Modal from "react-modal";
-import stylesFromSchedule from "../scheduleContainer/ScheduleContainer.module.css";
 
 export const LoadInfoContainer = () => {
 
@@ -23,14 +21,11 @@ export const LoadInfoContainer = () => {
     const {id} = useParams();
 
     const [schedule, setSchedule] = useState<Schedule219 | null>(null);
-    const [formSchedule, setFormSchedule] = useState<Schedule219 | null>(null)
     const [formLoginError, setFormLoginError] = useState<boolean>(false)
     const [showModal, setShowModal] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(!!id)
     const [error, setError] = useState<string | null>(null)
     const [getError, setGetError] = useState<string | null>(null)
-
-    console.log('Load Info Container');
 
     const onSubmit = (values: Schedule219, setSubmitting: (isSubmitting: boolean) => void,
                       setFieldError: (field: string, message: (string | undefined)) => void) => {
@@ -43,7 +38,7 @@ export const LoadInfoContainer = () => {
             .catch((reason) => {
                 if (reason.response && reason.response.status === 403) {
                     setShowModal(true)
-                    setFormSchedule(values)
+                    setSchedule(values)
                 } else if (reason.response && reason.response.status === 400) {
                     for (const [field, message] of Object.entries(reason.response.data as {
                         [key: string]: string
@@ -64,7 +59,7 @@ export const LoadInfoContainer = () => {
                           setFieldError: (field: string, message: (string | undefined)) => void) => {
         const authToken = localStorage.getItem('authToken') || b64EncodeUnicode(`${values.login}:${values.password}`);
         setLoading(true);
-        ((id && editSchedule219) || createSchedule219)(formSchedule, authToken)
+        ((id && editSchedule219) || createSchedule219)(schedule, authToken)
             .then(() => {
                 setError(null)
                 setFormLoginError(false)
@@ -113,16 +108,16 @@ export const LoadInfoContainer = () => {
         fetchLoadInfoById()
     }, [fetchLoadInfoById, id])
 
-    return <div className={mainStyles.loadInfoContainer}>
+    return <div className={styles.loadInfoContainer}>
         {
             (loading && <Preloader/>)
             || (
                 getError &&
-                <div className={styles.noFetchDataBlock}>
+                <div className={generalStyles.noFetchDataBlock}>
                     <h2 style={{
                         color: 'red'
                     }}>{getError}</h2>
-                    <button onClick={fetchLoadInfoById} className={stylesFromSchedule.link}>{'Повторить попытку'}</button>
+                    <button onClick={fetchLoadInfoById} className={generalStyles.link}>{'Повторить попытку'}</button>
                 </div>
             )
             || (!loading &&
@@ -131,7 +126,7 @@ export const LoadInfoContainer = () => {
                     <LoadInfoForm schedule={schedule ? schedule : undefined} onSubmit={onSubmit} renderButton={
                         (props: { disabled: boolean }) =>
                             <button type="submit" disabled={props.disabled}
-                                    className={`${styles.button} ${stylesForInfo.formButton}`}>{(id && 'Сохранить изменения') || 'Создать'}</button>
+                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>{(id && 'Сохранить изменения') || 'Создать'}</button>
                     }/>
                     {
                         id && <button onClick={() => {
@@ -148,7 +143,7 @@ export const LoadInfoContainer = () => {
                                         setError('Не удалось удалить нагрузку.')
                                 })
                                 .finally(() => setLoading(false))
-                        }} type="button" className={`${styles.button} ${stylesForInfo.formButton}`}>
+                        }} type="button" className={`${generalStyles.button} ${generalStyles.formButton}`}>
                             Удалить нагрузку
                         </button>
                     }
@@ -158,19 +153,19 @@ export const LoadInfoContainer = () => {
                                                  setFormLoginError={setFormLoginError}
                                                  onSubmit={onSubmitAuth}/>
                     }
-                    {error && <Modal className={stylesForInfo.content}
+                    {error && <Modal className={generalStyles.content}
                                      isOpen={!!error}
                                      onRequestClose={() => {
                                          setError(null)
                                      }}
-                                     overlayClassName={stylesForInfo.dialogContent}>
+                                     overlayClassName={generalStyles.dialogContent}>
                         <h2 style={{
                             color: 'red',
                             textAlign: 'center',
                             alignContent: 'center',
                             margin: '0'
                         }}>{error}</h2>
-                        <button className={`${styles.button} ${stylesForInfo.formButton}`}
+                        <button className={`${generalStyles.button} ${generalStyles.formButton}`}
                                 onClick={() => setError(null)}>Закрыть
                         </button>
                     </Modal>
@@ -178,7 +173,7 @@ export const LoadInfoContainer = () => {
                 </>
             )
         }
-        <NavLink className={`${styles.button} ${stylesForInfo.formButton}`} onClick={() => navigate(-1)} to={''}>
+        <NavLink className={`${generalStyles.button} ${generalStyles.formButton}`} onClick={() => navigate(-1)} to={''}>
             Назад
         </NavLink>
     </div>

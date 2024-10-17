@@ -3,7 +3,7 @@ import {NavLink} from "react-router-dom";
 import {Schedule219} from "../../../../../../api/schedule-backend-api";
 import {_switchByDayNumber, mergeDayOfWeekRowsNumber219} from "../../../../../../utils/dates";
 import styles from '../ScheduleTableContainer.module.css'
-import stylesFromSchedule from "../../../ScheduleContainer.module.css";
+import generalStyles from "../../../../../../App.module.css";
 
 type ScheduleTableBodyLoadsInfoProps = {
     schedule: Schedule219[]
@@ -22,7 +22,7 @@ export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = (
                         <td>{value.responsible}</td>
                         <td>{value.description}</td>
                         <td>
-                            <NavLink className={`${styles.buttonEditLoadInfo} ${stylesFromSchedule.link}`}
+                            <NavLink className={`${styles.buttonEditLoadInfo} ${generalStyles.link}`}
                                      to={`/loads-info/${value.id}/edit`}>
                                 Изменить
                             </NavLink>

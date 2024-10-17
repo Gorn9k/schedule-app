@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import styles from './ScheduleTableContainer.module.css'
-import stylesFromSchedule from '../../ScheduleContainer.module.css'
+import generalStyles from '../../../../../App.module.css'
 import {getSchedule, getSchedule219, Schedule, Schedule219} from "../../../../../api/schedule-backend-api";
 import {ScheduleTableHeaderLoadsInfo} from "./scheduleTableHeaderLoadsInfo/ScheduleTableHeaderLoadsInfo";
 import {ScheduleTableHeaderClassSchedule} from "./scheduleTableHeaderClassShedule/ScheduleTableHeaderClassSchedule";
@@ -12,7 +12,7 @@ import {FrameType} from "../../../../../redux/scheduleSlice";
 type ScheduleTableContainerProps = {
     startDate: Date
     endDate: Date
-    frame: FrameType
+    frame?: FrameType
 }
 
 export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) => {
@@ -89,11 +89,11 @@ export const ScheduleTableContainer: FC<ScheduleTableContainerProps> = (props) =
 
     return (
         (errorMessage &&
-            <div className={styles.noFetchDataBlock}>
+            <div className={generalStyles.noFetchDataBlock}>
                 <h2 style={{
                     color: 'red'
                 }}>{errorMessage}</h2>
-                <button onClick={fetchData} className={stylesFromSchedule.link}>{'Повторить попытку'}</button>
+                <button onClick={fetchData} className={generalStyles.link}>{'Повторить попытку'}</button>
             </div>
         )
         || ((isLoading || !schedule)

@@ -1,8 +1,7 @@
 import React, {FC} from "react";
-import stylesForInfo from "../Schedule219Info.module.css";
+import generalStyles from "../../../../App.module.css";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import styles from "../../scheduleContainer/ScheduleContainer.module.css";
 import Modal from "react-modal";
 
 type AuthModalFormProps = {
@@ -14,17 +13,22 @@ type AuthModalFormProps = {
                setFieldError: (field: string, message: (string | undefined)) => void) => void
 }
 
-export const AuthModalForm: FC<AuthModalFormProps> = ({formLoginError, onSubmit, showModal, setShowModal, setFormLoginError}) => {
-    console.log('Auth Modal Form');
+export const AuthModalForm: FC<AuthModalFormProps> = ({
+                                                          formLoginError,
+                                                          onSubmit,
+                                                          showModal,
+                                                          setShowModal,
+                                                          setFormLoginError
+                                                      }) => {
     return (
-        <Modal className={stylesForInfo.content}
+        <Modal className={generalStyles.content}
                isOpen={showModal}
                onRequestClose={() => {
                    setFormLoginError(false)
                    setShowModal(false)
                }}
                contentLabel="Ошибка 403"
-               overlayClassName={stylesForInfo.dialogContent}
+               overlayClassName={generalStyles.dialogContent}
         >
             <h2>Авторизация</h2>
             <Formik
@@ -42,32 +46,30 @@ export const AuthModalForm: FC<AuthModalFormProps> = ({formLoginError, onSubmit,
                 {({isSubmitting, errors, touched}) => (
                     <Form>
                         <div>
-                            <div>
-                                <label htmlFor='login'>Логин:</label>
-                                <Field name='login' type='text' id='login'
-                                       className={errors.login && touched.login ? stylesForInfo.error : ''}/>
-                                <ErrorMessage name='login' component='div'
-                                              className={stylesForInfo.errorMessage}/>
-                            </div>
-                            <div>
-                                <label htmlFor='password'>Пароль:</label>
-                                <Field name='password' type='password' id='password'
-                                       className={errors.password && touched.password ? stylesForInfo.error : ''}/>
-                                <ErrorMessage name='password' component='div'
-                                              className={stylesForInfo.errorMessage}/>
-                            </div>
-                            {formLoginError &&
-                                <p className={stylesForInfo.labelError}>Неверно введены
-                                    логин или пароль.</p>}
+                            <label htmlFor='login'>Логин:</label>
+                            <Field name='login' type='text' id='login'
+                                   className={errors.login && touched.login ? generalStyles.error : undefined}/>
                         </div>
-                        <div className={stylesForInfo.formLoginButtonsBlock}>
+                        <ErrorMessage name='login' component='div'
+                                      className={generalStyles.errorMessage}/>
+                        <div>
+                            <label htmlFor='password'>Пароль:</label>
+                            <Field name='password' type='password' id='password'
+                                   className={errors.password && touched.password ? generalStyles.error : undefined}/>
+                        </div>
+                        <ErrorMessage name='password' component='div'
+                                      className={generalStyles.errorMessage}/>
+                        {formLoginError &&
+                            <p className={generalStyles.labelError}>Неверно введены
+                                логин или пароль.</p>}
+                        <div className={generalStyles.formLoginButtonsBlock}>
                             <button
-                                className={`${styles.button} ${stylesForInfo.formButton}`}
+                                className={`${generalStyles.button} ${generalStyles.formButton}`}
                                 type='submit'
                                 disabled={isSubmitting}>Ок
                             </button>
                             <button
-                                className={`${styles.button} ${stylesForInfo.formButton}`}
+                                className={`${generalStyles.button} ${generalStyles.formButton}`}
                                 type="button"
                                 onClick={() => {
                                     setFormLoginError(false)

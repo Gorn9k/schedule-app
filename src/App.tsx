@@ -1,9 +1,9 @@
 import React, {FC} from 'react';
 import styles from './App.module.css';
 import {NavLink, Route, Routes} from 'react-router-dom';
-import ScheduleContainer from "./components/main/scheduleContainer/ScheduleContainer";
+import {ScheduleContainer, WithFrameScheduleContainer} from "./components/main/scheduleContainer/ScheduleContainer";
 import Modal from "react-modal";
-import {HeaderContainer} from "./components/headerContainer/HeaderContainer";
+import {WithFrameHeader} from "./components/headerScheduleContainer/HeaderScheduleContainer";
 import {MainPageContainer} from "./components/main/mainPageContainer/MainPageContainer";
 import {LoadInfoContainer} from "./components/main/loadInfoContainer/LoadInfoContainer";
 import {NotFound} from "./components/main/notFound/NotFound";
@@ -11,6 +11,7 @@ import {useLocationParamsValidatorReduxSetter} from "./hooks/useLocationParamsVa
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "./redux/store";
 import {resetScheduleState} from "./redux/scheduleSlice";
+import {Header} from "./components/headerScheduleContainer/header/Header";
 
 Modal.setAppElement('#root');
 
@@ -21,30 +22,29 @@ const MemoizedApp = React.memo(() => {
     const MainPageLink = () =>
         <NavLink to='/' onClick={() => dispatch(resetScheduleState())} className={styles.link}>В главное меню</NavLink>
 
-    console.log(123)
     return <>
         <header>
             <Routes>
-                <Route path="/" element={<HeaderContainer title={'Расписание занятости в аудиториях(ЦИТ)'}/>}/>
-                <Route path="/class-schedule" element={<HeaderContainer/>}>
+                <Route path="/" element={<Header title={'Расписание занятости в аудиториях(ЦИТ)'}/>}/>
+                <Route path="/class-schedule" element={<WithFrameHeader/>}>
                     <Route index element={<MainPageLink/>}/>
                 </Route>
-                <Route path="/loads-info" element={<HeaderContainer title={'Расписание занятости в 219 аудитории'}/>}>
+                <Route path="/loads-info" element={<Header title={'Расписание занятости в 219 аудитории'}/>}>
                     <Route index element={<MainPageLink/>}/>
                 </Route>
-                <Route path="/loads-info/:id/edit" element={<HeaderContainer title={'Редактирование нагрузки'}/>}>
+                <Route path="/loads-info/:id/edit" element={<Header title={'Редактирование нагрузки'}/>}>
                     <Route index element={<MainPageLink/>}/>
                 </Route>
-                <Route path="/loads-info/create" element={<HeaderContainer title={'Создание новой нагрузки'}/>}>
+                <Route path="/loads-info/create" element={<Header title={'Создание новой нагрузки'}/>}>
                     <Route index element={<MainPageLink/>}/>
                 </Route>
-                <Route path="*" element={<HeaderContainer title={'Расписание занятости в аудиториях(ЦИТ)'}/>}/>
+                <Route path="*" element={<Header title={'Расписание занятости в аудиториях(ЦИТ)'}/>}/>
             </Routes>
         </header>
         <main>
             <Routes>
                 <Route path="/" element={<MainPageContainer/>}/>
-                <Route path="/class-schedule" element={<ScheduleContainer/>}/>
+                <Route path="/class-schedule" element={<WithFrameScheduleContainer/>}/>
                 <Route path="/loads-info" element={<ScheduleContainer/>}/>
                 <Route path="/loads-info/:id/edit" element={<LoadInfoContainer/>}/>
                 <Route path="/loads-info/create" element={<LoadInfoContainer/>}/>

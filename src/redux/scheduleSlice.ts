@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
-export type FrameType = 'FIRST' | 'FOURTH' | 'NONE' | null
+export type FrameType = 'FIRST' | 'FOURTH' | null
 
 type ScheduleState = {
     startDateTime: number | null

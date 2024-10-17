@@ -86,11 +86,3 @@ td, th {
 .buttonEditLoadInfo {
     display: inline-block;
 }
-
-.noFetchDataBlock {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}

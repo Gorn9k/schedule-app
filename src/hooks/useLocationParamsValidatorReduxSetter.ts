@@ -47,13 +47,11 @@ export const useLocationParamsValidatorReduxSetter = () => {
                 if (!badLocationParams) {
                     dispatch(setStartDateTime((startDate as Date).getTime()))
                     dispatch(setEndDateTime((endDate as Date).getTime()))
-                    dispatch(setFrame('NONE'))
                 }
                 break
             }
             default:
                 badLocationParams = params.size !== 0
-                !badLocationParams && dispatch(setFrame('NONE'))
                 break
         }
 

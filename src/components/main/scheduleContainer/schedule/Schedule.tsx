@@ -2,14 +2,14 @@ import React, {FC} from "react";
 import {WeekPeriodBlock} from "./weekPeriodBlock/WeekPeriodBlock";
 import {NavLink} from "react-router-dom";
 import generalStyles from "../../../../App.module.css";
-import styles from "../ScheduleContainer.module.css";
+import styles from "../schedule/Schedule.module.css";
 import {ScheduleTableContainer} from "./scheduleTableContainer/ScheduleTableContainer";
 import {FrameType} from "../../../../redux/scheduleSlice";
 
 type ScheduleProps = {
     startDate: Date
     endDate: Date
-    frame: FrameType
+    frame?: FrameType
 }
 
 export const Schedule: FC<ScheduleProps> = ({startDate, endDate, frame}) => {
