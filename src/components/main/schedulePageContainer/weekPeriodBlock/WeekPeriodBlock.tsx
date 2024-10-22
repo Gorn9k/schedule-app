@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {Link} from "react-router-dom";
-import {generateNewWeekPeriodDateMilliseconds} from "../../../../../utils/dates";
+import {generateNewWeekPeriodDateMilliseconds} from "../../../../utils/dates";
 import styles from "./WeekPeriodBlock.module.css";
 
 type WeekPeriodBlockProps = {

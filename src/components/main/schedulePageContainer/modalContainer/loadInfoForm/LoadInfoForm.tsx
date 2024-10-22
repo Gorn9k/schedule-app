@@ -1,8 +1,8 @@
 import React, {FC, memo} from "react";
 import * as Yup from "yup";
-import {Schedule219} from "../../../../api/schedule-backend-api";
+import {Schedule219} from "../../../../../api/schedule-backend-api";
 import {ErrorMessage, Field, Form, Formik} from "formik";
-import generalStyles from "../../../../App.module.css";
+import generalStyles from "../../../../../App.module.css";
 
 type LoadInfoProps = {
     renderButton: (props: { disabled: boolean }) => React.ReactNode

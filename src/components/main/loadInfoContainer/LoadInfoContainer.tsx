@@ -9,10 +9,10 @@ import {
     Schedule219
 } from "../../../api/schedule-backend-api";
 import Preloader from "../../preloader/Preloader";
-import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
+import {LoadInfoForm} from "../schedulePageContainer/modalContainer/loadInfoForm/LoadInfoForm";
 import generalStyles from "../../../App.module.css";
 import styles from './LoadInfoContainer.module.css'
-import {AuthModalForm} from "./authForm/AuthModalForm";
+import {AuthModalForm} from "../schedulePageContainer/modalContainer/authForm/AuthModalForm";
 import Modal from "react-modal";
 
 export const LoadInfoContainer = () => {
@@ -21,11 +21,9 @@ export const LoadInfoContainer = () => {
     const {id} = useParams();
 
     const [schedule, setSchedule] = useState<Schedule219 | null>(null);
-    const [formLoginError, setFormLoginError] = useState<boolean>(false)
     const [showModal, setShowModal] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(!!id)
     const [error, setError] = useState<string | null>(null)
-    const [getError, setGetError] = useState<string | null>(null)
 
     const onSubmit = (values: Schedule219, setSubmitting: (isSubmitting: boolean) => void,
                       setFieldError: (field: string, message: (string | undefined)) => void) => {
@@ -62,7 +60,6 @@ export const LoadInfoContainer = () => {
         ((id && editSchedule219) || createSchedule219)(schedule, authToken)
             .then(() => {
                 setError(null)
-                setFormLoginError(false)
                 setShowModal(false)
                 !localStorage.getItem('authToken') && localStorage.setItem('authToken', authToken)
                 navigate(-1)
@@ -70,7 +67,6 @@ export const LoadInfoContainer = () => {
             .catch((reason) => {
                 if (reason.response && reason.response.status === 403) {
                     setShowModal(true)
-                    setFormLoginError(true)
                     localStorage.getItem('authToken') && localStorage.removeItem('authToken')
                 } else if (reason.response && reason.response.status === 400) {
                     for (const [field, message] of Object.entries(reason.response.data as {
@@ -97,9 +93,9 @@ export const LoadInfoContainer = () => {
 
             fetchSchedule()
                 .then(() => {
-                    setGetError(null)
+                    setError(null)
                 })
-                .catch(() => setGetError('Не удалось получить нагрузку на 219 аудиторию.'))
+                .catch(() => setError('Не удалось получить нагрузку на 219 аудиторию.'))
                 .finally(() => setLoading(false))
         }
     }, [id])
@@ -112,11 +108,11 @@ export const LoadInfoContainer = () => {
         {
             (loading && <Preloader/>)
             || (
-                getError &&
+                error && error === 'Не удалось получить нагрузку на 219 аудиторию.' &&
                 <div className={generalStyles.noFetchDataBlock}>
                     <h2 style={{
                         color: 'red'
-                    }}>{getError}</h2>
+                    }}>{error}</h2>
                     <button onClick={fetchLoadInfoById} className={generalStyles.link}>{'Повторить попытку'}</button>
                 </div>
             )
@@ -147,10 +143,8 @@ export const LoadInfoContainer = () => {
                             Удалить нагрузку
                         </button>
                     }
-                    {showModal && <AuthModalForm formLoginError={formLoginError}
-                                                 showModal={showModal}
+                    {showModal && <AuthModalForm showModal={showModal}
                                                  setShowModal={setShowModal}
-                                                 setFormLoginError={setFormLoginError}
                                                  onSubmit={onSubmitAuth}/>
                     }
                     {error && <Modal className={generalStyles.content}

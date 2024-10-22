@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import styles from '../ScheduleTableContainer.module.css'
+import styles from "../ScheduleTableContainer.module.css";
 
 type ScheduleTableHeaderLoadsInfoProps = {
 

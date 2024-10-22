@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import styles from './App.module.css';
 import {NavLink, Route, Routes} from 'react-router-dom';
-import {ScheduleContainer, WithFrameScheduleContainer} from "./components/main/scheduleContainer/ScheduleContainer";
+import {SchedulePageContainer} from "./components/main/schedulePageContainer/SchedulePage";
 import Modal from "react-modal";
 import {WithFrameHeader} from "./components/headerScheduleContainer/HeaderScheduleContainer";
 import {MainPageContainer} from "./components/main/mainPageContainer/MainPageContainer";
@@ -44,8 +44,8 @@ const MemoizedApp = React.memo(() => {
         <main>
             <Routes>
                 <Route path="/" element={<MainPageContainer/>}/>
-                <Route path="/class-schedule" element={<WithFrameScheduleContainer/>}/>
-                <Route path="/loads-info" element={<ScheduleContainer/>}/>
+                <Route path="/class-schedule" element={<SchedulePageContainer/>}/>
+                <Route path="/loads-info" element={<SchedulePageContainer/>}/>
                 <Route path="/loads-info/:id/edit" element={<LoadInfoContainer/>}/>
                 <Route path="/loads-info/create" element={<LoadInfoContainer/>}/>
                 <Route path="*" element={<NotFound/>}/>

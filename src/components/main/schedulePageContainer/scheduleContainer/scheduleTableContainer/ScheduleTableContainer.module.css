@@ -21,13 +21,6 @@ td, th {
     padding: 0
 }
 
-.scheduleContainer {
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    flex: 1
-}
-
 .scheduleTableHeaderScroll {
     margin-right: 5px;
     width: calc(100% - 5px);
@@ -71,18 +64,7 @@ td, th {
     background: #f1f1f1;
 }
 
-.scheduleContainer {
-    align-items: flex-start;
-}
-
-.scheduleContainerHeader {
-    margin-top: 10px;
-}
-
-.buttonAddLoadInfo {
-    margin-left: 20px
-}
-
 .buttonEditLoadInfo {
     display: inline-block;
 }
+

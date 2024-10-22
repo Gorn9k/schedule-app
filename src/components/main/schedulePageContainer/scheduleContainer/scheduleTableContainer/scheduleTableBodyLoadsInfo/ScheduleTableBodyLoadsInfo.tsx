@@ -2,7 +2,7 @@ import React, {FC} from "react";
 import {NavLink} from "react-router-dom";
 import {Schedule219} from "../../../../../../api/schedule-backend-api";
 import {_switchByDayNumber, mergeDayOfWeekRowsNumber219} from "../../../../../../utils/dates";
-import styles from '../ScheduleTableContainer.module.css'
+import styles from "../ScheduleTableContainer.module.css";
 import generalStyles from "../../../../../../App.module.css";
 
 type ScheduleTableBodyLoadsInfoProps = {
