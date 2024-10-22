@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {generateCurrentEndDateMilliseconds, generateCurrentStartDateMilliseconds} from "../../../utils/dates";
+import {generateEndDateMilliseconds, generateStartDateMilliseconds} from "../../../utils/dates";
 import {MainPage} from "./mainPage/MainPage";
 
 type CurrentWeekPeriod = {
@@ -12,16 +12,16 @@ export const MainPageContainer = () => {
     const [currentWeekPeriod, setCurrentWeekPeriod] =
         React.useState<CurrentWeekPeriod>(
             {
-                startDateTime: generateCurrentStartDateMilliseconds(),
-                endDateTime: generateCurrentEndDateMilliseconds()
+                startDateTime: generateStartDateMilliseconds(),
+                endDateTime: generateEndDateMilliseconds()
             }
         );
 
     useEffect(() => {
         const timerId = setInterval(() => {
             setCurrentWeekPeriod({
-                startDateTime: generateCurrentStartDateMilliseconds(),
-                endDateTime: generateCurrentEndDateMilliseconds()
+                startDateTime: generateStartDateMilliseconds(),
+                endDateTime: generateEndDateMilliseconds()
             })
         }, 100);
 

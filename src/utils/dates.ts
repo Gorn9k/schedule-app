@@ -4,8 +4,8 @@ export const generateNewWeekPeriodDateMilliseconds = (dateMilliseconds: number, 
     return dateMilliseconds + 7 * 24 * 60 * 60 * 1000 * direction
 }
 
-export const generateCurrentStartDateMilliseconds = (): number => {
-    const today = new Date()
+export const generateStartDateMilliseconds = (today?: Date): number => {
+    !today && (today = new Date())
     today.setMilliseconds(0)
     today.setSeconds(0)
     today.setMinutes(0)
@@ -16,8 +16,8 @@ export const generateCurrentStartDateMilliseconds = (): number => {
     return today.setDate(firstDayOfWeek)
 }
 
-export const generateCurrentEndDateMilliseconds = (): number => {
-    const today = new Date();
+export const generateEndDateMilliseconds = (today?: Date): number => {
+    !today && (today = new Date())
     today.setMilliseconds(0)
     today.setSeconds(0)
     today.setMinutes(0)

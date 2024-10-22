@@ -9,6 +9,7 @@ import {withStartDateAndEndDate} from "../../../hocs/withStartDateAndEndDate";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../redux/store";
 import {setShowLoadInfoModal} from "../../../redux/showModalSlice";
+import {ModalContainer} from "./modalContainer/ModalContainer";
 
 type SchedulePageProps = {
     startDate: Date
@@ -30,10 +31,13 @@ export const SchedulePage: FC<SchedulePageProps> = ({startDate, endDate, frame})
                          requestParams={(frame && {frame: frame}) || undefined}/>
 
         {
-            !frame &&
-                <button onClick={() => dispatch(setShowLoadInfoModal(true))} className={`${generalStyles.button} ${generalStyles.formButton} ${styles.addLoadInfoLink}`}>
+            !frame && <>
+                <button onClick={() => dispatch(setShowLoadInfoModal(true))}
+                        className={`${generalStyles.button} ${generalStyles.formButton} ${styles.addLoadInfoLink}`}>
                     Добавить нагрузку
                 </button>
+                <ModalContainer/>
+            </>
         }
         <ScheduleContainer startDate={startDate}
                            endDate={endDate}

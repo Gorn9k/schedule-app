@@ -3,6 +3,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 export type FrameType = 'FIRST' | 'FOURTH' | null
 
 type ShowModalState = {
+    loadInfoId?: number
     showLoadInfoModal: boolean
     showAuthModal: boolean
 }
@@ -21,13 +22,17 @@ const showModalSlice = createSlice({
         },
         setShowAuthModal(state: ShowModalState, action: PayloadAction<boolean>) {
             state.showAuthModal = action.payload
+        },
+        setLoadInfoId(state: ShowModalState, action: PayloadAction<number>) {
+            state.loadInfoId = action.payload
         }
     }
 })
 
 export const {
     setShowLoadInfoModal,
-    setShowAuthModal
+    setShowAuthModal,
+    setLoadInfoId
 } = showModalSlice.actions
 
 export default showModalSlice.reducer

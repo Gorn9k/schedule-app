@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import generalStyles from "../../../../../App.module.css";
+import generalStyles from "../../../../../../App.module.css";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 
@@ -9,7 +9,7 @@ type AuthModalFormProps = {
                setFieldError: (field: string, message: (string | undefined)) => void) => void
 }
 
-export const AuthModalForm: FC<AuthModalFormProps> = ({onSubmit, setShowModal}) => {
+export const AuthForm: FC<AuthModalFormProps> = ({onSubmit, setShowModal}) => {
     return <>
         <h2>Авторизация</h2>
         <Formik
