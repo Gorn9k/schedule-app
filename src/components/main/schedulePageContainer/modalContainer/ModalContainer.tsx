@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../../redux/store";
 import generalStyles from "../../../../App.module.css";
 import Modal from "react-modal";
-import {setShowAuthModal, setShowLoadInfoModal} from "../../../../redux/showModalSlice";
+import {setLoadInfoId, setShowAuthModal, setShowLoadInfoModal} from "../../../../redux/showModalSlice";
 import {LoadInfoFormContainer} from "./loadInfoFormContainer/LoadInfoFormContainer";
 import {AuthFormContainer} from "./authFormContainer/AuthFormContainer";
 import React, {useCallback, useState} from "react";
@@ -17,6 +17,7 @@ export const ModalContainer = () => {
 
     const dispatch = useDispatch<AppDispatch>();
 
+    const [schedule, setSchedule] = useState<Schedule219 | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
     const onSubmit = useCallback((loadInfoId: number | undefined,
@@ -24,7 +25,6 @@ export const ModalContainer = () => {
                                   setSubmitting: (isSubmitting: boolean) => void,
                                   authToken: string | null,
                                   setFieldError: (field: string, message: (string | undefined)) => void,
-                                  setErrorMessage: (message: string | null) => void,
                                   setLoading: (flag: boolean) => void,
                                   navigate: NavigateFunction) => {
         setLoading(true);
@@ -32,13 +32,17 @@ export const ModalContainer = () => {
             .then(() => {
                 dispatch(setShowLoadInfoModal(false))
                 dispatch(setShowAuthModal(false))
+                dispatch(setLoadInfoId(undefined))
                 !localStorage.getItem('authToken') && localStorage.setItem('authToken', authToken as string)
-                const startDate = new Date(generateStartDateMilliseconds(new Date(values.date)))
-                const endDate = new Date(generateEndDateMilliseconds(new Date(values.date)))
-                navigate(`/loads-info?startDate=${startDate}&endDate=${endDate}}`)
+                const startDate = new Date(generateStartDateMilliseconds(new Date(values.date))).toLocaleDateString('en-CA')
+                const endDate = new Date(generateEndDateMilliseconds(new Date(values.date))).toLocaleDateString('en-CA')
+                setSchedule(null)
+                navigate(`/loads-info?startDate=${startDate}&endDate=${endDate}`)
             })
             .catch((reason) => {
+                setSchedule(values)
                 if (reason.response && reason.response.status === 403) {
+                    showAuthModal && setFieldError('password', 'Неверно введены логин или пароль')
                     dispatch(setShowAuthModal(true))
                     localStorage.getItem('authToken') && localStorage.removeItem('authToken')
                 } else if (reason.response && reason.response.status === 400) {
@@ -54,7 +58,7 @@ export const ModalContainer = () => {
                 setLoading(false)
                 setSubmitting(false)
             })
-    }, [])
+    }, [dispatch, schedule, showAuthModal])
 
     return (showAuthModal || showLoadInfoModal) ?
         <Modal className={generalStyles.content}
@@ -62,24 +66,32 @@ export const ModalContainer = () => {
                onRequestClose={() => {
                    dispatch(setShowLoadInfoModal(false))
                    dispatch(setShowAuthModal(false))
+                   dispatch(setLoadInfoId(undefined))
+                   setSchedule(null)
                    setErrorMessage(null)
                }}
                contentLabel="Модальное окно приложения"
                overlayClassName={generalStyles.dialogContent}
         >
-            {showLoadInfoModal && <LoadInfoFormContainer showAuthModal={showAuthModal}
-                                                         errorMessage={errorMessage}
-                                                         setErrorMessage={setErrorMessage}
-                                                         onSubmit={onSubmit}/>}
-            {showAuthModal && <AuthFormContainer/>}
+            {showLoadInfoModal &&
+                <LoadInfoFormContainer schedule={schedule} 
+                                       setSchedule={setSchedule} 
+                                       showAuthModal={showAuthModal}
+                                       errorMessage={errorMessage}
+                                       setErrorMessage={setErrorMessage}
+                                       onSubmit={onSubmit}/>}
+            {showAuthModal && <AuthFormContainer schedule={schedule as Schedule219} errorMessage={errorMessage} onSubmit={onSubmit}/>}
             <button className={`${generalStyles.button} ${generalStyles.formButton}`}
                     onClick={() => {
                         if (errorMessage)
                             setErrorMessage(null)
                         else if (showAuthModal)
                             dispatch(setShowAuthModal(false))
-                        else
+                        else {
                             dispatch(setShowLoadInfoModal(false))
+                            setSchedule(null)
+                            dispatch(setLoadInfoId(undefined))
+                        }
                     }}>Закрыть
             </button>
         </Modal> : null

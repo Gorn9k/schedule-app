@@ -15,24 +15,25 @@ type LoadInfoFormContainerProps = {
                setSubmitting: (isSubmitting: boolean) => void,
                authToken: string | null,
                setFieldError: (field: string, message: (string | undefined)) => void,
-               setErrorMessage: (message: (string | null)) => void,
                setLoading: (flag: boolean) => void,
                navigate: NavigateFunction) => void
     errorMessage: string | null
     setErrorMessage: (message: string | null) => void
     showAuthModal: boolean
+    schedule: Schedule219 | null
+    setSchedule: (schedule: Schedule219 | null) => void
 }
 
 export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                                                                           onSubmit,
                                                                           errorMessage,
                                                                           setErrorMessage,
-                                                                          showAuthModal
+                                                                          showAuthModal,
+                                                                          schedule,
+                                                                          setSchedule
                                                                       }) => {
 
     const id = useSelector((state: RootState) => state.showModal.loadInfoId)
-
-    const [schedule, setSchedule] = useState<Schedule219 | null>(null);
     const [loading, setLoading] = useState<boolean>(!!id)
 
     const navigate = useNavigate();
@@ -47,13 +48,15 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
             .catch(() => setErrorMessage('Не удалось получить нагрузку на 219 аудиторию.'))
             .finally(() => setLoading(false))
 
-    }, [])
+    }, [setErrorMessage, setSchedule])
 
     useEffect(() => {
         id && fetchLoadInfoById(id)
     }, [fetchLoadInfoById, id])
 
-    return <Formik
+    return (id && loading
+        && <Preloader/>
+    ) || <Formik
         initialValues={{
             id: schedule?.id,
             date: schedule?.date || '',
@@ -78,8 +81,7 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                 .required('Поле не может быть пустым')
         })}
         onSubmit={(values, {setSubmitting, setFieldError}) => {
-            onSubmit(id, values, setSubmitting, localStorage.getItem('authToken'), setFieldError,
-                setErrorMessage, setLoading, navigate)
+            onSubmit(id, values, setSubmitting, localStorage.getItem('authToken'), setFieldError, setLoading, navigate)
         }}
     >
         {
@@ -96,12 +98,15 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
             ||
             (
                 !showAuthModal && (({isSubmitting, errors, touched}) => {
-                    return <LoadInfoForm renderButton={(disabled: boolean) =>
-                        <button type="submit" disabled={disabled}
-                                className={`${generalStyles.button} ${generalStyles.formButton}`}>
-                            {(id && 'Сохранить изменения') || 'Создать'}
-                        </button>
-                    } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
+                    return <>
+                        <h2>{`${(id && 'Текущая') || 'Новая'} нагрузка`}</h2>
+                        <LoadInfoForm renderButton={(disabled: boolean) =>
+                            <button type="submit" disabled={disabled}
+                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>
+                                {(id && 'Сохранить изменения') || 'Создать'}
+                            </button>
+                        } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
+                    </>
                 })
             )
         }
