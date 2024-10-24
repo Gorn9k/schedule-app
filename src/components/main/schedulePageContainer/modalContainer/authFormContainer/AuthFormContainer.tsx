@@ -1,30 +1,27 @@
-import React, {FC, useState} from "react";
+import React, {FC} from "react";
 import * as Yup from "yup";
 import {Formik} from "formik";
 import {b64EncodeUnicode, Schedule219} from "../../../../../api/schedule-backend-api";
-import {NavigateFunction, useNavigate} from "react-router-dom";
 import Preloader from "../../../../preloader/Preloader";
 import {AuthForm} from "./authForm/AuthForm";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../../redux/store";
 
 type AuthFormContainerProps = {
-    onSubmit: (loadInfoId: (number | undefined),
-               values: Schedule219,
+    onSubmit: (values: Schedule219,
                setSubmitting: (isSubmitting: boolean) => void,
                authToken: string | null,
-               setFieldError: (field: string, message: (string | undefined)) => void,
-               setLoading: (flag: boolean) => void,
-               navigate: NavigateFunction) => void
+               setFieldError: (field: string, message: (string | undefined)) => void) => void
     errorMessage: string | null
-    schedule: Schedule219
+    loadInfo: Schedule219
 }
 
-export const AuthFormContainer: FC<AuthFormContainerProps> = ({schedule, onSubmit, errorMessage}) => {
+export const AuthFormContainer: FC<AuthFormContainerProps> = ({loadInfo, onSubmit, errorMessage}) => {
 
-    const [loading, setLoading] = useState<boolean>(false)
-    const navigate = useNavigate();
+    const isLoading = useSelector((state: RootState) => state.modal.isLoading)
 
     return <Formik
-        initialValues={{login: '', password: ''}}
+        initialValues={{login: '', password: '', incorrectValues: ''}}
         validationSchema={Yup.object({
             login: Yup.string()
                 .required('Поле не может быть пустым'),
@@ -32,11 +29,11 @@ export const AuthFormContainer: FC<AuthFormContainerProps> = ({schedule, onSubmi
                 .required('Поле не может быть пустым'),
         })}
         onSubmit={(values, {setSubmitting, setFieldError}) => {
-            onSubmit(undefined, schedule, setSubmitting, b64EncodeUnicode(`${values.login}:${values.password}`), setFieldError, setLoading, navigate)
+            onSubmit(loadInfo, setSubmitting, b64EncodeUnicode(`${values.login}:${values.password}`), setFieldError)
         }}
     >
         {
-            (loading && <Preloader/>)
+            (isLoading && <Preloader/>)
             ||
             (errorMessage &&
                 <h2 style={{

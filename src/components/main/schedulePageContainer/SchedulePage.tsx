@@ -8,7 +8,7 @@ import {withFrame} from "../../../hocs/withFrame";
 import {withStartDateAndEndDate} from "../../../hocs/withStartDateAndEndDate";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../redux/store";
-import {setShowLoadInfoModal} from "../../../redux/showModalSlice";
+import {setShowLoadInfoModal} from "../../../redux/modalSlice";
 import {ModalContainer} from "./modalContainer/ModalContainer";
 
 type SchedulePageProps = {

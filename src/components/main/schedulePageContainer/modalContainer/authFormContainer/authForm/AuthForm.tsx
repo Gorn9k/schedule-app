@@ -24,6 +24,8 @@ export const AuthForm: FC<AuthModalFormProps> = ({isSubmitting, errors, touched}
         </div>
         <ErrorMessage name='password' component='div'
                       className={generalStyles.errorMessage}/>
+        <ErrorMessage name='incorrectValues' component='div'
+                      className={generalStyles.errorMessage}/>
         <button
             className={`${generalStyles.button} ${generalStyles.formButton}`}
             type='submit'

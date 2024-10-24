@@ -130,23 +130,23 @@ export const LoadInfoContainer = () => {
 {/*                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>{(id && 'Сохранить изменения') || 'Создать'}</button>*/}
 {/*                    }/>*/}
 {/*                    {*/}
-                        id && <button onClick={() => {
-                            setLoading(true)
-                            deleteSchedule219(Number(id), localStorage.getItem('authToken'))
-                                .then(() => {
-                                    setError(null)
-                                    navigate(-1)
-                                })
-                                .catch((reason) => {
-                                    if (reason.response && reason.response.status === 403) {
-                                        setShowModal(true)
-                                    } else
-                                        setError('Не удалось удалить нагрузку.')
-                                })
-                                .finally(() => setLoading(false))
-                        }} type="button" className={`${generalStyles.button} ${generalStyles.formButton}`}>
-                            Удалить нагрузку
-                        </button>
+{/*                        id && <button onClick={() => {*/}
+{/*                            setLoading(true)*/}
+{/*                            deleteSchedule219(Number(id), localStorage.getItem('authToken'))*/}
+{/*                                .then(() => {*/}
+{/*                                    setError(null)*/}
+{/*                                    navigate(-1)*/}
+{/*                                })*/}
+{/*                                .catch((reason) => {*/}
+{/*                                    if (reason.response && reason.response.status === 403) {*/}
+{/*                                        setShowModal(true)*/}
+{/*                                    } else*/}
+{/*                                        setError('Не удалось удалить нагрузку.')*/}
+{/*                                })*/}
+{/*                                .finally(() => setLoading(false))*/}
+{/*                        }} type="button" className={`${generalStyles.button} ${generalStyles.formButton}`}>*/}
+{/*                            Удалить нагрузку*/}
+{/*                        </button>*/}
 {/*                    }*/}
 {/*                    {showModal && <AuthForm showModal={showModal}*/}
 {/*                                            setShowModal={setShowModal}*/}

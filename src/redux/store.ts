@@ -1,10 +1,10 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import scheduleReducer from './scheduleSlice';
-import showModalReducer from './showModalSlice';
+import modalReducer from './modalSlice';
 
 const rootReducer = combineReducers({
     schedule: scheduleReducer,
-    showModal: showModalReducer
+    modal: modalReducer
 });
 
 const store = configureStore({

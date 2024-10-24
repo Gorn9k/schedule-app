@@ -1,69 +1,40 @@
-import React, {FC, useCallback, useEffect, useState} from "react";
+import React, {FC} from "react";
 import * as Yup from "yup";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
 import {Formik} from "formik";
-import {getSchedule219LoadInfoById, Schedule219} from "../../../../../api/schedule-backend-api";
+import {Schedule219} from "../../../../../api/schedule-backend-api";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/store";
-import {NavigateFunction, useNavigate} from "react-router-dom";
 import Preloader from "../../../../preloader/Preloader";
 import generalStyles from "../../../../../App.module.css";
 
 type LoadInfoFormContainerProps = {
-    onSubmit: (loadInfoId: (number | undefined),
-               values: Schedule219,
+    onSubmit: (values: Schedule219,
                setSubmitting: (isSubmitting: boolean) => void,
                authToken: string | null,
-               setFieldError: (field: string, message: (string | undefined)) => void,
-               setLoading: (flag: boolean) => void,
-               navigate: NavigateFunction) => void
+               setFieldError: (field: string, message: (string | undefined)) => void) => void
     errorMessage: string | null
-    setErrorMessage: (message: string | null) => void
     showAuthModal: boolean
-    schedule: Schedule219 | null
-    setSchedule: (schedule: Schedule219 | null) => void
+    loadInfo: Schedule219 | null
 }
 
 export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
+                                                                          loadInfo,
                                                                           onSubmit,
                                                                           errorMessage,
-                                                                          setErrorMessage,
-                                                                          showAuthModal,
-                                                                          schedule,
-                                                                          setSchedule
+                                                                          showAuthModal
                                                                       }) => {
 
-    const id = useSelector((state: RootState) => state.showModal.loadInfoId)
-    const [loading, setLoading] = useState<boolean>(!!id)
+    const isLoading = useSelector((state: RootState) => state.modal.isLoading)
 
-    const navigate = useNavigate();
-
-    const fetchLoadInfoById = useCallback((id: number) => {
-        setLoading(true);
-        getSchedule219LoadInfoById(`${id}`)
-            .then((data) => {
-                setErrorMessage(null)
-                setSchedule(data);
-            })
-            .catch(() => setErrorMessage('Не удалось получить нагрузку на 219 аудиторию.'))
-            .finally(() => setLoading(false))
-
-    }, [setErrorMessage, setSchedule])
-
-    useEffect(() => {
-        id && fetchLoadInfoById(id)
-    }, [fetchLoadInfoById, id])
-
-    return (id && loading
-        && <Preloader/>
-    ) || <Formik
+    return <Formik
         initialValues={{
-            id: schedule?.id,
-            date: schedule?.date || '',
-            time: schedule?.time || '',
-            type: schedule?.type || '',
-            responsible: schedule?.responsible || '',
-            description: schedule?.description || ''
+            id: loadInfo?.id,
+            date: loadInfo?.date || '',
+            time: loadInfo?.time || '',
+            type: loadInfo?.type || '',
+            responsible: loadInfo?.responsible || '',
+            description: loadInfo?.description || ''
         }}
         validationSchema={Yup.object({
             date: Yup.string()
@@ -81,34 +52,32 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                 .required('Поле не может быть пустым')
         })}
         onSubmit={(values, {setSubmitting, setFieldError}) => {
-            onSubmit(id, values, setSubmitting, localStorage.getItem('authToken'), setFieldError, setLoading, navigate)
+            onSubmit(values, setSubmitting, localStorage.getItem('authToken'), setFieldError)
         }}
     >
         {
-            (loading && <Preloader/>)
-            ||
-            (errorMessage &&
-                <h2 style={{
-                    color: 'red',
-                    textAlign: 'center',
-                    alignContent: 'center',
-                    margin: '0'
-                }}>{errorMessage}</h2>
-            )
-            ||
-            (
-                !showAuthModal && (({isSubmitting, errors, touched}) => {
+            !showAuthModal && ((isLoading && <Preloader/>)
+                ||
+                (errorMessage &&
+                    <h2 style={{
+                        color: 'red',
+                        textAlign: 'center',
+                        alignContent: 'center',
+                        margin: '0'
+                    }}>{errorMessage}</h2>
+                )
+                ||
+                (({isSubmitting, errors, touched}) => {
                     return <>
-                        <h2>{`${(id && 'Текущая') || 'Новая'} нагрузка`}</h2>
+                        <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
                         <LoadInfoForm renderButton={(disabled: boolean) =>
                             <button type="submit" disabled={disabled}
                                     className={`${generalStyles.button} ${generalStyles.formButton}`}>
-                                {(id && 'Сохранить изменения') || 'Создать'}
+                                {(loadInfo?.id && 'Сохранить изменения') || 'Создать'}
                             </button>
                         } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
                     </>
-                })
-            )
+                }))
         }
     </Formik>
 }
