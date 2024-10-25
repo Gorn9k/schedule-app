@@ -12,16 +12,21 @@ import {setShowLoadInfoModal} from "../../../redux/modalSlice";
 import {ModalContainer} from "./modalContainer/ModalContainer";
 
 type SchedulePageProps = {
-    startDate: Date
-    endDate: Date
+    startDateTime: number | null
+    endDateTime: number | null
     frame: FrameType
 }
 
-export const SchedulePage: FC<SchedulePageProps> = ({startDate, endDate, frame}) => {
-
-    const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
+export const SchedulePage: FC<SchedulePageProps> = ({startDateTime, endDateTime, frame}) => {
 
     const dispatch = useDispatch<AppDispatch>()
+
+    if (!startDateTime || !endDateTime)
+        return null
+
+    const startDate = new Date(startDateTime)
+    const endDate = new Date(endDateTime)
+    const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
 
     return <>
         <h2>{weekPeriodBlockName}</h2>

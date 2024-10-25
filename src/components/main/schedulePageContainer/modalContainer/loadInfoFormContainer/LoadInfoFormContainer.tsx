@@ -3,16 +3,14 @@ import * as Yup from "yup";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
 import {Formik} from "formik";
 import {Schedule219} from "../../../../../api/schedule-backend-api";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../../../redux/store";
 import Preloader from "../../../../preloader/Preloader";
 import generalStyles from "../../../../../App.module.css";
+import {createLoadInfo, updateLoadInfo} from "../../../../../redux/modalSlice";
+import {useNavigate} from "react-router-dom";
 
 type LoadInfoFormContainerProps = {
-    onSubmit: (values: Schedule219,
-               setSubmitting: (isSubmitting: boolean) => void,
-               authToken: string | null,
-               setFieldError: (field: string, message: (string | undefined)) => void) => void
     errorMessage: string | null
     showAuthModal: boolean
     loadInfo: Schedule219 | null
@@ -20,12 +18,14 @@ type LoadInfoFormContainerProps = {
 
 export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                                                                           loadInfo,
-                                                                          onSubmit,
                                                                           errorMessage,
                                                                           showAuthModal
                                                                       }) => {
 
     const isLoading = useSelector((state: RootState) => state.modal.isLoading)
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch<AppDispatch>()
 
     return <Formik
         initialValues={{
@@ -51,8 +51,11 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                 .max(1000, 'Максимальное кол-во символов должно быть равно 1000')
                 .required('Поле не может быть пустым')
         })}
-        onSubmit={(values, {setSubmitting, setFieldError}) => {
-            onSubmit(values, setSubmitting, localStorage.getItem('authToken'), setFieldError)
+        onSubmit={(values) => {
+            if (loadInfo?.id)
+                dispatch(updateLoadInfo({loadInfo: values}));
+            else
+                dispatch(createLoadInfo({loadInfo: values}));
         }}
     >
         {

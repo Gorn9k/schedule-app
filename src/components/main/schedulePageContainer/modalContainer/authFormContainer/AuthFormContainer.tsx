@@ -4,21 +4,20 @@ import {Formik} from "formik";
 import {b64EncodeUnicode, Schedule219} from "../../../../../api/schedule-backend-api";
 import Preloader from "../../../../preloader/Preloader";
 import {AuthForm} from "./authForm/AuthForm";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../../../redux/store";
+import {setAuth} from "../../../../../redux/modalSlice";
 
 type AuthFormContainerProps = {
-    onSubmit: (values: Schedule219,
-               setSubmitting: (isSubmitting: boolean) => void,
-               authToken: string | null,
-               setFieldError: (field: string, message: (string | undefined)) => void) => void
     errorMessage: string | null
     loadInfo: Schedule219
 }
 
-export const AuthFormContainer: FC<AuthFormContainerProps> = ({loadInfo, onSubmit, errorMessage}) => {
+export const AuthFormContainer: FC<AuthFormContainerProps> = ({loadInfo, errorMessage}) => {
 
     const isLoading = useSelector((state: RootState) => state.modal.isLoading)
+
+    const dispatch = useDispatch<AppDispatch>()
 
     return <Formik
         initialValues={{login: '', password: '', incorrectValues: ''}}
@@ -28,8 +27,9 @@ export const AuthFormContainer: FC<AuthFormContainerProps> = ({loadInfo, onSubmi
             password: Yup.string()
                 .required('Поле не может быть пустым'),
         })}
-        onSubmit={(values, {setSubmitting, setFieldError}) => {
-            onSubmit(loadInfo, setSubmitting, b64EncodeUnicode(`${values.login}:${values.password}`), setFieldError)
+        onSubmit={(values) => {
+            localStorage.setItem('authToken', b64EncodeUnicode(`${values.login}:${values.password}`))
+            dispatch(setAuth())
         }}
     >
         {

@@ -3,6 +3,7 @@ import {AppDispatch, RootState} from "../../../../redux/store";
 import generalStyles from "../../../../App.module.css";
 import Modal from "react-modal";
 import {
+    cancelAuth,
     setErrorMessage, setIsLoading, setLoadInfo,
     setShowAuthModal,
     setShowLoadInfoModal
@@ -22,43 +23,43 @@ export const ModalContainer = () => {
     const loadInfo = useSelector((state: RootState) => state.modal.loadInfo)
 
     const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate()
 
-    const onSubmit = useCallback((values: Schedule219,
-                                  setSubmitting: (isSubmitting: boolean) => void,
-                                  authToken: string | null,
-                                  setFieldError: (field: string, message: (string | undefined)) => void) => {
-        dispatch(setIsLoading(true));
-        ((loadInfo?.id && editSchedule219) || createSchedule219)(values, authToken)
-            .then(() => {
-                dispatch(setShowLoadInfoModal(false))
-                dispatch(setShowAuthModal(false))
-                dispatch(setLoadInfo(null))
-                !localStorage.getItem('authToken') && localStorage.setItem('authToken', authToken as string)
-                const startDate = new Date(generateStartDateMilliseconds(new Date(values.date))).toLocaleDateString('en-CA')
-                const endDate = new Date(generateEndDateMilliseconds(new Date(values.date))).toLocaleDateString('en-CA')
-                navigate(`/loads-info?startDate=${startDate}&endDate=${endDate}`)
-            })
-            .catch((reason) => {
-                dispatch(setLoadInfo(values))
-                if (reason.response && reason.response.status === 403) {
-                    showAuthModal && setFieldError('incorrectValues', 'Неверно введены логин или пароль')
-                    dispatch(setShowAuthModal(true))
-                    localStorage.getItem('authToken') && localStorage.removeItem('authToken')
-                } else if (reason.response && reason.response.status === 400) {
-                    for (const [field, message] of Object.entries(reason.response.data as {
-                        [key: string]: string
-                    })) {
-                        setFieldError(field, message)
-                    }
-                } else
-                    dispatch(setErrorMessage(`Не удалось ${(loadInfo?.id && 'изменить') || 'сохранить'} нагрузку.`))
-            })
-            .finally(() => {
-                dispatch(setIsLoading(false))
-                setSubmitting(false)
-            })
-    }, [dispatch, loadInfo, navigate, showAuthModal])
+
+    // const onSubmit = useCallback((values: Schedule219,
+    //                               setSubmitting: (isSubmitting: boolean) => void,
+    //                               authToken: string | null,
+    //                               setFieldError: (field: string, message: (string | undefined)) => void) => {
+    //     dispatch(setIsLoading(true));
+    //     ((loadInfo?.id && editSchedule219) || createSchedule219)(values, authToken)
+    //         .then(() => {
+    //             dispatch(setShowLoadInfoModal(false))
+    //             dispatch(setShowAuthModal(false))
+    //             dispatch(setLoadInfo(null))
+    //             !localStorage.getItem('authToken') && localStorage.setItem('authToken', authToken as string)
+    //             const startDate = new Date(generateStartDateMilliseconds(new Date(values.date))).toLocaleDateString('en-CA')
+    //             const endDate = new Date(generateEndDateMilliseconds(new Date(values.date))).toLocaleDateString('en-CA')
+    //             navigate(`/loads-info?startDate=${startDate}&endDate=${endDate}`)
+    //         })
+    //         .catch((reason) => {
+    //             dispatch(setLoadInfo(values))
+    //             if (reason.response && reason.response.status === 403) {
+    //                 showAuthModal && setFieldError('incorrectValues', 'Неверно введены логин или пароль')
+    //                 dispatch(setShowAuthModal(true))
+    //                 localStorage.getItem('authToken') && localStorage.removeItem('authToken')
+    //             } else if (reason.response && reason.response.status === 400) {
+    //                 for (const [field, message] of Object.entries(reason.response.data as {
+    //                     [key: string]: string
+    //                 })) {
+    //                     setFieldError(field, message)
+    //                 }
+    //             } else
+    //                 dispatch(setErrorMessage(`Не удалось ${(loadInfo?.id && 'изменить') || 'сохранить'} нагрузку.`))
+    //         })
+    //         .finally(() => {
+    //             dispatch(setIsLoading(false))
+    //             setSubmitting(false)
+    //         })
+    // }, [dispatch, loadInfo, navigate, showAuthModal])
 
     return (showAuthModal || showLoadInfoModal) ?
         <Modal className={generalStyles.content}
@@ -68,6 +69,7 @@ export const ModalContainer = () => {
                    dispatch(setShowAuthModal(false))
                    dispatch(setLoadInfo(null))
                    dispatch(setErrorMessage(null))
+                   dispatch(cancelAuth())
                }}
                contentLabel="Модальное окно приложения"
                overlayClassName={generalStyles.dialogContent}
@@ -75,15 +77,16 @@ export const ModalContainer = () => {
             {showLoadInfoModal &&
                 <LoadInfoFormContainer loadInfo={loadInfo}
                                        showAuthModal={showAuthModal}
-                                       errorMessage={errorMessage}
-                                       onSubmit={onSubmit}/>}
-            {showAuthModal && <AuthFormContainer loadInfo={loadInfo as Schedule219} errorMessage={errorMessage} onSubmit={onSubmit}/>}
+                                       errorMessage={errorMessage}/>}
+            {showAuthModal && <AuthFormContainer loadInfo={loadInfo as Schedule219} errorMessage={errorMessage}/>}
             <button className={`${generalStyles.button} ${generalStyles.formButton}`}
                     onClick={() => {
                         if (errorMessage)
                             dispatch(setErrorMessage(null))
-                        else if (showAuthModal)
+                        else if (showAuthModal) {
                             dispatch(setShowAuthModal(false))
+                            dispatch(cancelAuth())
+                        }
                         else {
                             dispatch(setShowLoadInfoModal(false))
                             dispatch(setLoadInfo(null))

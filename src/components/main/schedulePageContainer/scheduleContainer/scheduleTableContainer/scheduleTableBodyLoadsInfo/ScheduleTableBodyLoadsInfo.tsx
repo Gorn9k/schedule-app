@@ -6,6 +6,7 @@ import generalStyles from "../../../../../../App.module.css";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../../redux/store";
 import {
+    deleteLoadInfo,
     setErrorMessage,
     setIsLoading, setLoadInfo,
     setShowAuthModal,
@@ -39,15 +40,15 @@ export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = (
                                 Изменить
                             </button>
                             <button onClick={() => {
-                                dispatch(setIsLoading(true))
-                                deleteSchedule219(Number(value.id), localStorage.getItem('authToken'))
-                                    .catch((reason) => {
-                                        if (reason.response && reason.response.status === 403) {
-                                            dispatch(setShowAuthModal(true))
-                                        } else
-                                            dispatch(setErrorMessage('Не удалось удалить нагрузку.'))
-                                    })
-                                    .finally(() => dispatch(setIsLoading(false)))
+                                dispatch(deleteLoadInfo(value.id as number))
+                                // deleteSchedule219(Number(value.id), localStorage.getItem('authToken'))
+                                //     .catch((reason) => {
+                                //         if (reason.response && reason.response.status === 403) {
+                                //             dispatch(setShowAuthModal(true))
+                                //         } else
+                                //             dispatch(setErrorMessage('Не удалось удалить нагрузку.'))
+                                //     })
+                                //     .finally(() => dispatch(setIsLoading(false)))
                             }} type="button" className={`${generalStyles.button} ${generalStyles.formButton}`}>
                                 Удалить
                             </button>

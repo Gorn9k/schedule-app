@@ -8,6 +8,6 @@ export function withFrame<T>(WrappedComponent: React.ComponentType<T>) {
 
         const frame = useSelector((state: RootState) => state.schedule.frame)
 
-        return (!frame && null) || <WrappedComponent {...(props as T)} frame={frame} />
+        return <WrappedComponent {...(props as T)} frame={frame}/>
     };
 }
