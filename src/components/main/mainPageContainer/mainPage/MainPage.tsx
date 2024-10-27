@@ -29,7 +29,6 @@ export const MainPage: FC<MainPageProps> = ({startDateTime, endDateTime}) => {
             }
         ).toString(),
         new URLSearchParams(
-
             {
                 startDate: startDate,
                 endDate: endDate
@@ -37,7 +36,7 @@ export const MainPage: FC<MainPageProps> = ({startDateTime, endDateTime}) => {
         ).toString()
     ]
 
-    return <div className={styles.containerLinks}>
+    return <>
         <NavLink to={`/class-schedule?${firstFrameUrl}`} className={styles.link}>Расписание аудиторий в 1-ом учебном
             корпусе</NavLink>
 
@@ -46,5 +45,5 @@ export const MainPage: FC<MainPageProps> = ({startDateTime, endDateTime}) => {
 
         <NavLink to={`/loads-info?${classesLoadInfoUrl}`} className={styles.link}>Расписание занятости в 219
             аудитории</NavLink>
-    </div>
+    </>
 }

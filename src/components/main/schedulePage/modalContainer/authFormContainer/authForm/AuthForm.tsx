@@ -1,14 +1,25 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import generalStyles from "../../../../../../App.module.css";
 import {ErrorMessage, Field, Form, FormikErrors, FormikTouched} from "formik";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../../../redux/store";
 
 type AuthModalFormProps = {
     errors: FormikErrors<{login: string, password: string}>
     touched: FormikTouched<{login: string, password: string}>
+    setFieldError: (field: string, message: (string | undefined)) => void
     isSubmitting: boolean
 }
 
-export const AuthForm: FC<AuthModalFormProps> = ({isSubmitting, errors, touched}) => {
+export const AuthForm: FC<AuthModalFormProps> = ({isSubmitting, errors, setFieldError, touched}) => {
+
+    const formFieldsErrors = useSelector((state: RootState) => state.modal.formFieldsErrors)
+
+    useEffect(() => {
+        formFieldsErrors && formFieldsErrors.forEach(element =>
+            setFieldError(element.field, element.errorMessage))
+    }, [formFieldsErrors]);
+
     return <Form>
         <div>
             <label htmlFor='login'>Логин:</label>

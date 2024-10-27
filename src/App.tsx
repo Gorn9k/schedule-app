@@ -1,17 +1,19 @@
 import React, {FC} from 'react';
 import styles from './App.module.css';
+import generalStyles from './App.module.css';
 import {NavLink, Route, Routes} from 'react-router-dom';
-import {SchedulePageContainer} from "./components/main/schedulePageContainer/SchedulePage";
+import {SchedulePage} from "./components/main/schedulePage/SchedulePage";
 import Modal from "react-modal";
 import {WithFrameHeader} from "./components/headerScheduleContainer/HeaderScheduleContainer";
 import {MainPageContainer} from "./components/main/mainPageContainer/MainPageContainer";
-import {LoadInfoContainer} from "./components/main/loadInfoContainer/LoadInfoContainer";
 import {NotFound} from "./components/main/notFound/NotFound";
 import {useLocationParamsValidatorReduxSetter} from "./hooks/useLocationParamsValidatorReduxSetter";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "./redux/store";
 import {resetScheduleState} from "./redux/scheduleSlice";
 import {Header} from "./components/headerScheduleContainer/header/Header";
+import {setShowLoadInfoModal} from "./redux/loadInfoSlice";
+import {ModalContainer} from "./components/main/schedulePage/modalContainer/ModalContainer";
 
 Modal.setAppElement('#root');
 
@@ -32,22 +34,28 @@ const MemoizedApp = React.memo(() => {
                 <Route path="/loads-info" element={<Header title={'Расписание занятости в 219 аудитории'}/>}>
                     <Route index element={<MainPageLink/>}/>
                 </Route>
-                <Route path="/loads-info/:id/edit" element={<Header title={'Редактирование нагрузки'}/>}>
-                    <Route index element={<MainPageLink/>}/>
-                </Route>
-                <Route path="/loads-info/create" element={<Header title={'Создание новой нагрузки'}/>}>
-                    <Route index element={<MainPageLink/>}/>
-                </Route>
                 <Route path="*" element={<Header title={'Расписание занятости в аудиториях(ЦИТ)'}/>}/>
             </Routes>
         </header>
         <main>
             <Routes>
-                <Route path="/" element={<MainPageContainer/>}/>
-                <Route path="/class-schedule" element={<SchedulePageContainer/>}/>
-                <Route path="/loads-info" element={<SchedulePageContainer/>}/>
-                <Route path="/loads-info/:id/edit" element={<LoadInfoContainer/>}/>
-                <Route path="/loads-info/create" element={<LoadInfoContainer/>}/>
+                <Route path="/" element={
+                    <div className={styles.containerLinks}>
+                        <MainPageContainer/>
+                    </div>
+                }/>
+                <Route path="/class-schedule" element={<SchedulePage/>}/>
+                <Route path="/loads-info" element={<SchedulePage/>}>
+                    <Route index element={
+                        <>
+                            <button onClick={() => dispatch(setShowLoadInfoModal(true))}
+                                    className={`${generalStyles.button} ${generalStyles.formButton} ${styles.addLoadInfoLink}`}>
+                                Добавить нагрузку
+                            </button>
+                            <ModalContainer/>
+                        </>
+                    }/>
+                </Route>
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
         </main>

@@ -1,6 +1,6 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import scheduleReducer from './scheduleSlice';
-import modalReducer from './modalSlice';
+import modalReducer from './loadInfoSlice';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from "../sagas/rootSaga";
 

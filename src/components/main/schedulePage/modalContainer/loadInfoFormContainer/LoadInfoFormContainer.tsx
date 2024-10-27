@@ -3,28 +3,25 @@ import * as Yup from "yup";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
 import {Formik} from "formik";
 import {Schedule219} from "../../../../../api/schedule-backend-api";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../../../../../redux/store";
-import Preloader from "../../../../preloader/Preloader";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../../../../../redux/store";
 import generalStyles from "../../../../../App.module.css";
-import {createLoadInfo, updateLoadInfo} from "../../../../../redux/modalSlice";
-import {useNavigate} from "react-router-dom";
+import {createLoadInfo, updateLoadInfo} from "../../../../../redux/loadInfoSlice";
 
 type LoadInfoFormContainerProps = {
     errorMessage: string | null
+    isLoading: boolean
     showAuthModal: boolean
     loadInfo: Schedule219 | null
 }
 
 export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                                                                           loadInfo,
+                                                                          isLoading,
                                                                           errorMessage,
                                                                           showAuthModal
                                                                       }) => {
-
-    const isLoading = useSelector((state: RootState) => state.modal.isLoading)
-
-    const navigate = useNavigate()
+    console.log('loadInfo')
     const dispatch = useDispatch<AppDispatch>()
 
     return <Formik
@@ -51,36 +48,26 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                 .max(1000, 'Максимальное кол-во символов должно быть равно 1000')
                 .required('Поле не может быть пустым')
         })}
-        onSubmit={(values) => {
+        onSubmit={(values, {setSubmitting}) => {
             if (loadInfo?.id)
                 dispatch(updateLoadInfo({loadInfo: values}));
             else
                 dispatch(createLoadInfo({loadInfo: values}));
+            setSubmitting(false)
         }}
     >
         {
-            !showAuthModal && ((isLoading && <Preloader/>)
-                ||
-                (errorMessage &&
-                    <h2 style={{
-                        color: 'red',
-                        textAlign: 'center',
-                        alignContent: 'center',
-                        margin: '0'
-                    }}>{errorMessage}</h2>
-                )
-                ||
-                (({isSubmitting, errors, touched}) => {
-                    return <>
-                        <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
-                        <LoadInfoForm renderButton={(disabled: boolean) =>
-                            <button type="submit" disabled={disabled}
-                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>
-                                {(loadInfo?.id && 'Сохранить изменения') || 'Создать'}
-                            </button>
-                        } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
-                    </>
-                }))
+            !errorMessage && !isLoading && !showAuthModal && (({isSubmitting, errors, touched}) => {
+                return <>
+                    <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
+                    <LoadInfoForm renderButton={(disabled: boolean) =>
+                        <button type="submit" disabled={disabled}
+                                className={`${generalStyles.button} ${generalStyles.formButton}`}>
+                            {(loadInfo?.id && 'Сохранить изменения') || 'Создать'}
+                        </button>
+                    } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
+                </>
+            })
         }
     </Formik>
 }

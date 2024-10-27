@@ -12,48 +12,47 @@ export const useLocationParamsValidatorReduxSetter = () => {
     const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
+        const badLocationParams = (() => {
+            switch (location.pathname) {
+                case '/class-schedule': {
+                    const startDateParam = params.get("startDate")
+                    const endDateParam = params.get("endDate")
+                    const frameParam = params.get("frame")
 
-        let badLocationParams: boolean
+                    const startDate = (startDateParam && new Date(startDateParam)) || null
+                    const endDate = (endDateParam && new Date(endDateParam)) || null
 
-        switch (location.pathname) {
-            case '/class-schedule': {
-                const startDateParam = params.get("startDate")
-                const endDateParam = params.get("endDate")
-                const frameParam = params.get("frame")
+                    const badLocationParams = params.size !== 3 || !frameParam || !startDate || !endDate || isNaN(startDate.valueOf())
+                        || isNaN(endDate.valueOf()) || startDate > endDate || (frameParam !== 'FIRST' && frameParam !== 'FOURTH')
 
-                const startDate = (startDateParam && new Date(startDateParam)) || null
-                const endDate = (endDateParam && new Date(endDateParam)) || null
-
-                badLocationParams = params.size !== 3 || !frameParam || !startDate || !endDate || isNaN(startDate.valueOf())
-                    || isNaN(endDate.valueOf()) || startDate > endDate || (frameParam !== 'FIRST' && frameParam !== 'FOURTH')
-
-                if (!badLocationParams) {
-                    dispatch(setStartDateTime((startDate as Date).getTime()))
-                    dispatch(setEndDateTime((endDate as Date).getTime()))
-                    dispatch(setFrame(frameParam as FrameType))
+                    if (!badLocationParams) {
+                        dispatch(setStartDateTime((startDate as Date).getTime()))
+                        dispatch(setEndDateTime((endDate as Date).getTime()))
+                        dispatch(setFrame(frameParam as FrameType))
+                    }
+                    return badLocationParams
                 }
-                break
-            }
-            case '/loads-info': {
-                const startDateParam = params.get("startDate")
-                const endDateParam = params.get("endDate")
+                case '/loads-info': {
+                    const startDateParam = params.get("startDate")
+                    const endDateParam = params.get("endDate")
 
-                const startDate = (startDateParam && new Date(startDateParam)) || null
-                const endDate = (endDateParam && new Date(endDateParam)) || null
+                    const startDate = (startDateParam && new Date(startDateParam)) || null
+                    const endDate = (endDateParam && new Date(endDateParam)) || null
 
-                badLocationParams = params.size !== 2 || !startDate || !endDate || isNaN(startDate.valueOf())
-                    || isNaN(endDate.valueOf()) || startDate > endDate
+                    const badLocationParams = params.size !== 2 || !startDate || !endDate || isNaN(startDate.valueOf())
+                        || isNaN(endDate.valueOf()) || startDate > endDate
 
-                if (!badLocationParams) {
-                    dispatch(setStartDateTime((startDate as Date).getTime()))
-                    dispatch(setEndDateTime((endDate as Date).getTime()))
+                    if (!badLocationParams) {
+                        dispatch(setStartDateTime((startDate as Date).getTime()))
+                        dispatch(setEndDateTime((endDate as Date).getTime()))
+                        dispatch(setFrame(undefined))
+                    }
+                    return badLocationParams
                 }
-                break
+                default:
+                    return params.size !== 0
             }
-            default:
-                badLocationParams = params.size !== 0
-                break
-        }
+        })()
 
         badLocationParams && navigate('/')
     }, [location]);

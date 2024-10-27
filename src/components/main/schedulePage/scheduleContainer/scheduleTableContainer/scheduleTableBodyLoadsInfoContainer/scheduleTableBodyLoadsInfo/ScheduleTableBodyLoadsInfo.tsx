@@ -1,17 +1,11 @@
 import React, {FC} from "react";
-import {deleteSchedule219, Schedule219} from "../../../../../../api/schedule-backend-api";
-import {_switchByDayNumber, mergeDayOfWeekRowsNumber219} from "../../../../../../utils/dates";
-import styles from "../ScheduleTableContainer.module.css";
-import generalStyles from "../../../../../../App.module.css";
+import {Schedule219} from "../../../../../../../api/schedule-backend-api";
+import {_switchByDayNumber, mergeDayOfWeekRowsNumber219} from "../../../../../../../utils/dates";
+import styles from "../../ScheduleTableContainer.module.css";
+import generalStyles from "../../../../../../../App.module.css";
 import {useDispatch} from "react-redux";
-import {AppDispatch} from "../../../../../../redux/store";
-import {
-    deleteLoadInfo,
-    setErrorMessage,
-    setIsLoading, setLoadInfo,
-    setShowAuthModal,
-    setShowLoadInfoModal
-} from "../../../../../../redux/modalSlice";
+import {AppDispatch} from "../../../../../../../redux/store";
+import {deleteLoadInfo, setLoadInfo, setShowLoadInfoModal} from "../../../../../../../redux/loadInfoSlice";
 
 type ScheduleTableBodyLoadsInfoProps = {
     schedule: Schedule219[]
@@ -41,14 +35,6 @@ export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = (
                             </button>
                             <button onClick={() => {
                                 dispatch(deleteLoadInfo(value.id as number))
-                                // deleteSchedule219(Number(value.id), localStorage.getItem('authToken'))
-                                //     .catch((reason) => {
-                                //         if (reason.response && reason.response.status === 403) {
-                                //             dispatch(setShowAuthModal(true))
-                                //         } else
-                                //             dispatch(setErrorMessage('Не удалось удалить нагрузку.'))
-                                //     })
-                                //     .finally(() => dispatch(setIsLoading(false)))
                             }} type="button" className={`${generalStyles.button} ${generalStyles.formButton}`}>
                                 Удалить
                             </button>

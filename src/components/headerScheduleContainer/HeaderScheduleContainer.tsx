@@ -9,6 +9,8 @@ type HeaderScheduleContainerProps = {
 
 const HeaderScheduleContainer: FC<HeaderScheduleContainerProps> = ({frame}) => {
 
+    if (!frame) return null
+
     const title = frame === 'FIRST' ?
         'Расписание аудиторий(ЦИТ) в первом учебном корпусе' : 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе'
 
