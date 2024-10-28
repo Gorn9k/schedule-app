@@ -1,40 +1,39 @@
 import {call, CallEffect, put, PutEffect, select, SelectEffect, take, TakeEffect, takeLatest} from "redux-saga/effects";
-import {getSchedule, getSchedule219, Schedule, Schedule219} from "../api/schedule-backend-api";
+import {getSchedule, Schedule} from "../api/schedule-backend-api";
 import {
     fetchLoadsInfo,
     fetchSchedule,
     repeatFetchLoadsInfo,
     repeatFetchSchedule,
     setErrorMessage,
-    setIsLoading,
     setLoadsInfo,
     setSchedule
 } from "../redux/scheduleSlice";
 import {RootState} from "../redux/store";
+import {AxiosResponse} from "axios";
 
-function* fetchScheduleRequestSaga(startDate: string, endDate: string, frame: string): Generator<CallEffect | PutEffect, void, Schedule> {
+function* fetchScheduleRequestSaga(startDate: string, endDate: string, frame: string): Generator<CallEffect | PutEffect, void, AxiosResponse<Schedule, {message: string}>> {
     const response = yield call(getSchedule, startDate, endDate, frame)
-    yield put(setSchedule(response))
+    yield put(setSchedule(response.data))
 }
 
-function* fetchLessonsSaga(): Generator<CallEffect | PutEffect | TakeEffect | SelectEffect, void, string> {
-    while(true) {
-        try {
-            const startDate = yield select((state: RootState) =>
-                new Date(state.schedule.startDateTime as number).toLocaleDateString('en-CA'))
-            const endDate = yield select((state: RootState) =>
-                new Date(state.schedule.endDateTime as number).toLocaleDateString('en-CA'))
-            const frame = yield select((state: RootState) => state.schedule.frame as string)
-            yield call(fetchScheduleRequestSaga, startDate, endDate, frame)
-            return
-        } catch (error) {
-            yield put(setErrorMessage('Не удалось получить расписание из диспетчерской'))
-        }
-
-        yield take(repeatFetchSchedule.type)
-
-        yield put(setIsLoading(true))
+function* fetchLessonsSaga(): Generator<CallEffect | PutEffect | TakeEffect | SelectEffect, void, Schedule | string> {
+    try {
+        const startDate = (yield select((state: RootState) =>
+            new Date(state.schedule.startDateTime as number).toLocaleDateString('en-CA'))) as string
+        const endDate = (yield select((state: RootState) =>
+            new Date(state.schedule.endDateTime as number).toLocaleDateString('en-CA'))) as string
+        const frame = (yield select((state: RootState) => state.schedule.frame as string)) as string
+        const response = (yield call(() => getSchedule(startDate, endDate, frame))) as Schedule
+        yield put(setSchedule(response))
+        return
+    } catch (error) {
+        yield put(setErrorMessage('Не удалось получить расписание из диспетчерской'))
     }
+
+    yield take(repeatFetchSchedule.type)
+
+    yield put(fetchSchedule())
 }
 
 function* fetchLoadsInfoRequestSaga(startDate: string, endDate: string): Generator<CallEffect | PutEffect, void, Schedule219[]> {
@@ -43,22 +42,20 @@ function* fetchLoadsInfoRequestSaga(startDate: string, endDate: string): Generat
 }
 
 function* fetchLoadsInfoSaga(): Generator<CallEffect | PutEffect | TakeEffect | SelectEffect, void, string> {
-    while (true) {
-        try {
-            const startDate = yield select((state: RootState) =>
-                new Date(state.schedule.startDateTime as number).toLocaleDateString('en-CA'))
-            const endDate = yield select((state: RootState) =>
-                new Date(state.schedule.endDateTime as number).toLocaleDateString('en-CA'))
-            yield call(fetchLoadsInfoRequestSaga, startDate, endDate)
-            return
-        } catch (error) {
-            yield put(setErrorMessage('Не удалось получить расписание из диспетчерской'))
-        }
-
-        yield take(repeatFetchLoadsInfo.type)
-
-        yield put(setIsLoading(true))
+    try {
+        const startDate = yield select((state: RootState) =>
+            new Date(state.schedule.startDateTime as number).toLocaleDateString('en-CA'))
+        const endDate = yield select((state: RootState) =>
+            new Date(state.schedule.endDateTime as number).toLocaleDateString('en-CA'))
+        yield call(fetchLoadsInfoRequestSaga, startDate, endDate)
+        return
+    } catch (error) {
+        yield put(setErrorMessage('Не удалось получить расписание из диспетчерской'))
     }
+
+    yield take(repeatFetchLoadsInfo.type)
+
+    yield put(fetchLoadsInfo())
 }
 
 export default function* fetchScheduleSaga() {

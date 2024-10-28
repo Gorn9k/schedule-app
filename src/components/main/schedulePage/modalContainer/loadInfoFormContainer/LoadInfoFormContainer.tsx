@@ -6,7 +6,7 @@ import {Schedule219} from "../../../../../api/schedule-backend-api";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../redux/store";
 import generalStyles from "../../../../../App.module.css";
-import {createLoadInfo, updateLoadInfo} from "../../../../../redux/modalSlice";
+import {createLoadInfo, editLoadInfo} from "../../../../../redux/modalSlice";
 
 type LoadInfoFormContainerProps = {
     errorMessage: string | null
@@ -50,7 +50,7 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
         })}
         onSubmit={(values, {setSubmitting}) => {
             if (loadInfo?.id)
-                dispatch(updateLoadInfo({loadInfo: values}));
+                dispatch(editLoadInfo({loadInfo: values}));
             else
                 dispatch(createLoadInfo({loadInfo: values}));
         }}

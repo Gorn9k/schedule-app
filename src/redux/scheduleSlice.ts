@@ -51,7 +51,7 @@ const scheduleSlice = createSlice({
         updateLoadInfo(state: ScheduleState, action: PayloadAction<Schedule219>) {
             Object.assign(state.loadsInfo.find(value => value.id === action.payload.id) as Schedule219, action.payload)
         },
-        deleteLoadInfo(state: ScheduleState, action: PayloadAction<number>) {
+        removeLoadInfo(state: ScheduleState, action: PayloadAction<number>) {
             state.loadsInfo = state.loadsInfo.filter(value => value.id !== action.payload)
         },
         setIsLoading(state: ScheduleState, action: PayloadAction<boolean>) {
@@ -100,7 +100,7 @@ export const {
     setFrame,
     addLoadInfo,
     updateLoadInfo,
-    deleteLoadInfo,
+    removeLoadInfo,
     setIsLoading,
     setErrorMessage,
     setIsOverflowing,

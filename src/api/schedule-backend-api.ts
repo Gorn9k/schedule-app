@@ -16,13 +16,13 @@ export type Lesson = {
 }
 
 export type Schedule = {
-    schedules: Lesson[],
+    lessons: Lesson[],
     classesNumbers: string[],
     days: number[],
     lessonsNumbers: number[]
 }
 
-export type Schedule219 = {
+export type LoadInfo = {
     id?: number
     date: string
     time: string
@@ -31,49 +31,74 @@ export type Schedule219 = {
     description: string
 }
 
+type ScheduleParams = {
+    startDate: string
+    endDate: string
+    frame: string
+}
+
+type LoadInfoParams = {
+    startDate: string
+    endDate: string
+}
+
 export const getSchedule = async (startDate: string, endDate: string, frame: string): Promise<Schedule> => {
     const response =
-        await instance.get<Schedule>(`/schedule?startDate=${startDate}&endDate=${endDate}&frame=${frame}`);
+        await instance.get<Schedule, AxiosResponse<Schedule>, ScheduleParams>(
+            `/schedule`,
+            {
+                params: {
+                    startDate,
+                    endDate,
+                    frame
+                }
+            }
+        );
     return response.data;
 };
 
-export const getSchedule219 = async (startDate: string, endDate: string): Promise<Array<Schedule219>> => {
+export const getLoadsInfo = async (startDate: string, endDate: string): Promise<LoadInfo[]> => {
     const response =
-        await instance.get<Array<Schedule219>>(`/class-room/number/219/loads-info/list?startDate=${startDate}&endDate=${endDate}`);
+        await instance.get<LoadInfo[], AxiosResponse<LoadInfo[]>, LoadInfoParams>(
+            `/class-room/number/219/loads-info/list`,
+            {
+                params: {
+                    startDate,
+                    endDate
+                }
+            }
+        );
     return response.data;
 };
 
-export const getSchedule219LoadInfoById = async (id: string | undefined): Promise<Schedule219> => {
-    const response =
-        await instance.get<Schedule219>(`/class-room/number/219/load-info/${id}`);
-    return response.data;
+export const createLoadInfo = async (loadInfo: LoadInfo, authToken: string | null): Promise<void> => {
+    await instance.post<void, AxiosResponse<void>, LoadInfo>(`/class-room/number/219/loads-info/create`,
+        loadInfo, authToken ? {
+            headers: {
+                Authorization: `Basic ${authToken}`,
+            }
+        } : undefined);
 }
 
-export const createSchedule219 = async (schedule: Schedule219 | null, authToken: string | null): Promise<AxiosResponse<Schedule219>> => {
-    return await instance.post(`/class-room/number/219/loads-info/create`, schedule, authToken ? {
-        headers: {
-            Authorization: `Basic ${authToken}`,
-        }
-    } : undefined);
+export const editLoadInfo = async (loadInfo: LoadInfo, authToken: string | null): Promise<void> => {
+    await instance.put<void, AxiosResponse<void>, LoadInfo>(`/class-room/number/219/load-info/${loadInfo?.id}/edit`,
+        loadInfo, authToken ? {
+            headers: {
+                Authorization: `Basic ${authToken}`,
+            }
+        } : undefined);
 }
 
-export const editSchedule219 = async (schedule: Schedule219 | null, authToken: string | null): Promise<AxiosResponse<any, any>> => {
-    return await instance.put(`/class-room/number/219/load-info/${schedule?.id}/edit`, schedule, authToken ? {
-        headers: {
-            Authorization: `Basic ${authToken}`,
-        }
-    } : undefined);
+export const deleteLoadInfo = async (id: number, authToken: string | null): Promise<void> => {
+    await instance.delete<void, AxiosResponse<void>>(`/class-room/number/219/load-info/${id}/delete`,
+        authToken ? {
+            headers: {
+                Authorization: `Basic ${authToken}`,
+            }
+        } : undefined);
 }
 
-export const deleteSchedule219 = async (id: number | undefined, authToken: string | null): Promise<AxiosResponse<any, any>> => {
-    return await instance.delete(`/class-room/number/219/load-info/${id}/delete`, authToken ? {
-        headers: {
-            Authorization: `Basic ${authToken}`,
-        }
-    } : undefined);
-}
-
-export function b64EncodeUnicode(str : string) {
+export function b64EncodeUnicode(str: string) {
     const utf8Bytes = new TextEncoder().encode(str);
     const binaryString = Array.from(utf8Bytes, byte => String.fromCharCode(byte)).join('');
     return btoa(binaryString);

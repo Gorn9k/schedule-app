@@ -29,7 +29,7 @@ const modalSlice = createSlice({
         createLoadInfo(state: ModalState, _action: PayloadAction<{ loadInfo: Schedule219 }>) {
             state.isLoading = true
         },
-        updateLoadInfo(state: ModalState, _action: PayloadAction<{ loadInfo: Schedule219 }>) {
+        editLoadInfo(state: ModalState, _action: PayloadAction<{ loadInfo: Schedule219 }>) {
             state.isLoading = true
         },
         deleteLoadInfo(state: ModalState, _action: PayloadAction<number>) {
@@ -79,7 +79,7 @@ export const {
     setIsLoading,
     setErrorMessage,
     createLoadInfo,
-    updateLoadInfo,
+    editLoadInfo,
     deleteLoadInfo,
     setAuth,
     crudLoadInfoSuccess,

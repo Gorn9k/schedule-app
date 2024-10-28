@@ -2,7 +2,7 @@ import {call, put, race, select, take, takeLatest} from 'redux-saga/effects';
 import {
     cancelAuth,
     createLoadInfo,
-    crudLoadInfoSuccess,
+    crudLoadInfoSuccess, deleteLoadInfo, editLoadInfo,
     setAuth,
     setErrorMessage,
     setFormFieldsErrors, setNavigateTo,
@@ -13,7 +13,7 @@ import {PayloadAction} from "@reduxjs/toolkit";
 import axios, {AxiosResponse} from "axios";
 import {RootState} from "../redux/store";
 import {Action} from "redux-saga";
-import {addLoadInfo, deleteLoadInfo, updateLoadInfo} from "../redux/scheduleSlice";
+import {addLoadInfo, removeLoadInfo, updateLoadInfo} from "../redux/scheduleSlice";
 import {generateEndDateMilliseconds, generateStartDateMilliseconds} from "../utils/dates";
 
 function* handleError(error: any, defaultErrorMessage: string): Generator<any, void, any> {
@@ -66,11 +66,15 @@ function* isInCurrentDaysPeriod(value: Date): Generator<any, boolean, Date> {
 
 function* createLoadInfoSaga(action: PayloadAction<{
     loadInfo: Schedule219
-}>): Generator<any, void, AxiosResponse<Schedule219>> {
+}>): Generator<any, void, AxiosResponse<Schedule219> | boolean> {
     try {
-        const response = yield call(createSchedule219, action.payload.loadInfo, localStorage.getItem('authToken'))
-        if (yield call(isInCurrentDaysPeriod, new Date(response.data.date)))
+        const response = (yield call(createSchedule219, action.payload.loadInfo, localStorage.getItem('authToken'))) as AxiosResponse<Schedule219>
+        if ((yield call(isInCurrentDaysPeriod, new Date(action.payload.loadInfo.date))) as boolean) {
+            const location = response.headers['location']
+            response.data.id = Number
+                .parseInt(location.split('/')[location.split('/').length - 1])
             yield put(addLoadInfo(response.data))
+        }
         yield put(crudLoadInfoSuccess())
         return
     } catch (error) {
@@ -92,9 +96,9 @@ function* updateLoadInfoSaga(action: PayloadAction<{
     loadInfo: Schedule219
 }>): Generator<any, void, AxiosResponse<Schedule219>> {
     try {
-        const response = yield call(editSchedule219, action.payload.loadInfo, localStorage.getItem('authToken'))
-        if (yield call(isInCurrentDaysPeriod, new Date(response.data.date)))
-            yield put(updateLoadInfo(response.data))
+        yield call(editSchedule219, action.payload.loadInfo, localStorage.getItem('authToken'));
+        if (yield call(isInCurrentDaysPeriod, new Date(action.payload.loadInfo.date)))
+            yield put(updateLoadInfo(action.payload.loadInfo))
         yield put(crudLoadInfoSuccess())
         return
     } catch (error) {
@@ -114,8 +118,8 @@ function* updateLoadInfoSaga(action: PayloadAction<{
 
 function* deleteLoadInfoSaga(action: PayloadAction<number>): Generator<any, void, any> {
     try {
-        const response = yield call(deleteSchedule219, action.payload, localStorage.getItem('authToken'))
-        yield put(deleteLoadInfo(response.data))
+        yield call(deleteSchedule219, action.payload, localStorage.getItem('authToken'))
+        yield put(removeLoadInfo(action.payload))
         yield put(crudLoadInfoSuccess())
         return
     } catch (error) {
@@ -135,6 +139,6 @@ function* deleteLoadInfoSaga(action: PayloadAction<number>): Generator<any, void
 
 export default function* crudLoadInfoSaga() {
     yield takeLatest(createLoadInfo.type, createLoadInfoSaga);
-    yield takeLatest(updateLoadInfo.type, updateLoadInfoSaga);
+    yield takeLatest(editLoadInfo.type, updateLoadInfoSaga);
     yield takeLatest(deleteLoadInfo.type, deleteLoadInfoSaga);
 }
