@@ -44,27 +44,31 @@ const modalSlice = createSlice({
             state.showLoadInfoModal = false
             state.showAuthModal = false
             state.loadInfo = null
+            state.isLoading = false
         },
         setShowLoadInfoModal(state: ModalState, action: PayloadAction<boolean>) {
             state.showLoadInfoModal = action.payload
         },
         setShowAuthModal(state: ModalState, action: PayloadAction<boolean>) {
             state.showAuthModal = action.payload
+            state.isLoading = false
         },
         setIsLoading(state: ModalState, action: PayloadAction<boolean>) {
             state.isLoading = action.payload
         },
         setErrorMessage(state: ModalState, action: PayloadAction<string | null>) {
             state.errorMessage = action.payload
-        },
-        setLoadInfo(state: ModalState, action: PayloadAction<Schedule219 | null>) {
-            state.loadInfo = action.payload
+            state.isLoading = false
         },
         setFormFieldsErrors(state: ModalState, action: PayloadAction<{ field: string, errorMessage: string }>) {
             state.formFieldsErrors.push(action.payload)
+            state.isLoading = false
         },
         setNavigateTo(state: ModalState, action: PayloadAction<string | null>) {
             state.navigateTo = action.payload
+        },
+        setLoadInfo(state: ModalState, action: PayloadAction<Schedule219 | null>) {
+            state.loadInfo = action.payload
         }
     }
 })
@@ -74,7 +78,6 @@ export const {
     setShowAuthModal,
     setIsLoading,
     setErrorMessage,
-    setLoadInfo,
     createLoadInfo,
     updateLoadInfo,
     deleteLoadInfo,
@@ -82,7 +85,8 @@ export const {
     crudLoadInfoSuccess,
     setFormFieldsErrors,
     cancelAuth,
-    setNavigateTo
+    setNavigateTo,
+    setLoadInfo
 } = modalSlice.actions
 
 export default modalSlice.reducer

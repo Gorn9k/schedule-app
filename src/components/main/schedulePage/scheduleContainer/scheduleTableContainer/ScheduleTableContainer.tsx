@@ -1,7 +1,7 @@
 import React, {FC, useLayoutEffect, useRef} from "react";
 import styles from "./ScheduleTableContainer.module.css";
 import {ScheduleTableHeaderContainer} from "./scheduleTableHeaderContainer/ScheduleTableHeaderContainer";
-import {FrameType} from "../../../../../redux/scheduleSlice";
+import {FrameType, setIsOverflowing} from "../../../../../redux/scheduleSlice";
 import {withFrame} from "../../../../../hocs/withFrame";
 import {
     ScheduleTableBodyClassesScheduleContainer
@@ -9,10 +9,14 @@ import {
 import {
     ScheduleTableBodyLoadsInfoContainer
 } from "./scheduleTableBodyLoadsInfoContainer/ScheduleTableBodyLoadsInfoContainer";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../../../../../redux/store";
 
 export const ScheduleTableContainer: FC = () => {
 
     const bodyContainerRef = useRef<HTMLDivElement | null>(null);
+    
+    const dispatch = useDispatch<AppDispatch>()
 
     useLayoutEffect(() => {
         const currentRef = bodyContainerRef.current
@@ -20,7 +24,7 @@ export const ScheduleTableContainer: FC = () => {
         if (currentRef) {
             const handleOverflowCheck = () => {
                 const isOverflowing = currentRef.scrollHeight > currentRef.clientHeight;
-                setIsOverflowing(isOverflowing)
+                dispatch(setIsOverflowing(isOverflowing))
             };
 
             const resizeObserver = new ResizeObserver(handleOverflowCheck);
@@ -34,7 +38,7 @@ export const ScheduleTableContainer: FC = () => {
                 resizeObserver.disconnect();
             };
         }
-    }, []);
+    }, [dispatch]);
 
     const ScheduleTableBody: FC<{ frame: FrameType }> = ({frame}) => {
 

@@ -12,15 +12,16 @@ type WeekPeriodBlockProps = {
 export const WeekPeriodBlock: FC<WeekPeriodBlockProps> = ({startDate, endDate, frame}) => {
 
     const containerDatePeriod = `${startDate.toLocaleDateString('ru-RU')} - ${endDate.toLocaleDateString('ru-RU')}`
-    const urlParams = new URLSearchParams(
-        {
-            startDate: startDate.toLocaleDateString('en-CA'),
-            endDate: endDate.toLocaleDateString('en-CA')
-        })
-    frame && urlParams.set('frame', frame)
 
     const getLinkUri = (startDate: Date, endDate: Date) => {
-        return `${frame !== null ? '/class-schedule' : '/loads-info'}?${urlParams.toString()}`
+        const urlParams = new URLSearchParams(
+            {
+                startDate: startDate.toLocaleDateString('en-CA'),
+                endDate: endDate.toLocaleDateString('en-CA')
+            })
+        frame && urlParams.set('frame', frame)
+
+        return `${frame ? '/class-schedule' : '/loads-info'}?${urlParams.toString()}`
     }
 
     return <>

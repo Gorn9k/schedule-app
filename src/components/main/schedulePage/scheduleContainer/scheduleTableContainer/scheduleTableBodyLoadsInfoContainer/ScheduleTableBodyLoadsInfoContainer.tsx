@@ -1,11 +1,11 @@
 import {FC} from "react";
 import {ScheduleTableBodyLoadsInfo} from "./scheduleTableBodyLoadsInfo/ScheduleTableBodyLoadsInfo";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../../../redux/store";
 
-type ScheduleTableBodyLoadsInfoContainerProps = {
+export const ScheduleTableBodyLoadsInfoContainer: FC = () => {
 
-}
+    const loadsInfo = useSelector((state: RootState) => state.schedule.loadsInfo)
 
-export const ScheduleTableBodyLoadsInfoContainer: FC<ScheduleTableBodyLoadsInfoContainerProps> = ({}) => {
-
-    return <ScheduleTableBodyLoadsInfo/>
+    return <ScheduleTableBodyLoadsInfo loadsInfo={loadsInfo}/>
 }

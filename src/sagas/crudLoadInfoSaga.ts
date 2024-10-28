@@ -3,63 +3,23 @@ import {
     cancelAuth,
     createLoadInfo,
     crudLoadInfoSuccess,
-    deleteLoadInfo,
     setAuth,
     setErrorMessage,
-    setFormFieldsErrors,
-    setIsLoading,
-    setNavigateTo,
-    setShowAuthModal,
-    updateLoadInfo
-} from "../redux/loadInfoSlice";
+    setFormFieldsErrors, setNavigateTo,
+    setShowAuthModal
+} from "../redux/modalSlice";
 import {createSchedule219, deleteSchedule219, editSchedule219, Schedule219} from "../api/schedule-backend-api";
 import {PayloadAction} from "@reduxjs/toolkit";
 import axios, {AxiosResponse} from "axios";
 import {RootState} from "../redux/store";
 import {Action} from "redux-saga";
+import {addLoadInfo, deleteLoadInfo, updateLoadInfo} from "../redux/scheduleSlice";
 import {generateEndDateMilliseconds, generateStartDateMilliseconds} from "../utils/dates";
-
-type CrudFunction<T> = T extends Schedule219 ?
-    (value: Schedule219, authToken: string | null) => Promise<AxiosResponse<any, any>> :
-    (value: number, authToken: string | null) => Promise<AxiosResponse<any, any>>;
-
-function* handleCrudOperation<T extends Schedule219 | number>(crudFunction: CrudFunction<T>,
-                                                              functionParam: T,
-                                                              defaultErrorMessage: string): Generator<any, void, any> {
-    while (true) {
-        try {
-            yield call({
-                context: null,
-                fn: crudFunction as any
-            }, functionParam, localStorage.getItem('authToken'));
-            yield put(crudLoadInfoSuccess());
-            if (typeof functionParam !== 'number') {
-                const startDate = new Date(generateStartDateMilliseconds(new Date(functionParam.date))).toLocaleDateString('en-CA')
-                const endDate = new Date(generateEndDateMilliseconds(new Date(functionParam.date))).toLocaleDateString('en-CA')
-                yield put(setNavigateTo(`/loads-info?startDate=${startDate}&endDate=${endDate}`))
-            }
-            return
-        } catch (error) {
-            yield* handleError(error, defaultErrorMessage)
-        } finally {
-            yield put(setIsLoading(false))
-        }
-        const result = yield race({
-            success: take(setAuth().type),
-            canceled: take(cancelAuth().type)
-        });
-
-        if ((result as { success?: Action, canceled?: Action }).canceled) {
-            return
-        } else
-            yield put(setIsLoading(true))
-    }
-}
 
 function* handleError(error: any, defaultErrorMessage: string): Generator<any, void, any> {
     if (axios.isAxiosError(error)) {
         if (error?.response?.status === 403) {
-            const showAuthModal = yield select((state: RootState) => state.loadInfo.modal.showAuthModal)
+            const showAuthModal = yield select((state: RootState) => state.modal.showAuthModal)
             if (showAuthModal)
                 yield put(setFormFieldsErrors(
                     {
@@ -84,26 +44,93 @@ function* handleError(error: any, defaultErrorMessage: string): Generator<any, v
             yield put(setErrorMessage(defaultErrorMessage))
     } else {
         yield put(setErrorMessage(`Произошла неизвестная ошибка`))
+        console.log(error)
     }
+}
+
+function* isInCurrentDaysPeriod(value: Date): Generator<any, boolean, Date> {
+
+    const startDate = yield select((state: RootState) => new Date(state.schedule.startDateTime as number))
+    const endDate = yield select((state: RootState) => new Date(state.schedule.endDateTime as number))
+
+    const isIn = value.getTime() >= startDate.getTime() && value.getTime() <= endDate.getTime()
+
+    const startDateString= new Date(generateStartDateMilliseconds(value)).toLocaleDateString('en-CA')
+    const endDateString = new Date(generateEndDateMilliseconds(value)).toLocaleDateString('en-CA')
+
+    if (!isIn)
+        yield put(setNavigateTo(`/loads-info?startDate=${startDateString}&endDate=${endDateString}`));
+
+    return isIn
 }
 
 function* createLoadInfoSaga(action: PayloadAction<{
     loadInfo: Schedule219
-}>): Generator<any, void, any> {
-    yield* handleCrudOperation(createSchedule219, action.payload.loadInfo,
-        'Не удалось сохранить нагрузку')
+}>): Generator<any, void, AxiosResponse<Schedule219>> {
+    try {
+        const response = yield call(createSchedule219, action.payload.loadInfo, localStorage.getItem('authToken'))
+        if (yield call(isInCurrentDaysPeriod, new Date(response.data.date)))
+            yield put(addLoadInfo(response.data))
+        yield put(crudLoadInfoSuccess())
+        return
+    } catch (error) {
+        yield* handleError(error, 'Не удалось сохранить нагрузку')
+    }
+
+    const result = yield race({
+        success: take(setAuth.type),
+        canceled: take(cancelAuth.type)
+    });
+
+    if ((result as { success?: Action, canceled?: Action }).canceled) {
+        return
+    } else
+        yield put(action)
 }
 
 function* updateLoadInfoSaga(action: PayloadAction<{
     loadInfo: Schedule219
-}>): Generator<any, void, any> {
-    yield* handleCrudOperation(editSchedule219, action.payload.loadInfo,
-        'Не удалось обновить нагрузку')
+}>): Generator<any, void, AxiosResponse<Schedule219>> {
+    try {
+        const response = yield call(editSchedule219, action.payload.loadInfo, localStorage.getItem('authToken'))
+        if (yield call(isInCurrentDaysPeriod, new Date(response.data.date)))
+            yield put(updateLoadInfo(response.data))
+        yield put(crudLoadInfoSuccess())
+        return
+    } catch (error) {
+        yield* handleError(error, 'Не удалось обновить нагрузку')
+    }
+
+    const result = yield race({
+        success: take(setAuth.type),
+        canceled: take(cancelAuth.type)
+    });
+
+    if ((result as { success?: Action, canceled?: Action }).canceled) {
+        return
+    } else
+        yield put(action)
 }
 
 function* deleteLoadInfoSaga(action: PayloadAction<number>): Generator<any, void, any> {
-    yield* handleCrudOperation(deleteSchedule219, action.payload,
-        'Не удалось удалить нагрузку')
+    try {
+        const response = yield call(deleteSchedule219, action.payload, localStorage.getItem('authToken'))
+        yield put(deleteLoadInfo(response.data))
+        yield put(crudLoadInfoSuccess())
+        return
+    } catch (error) {
+        yield* handleError(error, 'Не удалось удалить нагрузку')
+    }
+
+    const result = yield race({
+        success: take(setAuth.type),
+        canceled: take(cancelAuth.type)
+    });
+
+    if ((result as { success?: Action, canceled?: Action }).canceled) {
+        return
+    } else
+        yield put(action)
 }
 
 export default function* crudLoadInfoSaga() {

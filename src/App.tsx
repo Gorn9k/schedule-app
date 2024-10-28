@@ -12,7 +12,7 @@ import {useDispatch} from "react-redux";
 import {AppDispatch} from "./redux/store";
 import {resetScheduleState} from "./redux/scheduleSlice";
 import {Header} from "./components/headerScheduleContainer/header/Header";
-import {setShowLoadInfoModal} from "./redux/loadInfoSlice";
+import {setShowLoadInfoModal} from "./redux/modalSlice";
 import {ModalContainer} from "./components/main/schedulePage/modalContainer/ModalContainer";
 
 Modal.setAppElement('#root');

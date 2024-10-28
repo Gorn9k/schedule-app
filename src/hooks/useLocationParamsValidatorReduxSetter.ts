@@ -1,17 +1,25 @@
 import {useLocation, useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
-import {FrameType, setEndDateTime, setFrame, setStartDateTime} from "../redux/scheduleSlice";
+import {
+    fetchLoadsInfo,
+    fetchSchedule,
+    FrameType,
+    setEndDateTime,
+    setFrame,
+    setStartDateTime
+} from "../redux/scheduleSlice";
 import {useEffect} from "react";
 
 export const useLocationParamsValidatorReduxSetter = () => {
 
     const location = useLocation()
     const navigate = useNavigate()
-    const params = new URLSearchParams(location.search)
+
     const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
+        const params = new URLSearchParams(location.search)
         const badLocationParams = (() => {
             switch (location.pathname) {
                 case '/class-schedule': {
@@ -29,6 +37,7 @@ export const useLocationParamsValidatorReduxSetter = () => {
                         dispatch(setStartDateTime((startDate as Date).getTime()))
                         dispatch(setEndDateTime((endDate as Date).getTime()))
                         dispatch(setFrame(frameParam as FrameType))
+                        dispatch(fetchSchedule())
                     }
                     return badLocationParams
                 }
@@ -46,6 +55,7 @@ export const useLocationParamsValidatorReduxSetter = () => {
                         dispatch(setStartDateTime((startDate as Date).getTime()))
                         dispatch(setEndDateTime((endDate as Date).getTime()))
                         dispatch(setFrame(undefined))
+                        dispatch(fetchLoadsInfo())
                     }
                     return badLocationParams
                 }
@@ -55,5 +65,5 @@ export const useLocationParamsValidatorReduxSetter = () => {
         })()
 
         badLocationParams && navigate('/')
-    }, [location]);
+    }, [dispatch, location, navigate]);
 }

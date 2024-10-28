@@ -5,14 +5,14 @@ import Modal from "react-modal";
 import {
     cancelAuth,
     setErrorMessage,
-    setIsLoading,
-    setLoadInfo,
+    setIsLoading, setLoadInfo, setNavigateTo,
     setShowLoadInfoModal
-} from "../../../../redux/loadInfoSlice";
+} from "../../../../redux/modalSlice";
 import {LoadInfoFormContainer} from "./loadInfoFormContainer/LoadInfoFormContainer";
 import {AuthFormContainer} from "./authFormContainer/AuthFormContainer";
-import React from "react";
+import React, {useEffect} from "react";
 import Preloader from "../../../preloader/Preloader";
+import {useNavigate} from "react-router-dom";
 
 export const ModalContainer = () => {
 
@@ -21,8 +21,19 @@ export const ModalContainer = () => {
     const errorMessage = useSelector((state: RootState) => state.modal.errorMessage)
     const loadInfo = useSelector((state: RootState) => state.modal.loadInfo)
     const isLoading = useSelector((state: RootState) => state.modal.isLoading)
-
+    
+    const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>();
+
+    const navigateTo = useSelector((state: RootState) => state.modal.navigateTo)
+
+    useEffect(() => {
+        if (navigateTo) {
+            navigate(navigateTo)
+            dispatch(setNavigateTo(null))
+        }
+    }, [dispatch, navigate, navigateTo]);
+
     console.log('modal')
     return (showAuthModal || showLoadInfoModal || errorMessage || isLoading) ?
         <Modal className={generalStyles.content}

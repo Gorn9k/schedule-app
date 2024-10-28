@@ -5,7 +5,7 @@ import {b64EncodeUnicode} from "../../../../../api/schedule-backend-api";
 import {AuthForm} from "./authForm/AuthForm";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../redux/store";
-import {setAuth} from "../../../../../redux/loadInfoSlice";
+import {setAuth} from "../../../../../redux/modalSlice";
 
 type AuthFormContainerProps = {
     errorMessage: string | null

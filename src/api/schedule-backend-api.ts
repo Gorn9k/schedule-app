@@ -49,7 +49,7 @@ export const getSchedule219LoadInfoById = async (id: string | undefined): Promis
     return response.data;
 }
 
-export const createSchedule219 = async (schedule: Schedule219 | null, authToken: string | null) => {
+export const createSchedule219 = async (schedule: Schedule219 | null, authToken: string | null): Promise<AxiosResponse<Schedule219>> => {
     return await instance.post(`/class-room/number/219/loads-info/create`, schedule, authToken ? {
         headers: {
             Authorization: `Basic ${authToken}`,

@@ -1,10 +1,12 @@
-import React, {FC} from "react";
+import React, {FC, memo} from "react";
 import styles from "../../ScheduleTableContainer.module.css";
-import {Lesson, Schedule} from "../../../../../../../api/schedule-backend-api";
+import {Lesson} from "../../../../../../../api/schedule-backend-api";
 import {switchByDayNumber, switchByLessonNumber} from "../../../../../../../utils/dates";
 
 type ScheduleTableBodyClassScheduleNotEmptyProps = {
-    schedule: Schedule
+    schedules: Lesson[]
+    days: number[]
+    classesNumbers: string[]
 }
 
 type TableDay = {
@@ -12,14 +14,14 @@ type TableDay = {
     rowSpan: number
 }
 
-export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassScheduleNotEmptyProps> = (props) => {
+export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassScheduleNotEmptyProps> = memo(({schedules, classesNumbers, days}) => {
 
     const tableDays: TableDay[] = []
 
     const lessons: Lesson[] = []
 
-    props.schedule.days.forEach(day => {
-        const result = props.schedule.schedules.filter(lesson => lesson.day === day)
+    days.forEach(day => {
+        const result = schedules.filter(lesson => lesson.day === day)
             .reduce((accumulator, currentValue) => {
                 if (accumulator.some(lesson => lesson.day === currentValue.day && lesson.lessonNumber === currentValue.lessonNumber))
                     return accumulator;
@@ -44,8 +46,8 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
                             <td rowSpan={tableDays.shift()?.rowSpan}
                                 className={styles.thAndTdDayAndTime}>{`${switchByDayNumber(lesson.day)}`}</td>}
                         <td className={styles.thAndTdDayAndTime}>{`${switchByLessonNumber(lesson.lessonNumber)}`}</td>
-                        {props.schedule.classesNumbers.map(classNumber => {
-                            const cellContent = props.schedule.schedules.filter(value => value.roomNumber === classNumber && value.day === lesson.day &&
+                        {classesNumbers.map(classNumber => {
+                            const cellContent = schedules.filter(value => value.roomNumber === classNumber && value.day === lesson.day &&
                                 value.lessonNumber === lesson.lessonNumber).map((value, lessonIndex) => {
                                     return (
                                         <ul key={value.id}
@@ -69,4 +71,4 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
             })
         }
     </>
-}
+})
