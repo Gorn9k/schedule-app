@@ -1,12 +1,12 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {Schedule219} from "../api/schedule-backend-api";
+import {LoadInfo} from "../api/schedule-backend-api";
 
 type ModalState = {
     showLoadInfoModal: boolean
     showAuthModal: boolean
     isLoading: boolean
     errorMessage: string | null
-    loadInfo: Schedule219 | null
+    loadInfo: LoadInfo | null
     formFieldsErrors: { field: string, errorMessage: string }[]
     navigateTo: string | null
 
@@ -26,13 +26,13 @@ const modalSlice = createSlice({
     name: "modalSlice",
     initialState,
     reducers: {
-        createLoadInfo(state: ModalState, _action: PayloadAction<{ loadInfo: Schedule219 }>) {
+        createLoadInfoInit(state: ModalState, _action: PayloadAction<{ loadInfo: LoadInfo }>) {
             state.isLoading = true
         },
-        editLoadInfo(state: ModalState, _action: PayloadAction<{ loadInfo: Schedule219 }>) {
+        editLoadInfoInit(state: ModalState, _action: PayloadAction<{ loadInfo: LoadInfo }>) {
             state.isLoading = true
         },
-        deleteLoadInfo(state: ModalState, _action: PayloadAction<number>) {
+        deleteLoadInfoInit(state: ModalState, _action: PayloadAction<number>) {
             state.isLoading = true
         },
         setAuth() {
@@ -67,7 +67,7 @@ const modalSlice = createSlice({
         setNavigateTo(state: ModalState, action: PayloadAction<string | null>) {
             state.navigateTo = action.payload
         },
-        setLoadInfo(state: ModalState, action: PayloadAction<Schedule219 | null>) {
+        setLoadInfo(state: ModalState, action: PayloadAction<LoadInfo | null>) {
             state.loadInfo = action.payload
         }
     }
@@ -78,9 +78,9 @@ export const {
     setShowAuthModal,
     setIsLoading,
     setErrorMessage,
-    createLoadInfo,
-    editLoadInfo,
-    deleteLoadInfo,
+    createLoadInfoInit,
+    editLoadInfoInit,
+    deleteLoadInfoInit,
     setAuth,
     crudLoadInfoSuccess,
     setFormFieldsErrors,

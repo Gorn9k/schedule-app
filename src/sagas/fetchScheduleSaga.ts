@@ -1,5 +1,12 @@
-import {call, CallEffect, put, PutEffect, select, SelectEffect, take, TakeEffect, takeLatest} from "redux-saga/effects";
-import {getSchedule, Schedule} from "../api/schedule-backend-api";
+import {call, CallEffect, put, PutEffect, take, TakeEffect, takeLatest} from "redux-saga/effects";
+import {
+    getLoadsInfo,
+    getSchedule,
+    LoadInfo,
+    LoadInfoParams,
+    Schedule,
+    ScheduleParams
+} from "../api/schedule-backend-api";
 import {
     fetchLoadsInfo,
     fetchSchedule,
@@ -9,22 +16,11 @@ import {
     setLoadsInfo,
     setSchedule
 } from "../redux/scheduleSlice";
-import {RootState} from "../redux/store";
-import {AxiosResponse} from "axios";
+import {PayloadAction} from "@reduxjs/toolkit";
 
-function* fetchScheduleRequestSaga(startDate: string, endDate: string, frame: string): Generator<CallEffect | PutEffect, void, AxiosResponse<Schedule, {message: string}>> {
-    const response = yield call(getSchedule, startDate, endDate, frame)
-    yield put(setSchedule(response.data))
-}
-
-function* fetchLessonsSaga(): Generator<CallEffect | PutEffect | TakeEffect | SelectEffect, void, Schedule | string> {
+function* fetchLessonsSaga(action: PayloadAction<ScheduleParams>): Generator<CallEffect | PutEffect | TakeEffect, void, Schedule> {
     try {
-        const startDate = (yield select((state: RootState) =>
-            new Date(state.schedule.startDateTime as number).toLocaleDateString('en-CA'))) as string
-        const endDate = (yield select((state: RootState) =>
-            new Date(state.schedule.endDateTime as number).toLocaleDateString('en-CA'))) as string
-        const frame = (yield select((state: RootState) => state.schedule.frame as string)) as string
-        const response = (yield call(() => getSchedule(startDate, endDate, frame))) as Schedule
+        const response = yield call(getSchedule, action.payload.startDate, action.payload.endDate, action.payload.frame)
         yield put(setSchedule(response))
         return
     } catch (error) {
@@ -33,21 +29,13 @@ function* fetchLessonsSaga(): Generator<CallEffect | PutEffect | TakeEffect | Se
 
     yield take(repeatFetchSchedule.type)
 
-    yield put(fetchSchedule())
+    yield put(action)
 }
 
-function* fetchLoadsInfoRequestSaga(startDate: string, endDate: string): Generator<CallEffect | PutEffect, void, Schedule219[]> {
-    const response = yield call(getSchedule219, startDate, endDate)
-    yield put(setLoadsInfo(response))
-}
-
-function* fetchLoadsInfoSaga(): Generator<CallEffect | PutEffect | TakeEffect | SelectEffect, void, string> {
+function* fetchLoadsInfoSaga(action: PayloadAction<LoadInfoParams>): Generator<CallEffect | PutEffect | TakeEffect, void, LoadInfo[]> {
     try {
-        const startDate = yield select((state: RootState) =>
-            new Date(state.schedule.startDateTime as number).toLocaleDateString('en-CA'))
-        const endDate = yield select((state: RootState) =>
-            new Date(state.schedule.endDateTime as number).toLocaleDateString('en-CA'))
-        yield call(fetchLoadsInfoRequestSaga, startDate, endDate)
+        const response = yield call(getLoadsInfo, action.payload.startDate, action.payload.endDate)
+        yield put(setLoadsInfo(response))
         return
     } catch (error) {
         yield put(setErrorMessage('Не удалось получить расписание из диспетчерской'))
@@ -55,7 +43,7 @@ function* fetchLoadsInfoSaga(): Generator<CallEffect | PutEffect | TakeEffect | 
 
     yield take(repeatFetchLoadsInfo.type)
 
-    yield put(fetchLoadsInfo())
+    yield put(action)
 }
 
 export default function* fetchScheduleSaga() {

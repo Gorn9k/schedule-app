@@ -1,11 +1,7 @@
 import React, {FC} from "react";
 import styles from "../../ScheduleTableContainer.module.css";
 
-type ScheduleTableHeaderLoadsInfoProps = {
-
-}
-
-export const ScheduleTableHeaderLoadsInfo: FC<ScheduleTableHeaderLoadsInfoProps> = (props) => {
+export const ScheduleTableHeaderLoadsInfo: FC = () => {
 
     return <>
             <tr>

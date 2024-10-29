@@ -1,14 +1,14 @@
 import React, {FC, memo} from "react";
-import {Schedule219} from "../../../../../../../api/schedule-backend-api";
+import {LoadInfo} from "../../../../../../../api/schedule-backend-api";
 import {_switchByDayNumber, mergeDayOfWeekRowsNumber219} from "../../../../../../../utils/dates";
 import styles from "../../ScheduleTableContainer.module.css";
 import generalStyles from "../../../../../../../App.module.css";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../../../redux/store";
-import {deleteLoadInfo, setLoadInfo, setShowLoadInfoModal} from "../../../../../../../redux/modalSlice";
+import {deleteLoadInfoInit, setLoadInfo, setShowLoadInfoModal} from "../../../../../../../redux/modalSlice";
 
 type ScheduleTableBodyLoadsInfoProps = {
-    loadsInfo: Schedule219[]
+    loadsInfo: LoadInfo[]
 }
 
 export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = memo(({loadsInfo}) => {
@@ -34,7 +34,7 @@ export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = m
                                 Изменить
                             </button>
                             <button onClick={() => {
-                                dispatch(deleteLoadInfo(value.id as number))
+                                dispatch(deleteLoadInfoInit(value.id as number))
                             }} type="button" className={`${generalStyles.button} ${generalStyles.formButton}`}>
                                 Удалить
                             </button>

@@ -9,13 +9,13 @@ import {
 import {
     ScheduleTableBodyLoadsInfoContainer
 } from "./scheduleTableBodyLoadsInfoContainer/ScheduleTableBodyLoadsInfoContainer";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../../../../../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../../../redux/store";
 
 export const ScheduleTableContainer: FC = () => {
 
     const bodyContainerRef = useRef<HTMLDivElement | null>(null);
-    
+
     const dispatch = useDispatch<AppDispatch>()
 
     useLayoutEffect(() => {
@@ -40,25 +40,39 @@ export const ScheduleTableContainer: FC = () => {
         }
     }, [dispatch]);
 
-    const ScheduleTableBody: FC<{ frame: FrameType }> = ({frame}) => {
+    const ScheduleTable: FC<{ frame: FrameType }> = ({frame}) => {
 
-        return (frame && <ScheduleTableBodyClassesScheduleContainer frame={frame}/>)
-            || <ScheduleTableBodyLoadsInfoContainer/>
+        const schedule = useSelector((state: RootState) => frame ?
+            state.schedule.lessons : state.schedule.loadsInfo)
+
+        const NoContent: FC = () => {
+            return <tr>
+                <td style={{background: '#EFEFEF'}}>
+                    <h2 style={{
+                        textAlign: 'center',
+                        alignContent: 'center'
+                    }}>{'На этой неделе расписания нет'}</h2>
+                </td>
+            </tr>
+        }
+
+        return <table className={schedule.length > 0 ? undefined : styles.scheduleTableNoContent}>
+            <tbody>
+            {
+                schedule.length > 0 ? (frame && <ScheduleTableBodyClassesScheduleContainer/>) ||
+                    <ScheduleTableBodyLoadsInfoContainer/> : <NoContent/>
+            }
+            </tbody>
+        </table>
     }
 
-    const EnhancedScheduleTableHeader = withFrame(ScheduleTableBody)
+    const EnhancedScheduleTable = withFrame(ScheduleTable)
 
     return <>
         <ScheduleTableHeaderContainer/>
         <div ref={bodyContainerRef}
              className={styles.scheduleContainerBody}>
-            <table>
-                <tbody>
-                {
-                    <EnhancedScheduleTableHeader/>
-                }
-                </tbody>
-            </table>
+            <EnhancedScheduleTable/>
         </div>
     </>
 }

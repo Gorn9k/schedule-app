@@ -1,12 +1,12 @@
 import React, {FC} from "react";
-import {Schedule219} from "../../../../../../api/schedule-backend-api";
+import {LoadInfo} from "../../../../../../api/schedule-backend-api";
 import {ErrorMessage, Field, Form, FormikErrors, FormikTouched} from "formik";
 import generalStyles from "../../../../../../App.module.css";
 
 type LoadInfoProps = {
     isSubmitting: boolean
-    errors: FormikErrors<Schedule219>
-    touched: FormikTouched<Schedule219>
+    errors: FormikErrors<LoadInfo>
+    touched: FormikTouched<LoadInfo>
     renderButton: (disabled: boolean) => React.ReactNode;
 }
 

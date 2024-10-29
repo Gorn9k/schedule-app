@@ -31,13 +31,13 @@ export type LoadInfo = {
     description: string
 }
 
-type ScheduleParams = {
+export type ScheduleParams = {
     startDate: string
     endDate: string
     frame: string
 }
 
-type LoadInfoParams = {
+export type LoadInfoParams = {
     startDate: string
     endDate: string
 }
@@ -71,8 +71,8 @@ export const getLoadsInfo = async (startDate: string, endDate: string): Promise<
     return response.data;
 };
 
-export const createLoadInfo = async (loadInfo: LoadInfo, authToken: string | null): Promise<void> => {
-    await instance.post<void, AxiosResponse<void>, LoadInfo>(`/class-room/number/219/loads-info/create`,
+export const createLoadInfo = async (loadInfo: LoadInfo, authToken: string | null): Promise<AxiosResponse<void>> => {
+    return await instance.post<void, AxiosResponse<void>, LoadInfo>(`/class-room/number/219/loads-info/create`,
         loadInfo, authToken ? {
             headers: {
                 Authorization: `Basic ${authToken}`,

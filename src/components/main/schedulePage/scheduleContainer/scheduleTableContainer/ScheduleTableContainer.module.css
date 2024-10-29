@@ -44,6 +44,10 @@ td, th {
     padding-bottom: 1px;
 }
 
+.scheduleTableNoContent {
+    height: 100%;
+}
+
 .scheduleTableBodyContent {
     margin-bottom: 1px
 }

@@ -37,7 +37,13 @@ export const useLocationParamsValidatorReduxSetter = () => {
                         dispatch(setStartDateTime((startDate as Date).getTime()))
                         dispatch(setEndDateTime((endDate as Date).getTime()))
                         dispatch(setFrame(frameParam as FrameType))
-                        dispatch(fetchSchedule())
+                        dispatch(fetchSchedule(
+                            {
+                                startDate: startDate.toLocaleDateString('en-CA'),
+                                endDate: endDate.toLocaleDateString('en-CA'),
+                                frame: frameParam
+                            }
+                        ))
                     }
                     return badLocationParams
                 }
@@ -55,7 +61,12 @@ export const useLocationParamsValidatorReduxSetter = () => {
                         dispatch(setStartDateTime((startDate as Date).getTime()))
                         dispatch(setEndDateTime((endDate as Date).getTime()))
                         dispatch(setFrame(undefined))
-                        dispatch(fetchLoadsInfo())
+                        dispatch(fetchLoadsInfo(
+                            {
+                                startDate: startDate.toLocaleDateString('en-CA'),
+                                endDate: endDate.toLocaleDateString('en-CA')
+                            }
+                        ))
                     }
                     return badLocationParams
                 }

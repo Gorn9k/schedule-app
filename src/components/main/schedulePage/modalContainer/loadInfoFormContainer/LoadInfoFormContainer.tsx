@@ -2,17 +2,17 @@ import React, {FC} from "react";
 import * as Yup from "yup";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
 import {Formik} from "formik";
-import {Schedule219} from "../../../../../api/schedule-backend-api";
+import {LoadInfo} from "../../../../../api/schedule-backend-api";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../redux/store";
 import generalStyles from "../../../../../App.module.css";
-import {createLoadInfo, editLoadInfo} from "../../../../../redux/modalSlice";
+import {createLoadInfoInit, editLoadInfoInit} from "../../../../../redux/modalSlice";
 
 type LoadInfoFormContainerProps = {
     errorMessage: string | null
     isLoading: boolean
     showAuthModal: boolean
-    loadInfo: Schedule219 | null
+    loadInfo: LoadInfo | null
 }
 
 export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
@@ -48,11 +48,11 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
                 .max(1000, 'Максимальное кол-во символов должно быть равно 1000')
                 .required('Поле не может быть пустым')
         })}
-        onSubmit={(values, {setSubmitting}) => {
+        onSubmit={(values) => {
             if (loadInfo?.id)
-                dispatch(editLoadInfo({loadInfo: values}));
+                dispatch(editLoadInfoInit({loadInfo: values}));
             else
-                dispatch(createLoadInfo({loadInfo: values}));
+                dispatch(createLoadInfoInit({loadInfo: values}));
         }}
     >
         {

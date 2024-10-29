@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {Lesson, Schedule, Schedule219} from "../api/schedule-backend-api";
+import {Lesson, LoadInfoParams, Schedule, LoadInfo, ScheduleParams} from "../api/schedule-backend-api";
 
 export type FrameType = 'FIRST' | 'FOURTH' | undefined
 
@@ -7,10 +7,10 @@ type ScheduleState = {
     startDateTime: number | null
     endDateTime: number | null
     frame: FrameType | null
-    schedules: Lesson[]
+    lessons: Lesson[]
     classesNumbers: string[]
     days: number[]
-    loadsInfo: Schedule219[]
+    loadsInfo: LoadInfo[]
     isLoading: boolean
     errorMessage: string | null,
     isOverflowing: boolean
@@ -20,7 +20,7 @@ const initialState: ScheduleState = {
     startDateTime: null,
     endDateTime: null,
     frame: null,
-    schedules: [],
+    lessons: [],
     classesNumbers: [],
     days: [],
     loadsInfo: [],
@@ -45,17 +45,14 @@ const scheduleSlice = createSlice({
         setFrame(state: ScheduleState, action: PayloadAction<FrameType>) {
             state.frame = action.payload
         },
-        addLoadInfo(state: ScheduleState, action: PayloadAction<Schedule219>) {
+        addLoadInfo(state: ScheduleState, action: PayloadAction<LoadInfo>) {
             state.loadsInfo.push(action.payload)
         },
-        updateLoadInfo(state: ScheduleState, action: PayloadAction<Schedule219>) {
-            Object.assign(state.loadsInfo.find(value => value.id === action.payload.id) as Schedule219, action.payload)
+        updateLoadInfo(state: ScheduleState, action: PayloadAction<LoadInfo>) {
+            Object.assign(state.loadsInfo.find(value => value.id === action.payload.id) as LoadInfo, action.payload)
         },
         removeLoadInfo(state: ScheduleState, action: PayloadAction<number>) {
             state.loadsInfo = state.loadsInfo.filter(value => value.id !== action.payload)
-        },
-        setIsLoading(state: ScheduleState, action: PayloadAction<boolean>) {
-            state.isLoading = action.payload
         },
         setErrorMessage(state: ScheduleState, action: PayloadAction<string | null>) {
             state.errorMessage = action.payload
@@ -65,20 +62,20 @@ const scheduleSlice = createSlice({
             state.isOverflowing = action.payload
         },
         setSchedule(state: ScheduleState, action: PayloadAction<Schedule>) {
-            state.schedules = action.payload.schedules
+            state.lessons = action.payload.lessons
             state.classesNumbers = action.payload.classesNumbers
             state.days = action.payload.days
             state.isLoading = false
         },
-        fetchSchedule(state: ScheduleState) {
+        fetchSchedule(state: ScheduleState, _action: PayloadAction<ScheduleParams>) {
             state.isLoading = true
             state.errorMessage = null
         },
-        fetchLoadsInfo(state: ScheduleState) {
+        fetchLoadsInfo(state: ScheduleState, _action: PayloadAction<LoadInfoParams>) {
             state.isLoading = true
             state.errorMessage = null
         },
-        setLoadsInfo(state: ScheduleState, action: PayloadAction<Schedule219[]>) {
+        setLoadsInfo(state: ScheduleState, action: PayloadAction<LoadInfo[]>) {
             state.loadsInfo = action.payload
             state.isLoading = false
         },
@@ -101,7 +98,6 @@ export const {
     addLoadInfo,
     updateLoadInfo,
     removeLoadInfo,
-    setIsLoading,
     setErrorMessage,
     setIsOverflowing,
     setSchedule,

@@ -1,4 +1,4 @@
-import {Schedule219} from "../api/schedule-backend-api";
+import {LoadInfo} from "../api/schedule-backend-api";
 
 export const generateNewWeekPeriodDateMilliseconds = (dateMilliseconds: number, direction: 1 | -1) => {
     return dateMilliseconds + 7 * 24 * 60 * 60 * 1000 * direction
@@ -75,7 +75,7 @@ export const _switchByDayNumber = (stringDate: string) => {
     return switchByDayNumber(date === 0 ? 6 : date - 1)
 }
 
-export const mergeDayOfWeekRowsNumber219 = (schedule: Array<Schedule219>, date: string) => {
+export const mergeDayOfWeekRowsNumber219 = (schedule: Array<LoadInfo>, date: string) => {
     let count = 0
     schedule.forEach(value => {
         if (value?.date === date)
