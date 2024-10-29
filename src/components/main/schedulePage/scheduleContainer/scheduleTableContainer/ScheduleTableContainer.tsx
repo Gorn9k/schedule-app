@@ -6,11 +6,10 @@ import {withFrame} from "../../../../../hocs/withFrame";
 import {
     ScheduleTableBodyClassesScheduleContainer
 } from "./scheduleTableBodyClassesScheduleContainer/ScheduleTableBodyClassesScheduleContainer";
-import {
-    ScheduleTableBodyLoadsInfoContainer
-} from "./scheduleTableBodyLoadsInfoContainer/ScheduleTableBodyLoadsInfoContainer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../../../redux/store";
+import {ScheduleTableBodyLoadsInfo} from "./scheduleTableBodyLoadsInfo/ScheduleTableBodyLoadsInfo";
+import {Lesson, LoadInfo} from "../../../../../api/schedule-backend-api";
 
 export const ScheduleTableContainer: FC = () => {
 
@@ -59,8 +58,9 @@ export const ScheduleTableContainer: FC = () => {
         return <table className={schedule.length > 0 ? undefined : styles.scheduleTableNoContent}>
             <tbody>
             {
-                schedule.length > 0 ? (frame && <ScheduleTableBodyClassesScheduleContainer/>) ||
-                    <ScheduleTableBodyLoadsInfoContainer/> : <NoContent/>
+                schedule.length > 0 ?
+                    (frame && <ScheduleTableBodyClassesScheduleContainer lessons={schedule as Lesson[]}/>)
+                    || <ScheduleTableBodyLoadsInfo loadsInfo={schedule as LoadInfo[]}/> : <NoContent/>
             }
             </tbody>
         </table>

@@ -6,13 +6,9 @@ import {AuthForm} from "./authForm/AuthForm";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../../../redux/store";
 import {setAuth} from "../../../../../redux/modalSlice";
+import {FormFieldsErrors} from "../formFieldsErrors/FormFieldsErrors";
 
-type AuthFormContainerProps = {
-    errorMessage: string | null
-    isLoading: boolean
-}
-
-export const AuthFormContainer: FC<AuthFormContainerProps> = ({errorMessage, isLoading}) => {
+export const AuthFormContainer: FC = () => {
     console.log('auth')
     const dispatch = useDispatch<AppDispatch>()
 
@@ -31,12 +27,15 @@ export const AuthFormContainer: FC<AuthFormContainerProps> = ({errorMessage, isL
         }}
     >
         {
-            !errorMessage && !isLoading && (({isSubmitting, errors, touched, setFieldError}) => {
-                return <>
-                    <h2>Авторизация</h2>
-                    <AuthForm errors={errors} setFieldError={setFieldError} touched={touched}
-                              isSubmitting={isSubmitting}/>
-                </>
+            (({isSubmitting, errors, touched, setFieldError}) => {
+                return <FormFieldsErrors setFieldError={setFieldError}>
+                    <>
+                        <h2>Авторизация</h2>
+                        <AuthForm errors={errors}
+                                  touched={touched}
+                                  isSubmitting={isSubmitting}/>
+                    </>
+                </FormFieldsErrors>
             })
         }
     </Formik>

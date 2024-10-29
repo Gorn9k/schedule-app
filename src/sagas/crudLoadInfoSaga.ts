@@ -9,7 +9,7 @@ import {
     SelectEffect,
     take,
     TakeEffect,
-    takeLatest
+    takeEvery
 } from 'redux-saga/effects';
 import {
     cancelAuth,
@@ -17,9 +17,11 @@ import {
     crudLoadInfoSuccess,
     deleteLoadInfoInit,
     editLoadInfoInit,
+    removeOperableId,
     setAuth,
     setErrorMessage,
     setFormFieldsErrors,
+    setLoadInfo,
     setNavigateTo,
     setShowAuthModal
 } from "../redux/modalSlice";
@@ -110,6 +112,7 @@ function* createLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
         yield put(crudLoadInfoSuccess())
         return
     } catch (error) {
+        yield put(setLoadInfo(action.payload.loadInfo))
         yield* handleError(action, error, 'Не удалось сохранить нагрузку')
     }
 }
@@ -127,6 +130,8 @@ function* updateLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
         return
     } catch (error) {
         yield* handleError(action, error, 'Не удалось обновить нагрузку')
+    } finally {
+        yield put(removeOperableId(action.payload.loadInfo.id as number))
     }
 }
 
@@ -139,11 +144,13 @@ function* deleteLoadInfoSaga(action: PayloadAction<number>):
         return
     } catch (error) {
         yield* handleError(action, error, 'Не удалось удалить нагрузку')
+    } finally {
+        yield put(removeOperableId(action.payload))
     }
 }
 
 export default function* crudLoadInfoSaga() {
-    yield takeLatest(createLoadInfoInit.type, createLoadInfoSaga);
-    yield takeLatest(editLoadInfoInit.type, updateLoadInfoSaga);
-    yield takeLatest(deleteLoadInfoInit.type, deleteLoadInfoSaga);
+    yield takeEvery(createLoadInfoInit.type, createLoadInfoSaga);
+    yield takeEvery(editLoadInfoInit.type, updateLoadInfoSaga);
+    yield takeEvery(deleteLoadInfoInit.type, deleteLoadInfoSaga);
 }

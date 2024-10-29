@@ -2,25 +2,15 @@ import React, {FC} from "react";
 import * as Yup from "yup";
 import {LoadInfoForm} from "./loadInfoForm/LoadInfoForm";
 import {Formik} from "formik";
-import {LoadInfo} from "../../../../../api/schedule-backend-api";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../../../../../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../../../redux/store";
 import generalStyles from "../../../../../App.module.css";
 import {createLoadInfoInit, editLoadInfoInit} from "../../../../../redux/modalSlice";
+import {FormFieldsErrors} from "../formFieldsErrors/FormFieldsErrors";
 
-type LoadInfoFormContainerProps = {
-    errorMessage: string | null
-    isLoading: boolean
-    showAuthModal: boolean
-    loadInfo: LoadInfo | null
-}
+export const LoadInfoFormContainer: FC = () => {
 
-export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
-                                                                          loadInfo,
-                                                                          isLoading,
-                                                                          errorMessage,
-                                                                          showAuthModal
-                                                                      }) => {
+    const loadInfo = useSelector((state: RootState) => state.modal.loadInfo)
     console.log('loadInfo')
     const dispatch = useDispatch<AppDispatch>()
 
@@ -56,16 +46,18 @@ export const LoadInfoFormContainer: FC<LoadInfoFormContainerProps> = ({
         }}
     >
         {
-            !errorMessage && !isLoading && !showAuthModal && (({isSubmitting, errors, touched}) => {
-                return <>
-                    <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
-                    <LoadInfoForm renderButton={(disabled: boolean) =>
-                        <button type="submit" disabled={disabled}
-                                className={`${generalStyles.button} ${generalStyles.formButton}`}>
-                            {(loadInfo?.id && 'Сохранить изменения') || 'Создать'}
-                        </button>
-                    } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
-                </>
+            (({isSubmitting, errors, touched, setFieldError}) => {
+                return <FormFieldsErrors setFieldError={setFieldError}>
+                    <>
+                        <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
+                        <LoadInfoForm renderButton={(disabled: boolean) =>
+                            <button type="submit" disabled={disabled}
+                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>
+                                {(loadInfo?.id && 'Сохранить изменения') || 'Создать'}
+                            </button>
+                        } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
+                    </>
+                </FormFieldsErrors>
             })
         }
     </Formik>

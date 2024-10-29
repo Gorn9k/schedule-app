@@ -9,7 +9,7 @@ type ModalState = {
     loadInfo: LoadInfo | null
     formFieldsErrors: { field: string, errorMessage: string }[]
     navigateTo: string | null
-
+    operableIds: number[]
 }
 
 const initialState: ModalState = {
@@ -19,7 +19,8 @@ const initialState: ModalState = {
     errorMessage: null,
     loadInfo: null,
     formFieldsErrors: [],
-    navigateTo: null
+    navigateTo: null,
+    operableIds: []
 }
 
 const modalSlice = createSlice({
@@ -28,14 +29,19 @@ const modalSlice = createSlice({
     reducers: {
         createLoadInfoInit(state: ModalState, _action: PayloadAction<{ loadInfo: LoadInfo }>) {
             state.isLoading = true
+            state.showLoadInfoModal = false
         },
-        editLoadInfoInit(state: ModalState, _action: PayloadAction<{ loadInfo: LoadInfo }>) {
-            state.isLoading = true
+        editLoadInfoInit(state: ModalState, action: PayloadAction<{ loadInfo: LoadInfo }>) {
+            //state.isLoading = true
+            state.operableIds.push(action.payload.loadInfo.id as number)
+            state.showLoadInfoModal = false
         },
-        deleteLoadInfoInit(state: ModalState, _action: PayloadAction<number>) {
-            state.isLoading = true
+        deleteLoadInfoInit(state: ModalState, action: PayloadAction<number>) {
+            //state.isLoading = true
+            state.operableIds.push(action.payload)
         },
-        setAuth() {
+        setAuth(state: ModalState) {
+            state.showAuthModal = false
         },
         cancelAuth(state: ModalState) {
             state.showAuthModal = false
@@ -58,6 +64,8 @@ const modalSlice = createSlice({
         },
         setErrorMessage(state: ModalState, action: PayloadAction<string | null>) {
             state.errorMessage = action.payload
+            if (action.payload)
+                state.showLoadInfoModal = true
             state.isLoading = false
         },
         setFormFieldsErrors(state: ModalState, action: PayloadAction<{ field: string, errorMessage: string }>) {
@@ -69,6 +77,9 @@ const modalSlice = createSlice({
         },
         setLoadInfo(state: ModalState, action: PayloadAction<LoadInfo | null>) {
             state.loadInfo = action.payload
+        },
+        removeOperableId(state: ModalState, action: PayloadAction<number>) {
+            state.operableIds = state.operableIds.filter(id => id !== action.payload)
         }
     }
 })
@@ -86,7 +97,8 @@ export const {
     setFormFieldsErrors,
     cancelAuth,
     setNavigateTo,
-    setLoadInfo
+    setLoadInfo,
+    removeOperableId
 } = modalSlice.actions
 
 export default modalSlice.reducer

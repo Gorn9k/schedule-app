@@ -2,10 +2,14 @@ import {FC} from "react";
 import {ScheduleTableBodyClassesSchedule} from "./scheduleTableBodyClassesSchedule/ScheduleTableBodyClassesSchedule";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../../redux/store";
+import {Lesson} from "../../../../../../api/schedule-backend-api";
 
-export const ScheduleTableBodyClassesScheduleContainer: FC = () => {
+type ScheduleTableBodyClassesScheduleProps = {
+    lessons: Lesson[]
+}
 
-    const lessons = useSelector((state: RootState) => state.schedule.lessons)
+export const ScheduleTableBodyClassesScheduleContainer: FC<ScheduleTableBodyClassesScheduleProps> = ({lessons}) => {
+
     const days = useSelector((state: RootState) => state.schedule.days)
     const classesNumbers = useSelector((state: RootState) => state.schedule.classesNumbers)
 

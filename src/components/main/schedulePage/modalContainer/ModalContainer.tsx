@@ -5,7 +5,9 @@ import Modal from "react-modal";
 import {
     cancelAuth,
     setErrorMessage,
-    setIsLoading, setLoadInfo, setNavigateTo,
+    setIsLoading,
+    setLoadInfo,
+    setNavigateTo,
     setShowLoadInfoModal
 } from "../../../../redux/modalSlice";
 import {LoadInfoFormContainer} from "./loadInfoFormContainer/LoadInfoFormContainer";
@@ -19,9 +21,8 @@ export const ModalContainer = () => {
     const showLoadInfoModal = useSelector((state: RootState) => state.modal.showLoadInfoModal)
     const showAuthModal = useSelector((state: RootState) => state.modal.showAuthModal)
     const errorMessage = useSelector((state: RootState) => state.modal.errorMessage)
-    const loadInfo = useSelector((state: RootState) => state.modal.loadInfo)
     const isLoading = useSelector((state: RootState) => state.modal.isLoading)
-    
+
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>();
 
@@ -57,15 +58,12 @@ export const ModalContainer = () => {
                         textAlign: 'center',
                         alignContent: 'center',
                         margin: '0'
-                    }}>{errorMessage}</h2>
-                )
+                    }}>{errorMessage}</h2>)
+                ||
+                (showLoadInfoModal && <LoadInfoFormContainer/>)
+                ||
+                (showAuthModal && <AuthFormContainer/>)
             }
-            {showLoadInfoModal && <LoadInfoFormContainer isLoading={isLoading}
-                                                         errorMessage={errorMessage}
-                                                         loadInfo={loadInfo}
-                                                         showAuthModal={showAuthModal}/>}
-            {showAuthModal && <AuthFormContainer isLoading={isLoading}
-                                                 errorMessage={errorMessage}/>}
             <button className={`${generalStyles.button} ${generalStyles.formButton}`}
                     onClick={() => {
                         if (errorMessage)
