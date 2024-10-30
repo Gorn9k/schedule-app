@@ -18,41 +18,52 @@ export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = (
 
     const operableIds = useSelector((state: RootState) => state.modal.operableIds)
 
+    const sortedLoadsInfo = [...loadsInfo].map(item =>
+        ({...item})).sort((a, b) => {
+        const dateA = new Date(`${a.date} ${a.time}`);
+        const dateB = new Date(`${b.date} ${b.time}`);
+
+        return dateA.getTime() - dateB.getTime()
+    })
+
     return <>
-        {loadsInfo.map((value, index, array) => {
-                return (
-                    <tr key={value.id}>{index > 0 && array[index]?.date === array[index - 1]?.date ? null :
-                        <td rowSpan={mergeDayOfWeekRowsNumber219(loadsInfo, value.date)}
-                            className={styles.thAndTdDayAndTime}>{_switchByDayNumber(value?.date)}</td>}
-                        <td className={styles.thAndTdDayAndTime}>{value.time}</td>
-                        <td>{value.type}</td>
-                        <td>{value.responsible}</td>
-                        <td>{value.description}</td>
-                        <td>
-                            {
-                                operableIds.includes(value.id as number) ?
-                                    <Preloader/> :
-                                    <>
-                                        <button onClick={() => {
-                                            dispatch(setLoadInfo(value));
-                                            dispatch(setShowLoadInfoModal(true))
-                                        }}
-                                                className={`${styles.buttonEditLoadInfo} ${generalStyles.link}`}>
-                                            Изменить
-                                        </button>
-                                        <button onClick={() => {
-                                            dispatch(deleteLoadInfoInit(value.id as number))
-                                        }} type="button"
-                                                className={`${generalStyles.button} ${generalStyles.formButton}`}>
-                                            Удалить
-                                        </button>
-                                    </>
-                            }
-                        </td>
-                    </tr>
-                )
-            }
-        )
+        {
+            sortedLoadsInfo.map((value, index, array) => {
+                    return (
+                        <tr key={value.id}>{index > 0 && array[index]?.date === array[index - 1]?.date ? null :
+                            <td rowSpan={mergeDayOfWeekRowsNumber219(sortedLoadsInfo, value.date)}
+                                className={styles.thAndTdDayAndTime}>{_switchByDayNumber(value?.date)}</td>}
+                            <td className={styles.thAndTdDayAndTime}>{value.time}</td>
+                            <td>{value.type}</td>
+                            <td>{value.responsible}</td>
+                            <td>{value.description}</td>
+                            <td className={styles.thAndTdActions}>
+                                {
+                                    operableIds.includes(value.id as number) ?
+                                        <Preloader/> :
+                                        <>
+                                            <button onClick={() => {
+                                                dispatch(setLoadInfo(value));
+                                                dispatch(setShowLoadInfoModal(true))
+                                            }}
+                                                    style={{margin: '5px'}}
+                                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>
+                                                Изменить
+                                            </button>
+                                            <button onClick={() => {
+                                                dispatch(deleteLoadInfoInit(value.id as number))
+                                            }} type="button"
+                                                    style={{margin: '5px'}}
+                                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>
+                                                Удалить
+                                            </button>
+                                        </>
+                                }
+                            </td>
+                        </tr>
+                    )
+                }
+            )
         }
     </>
 }

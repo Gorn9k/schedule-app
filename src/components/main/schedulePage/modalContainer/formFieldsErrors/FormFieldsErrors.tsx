@@ -14,7 +14,7 @@ export const FormFieldsErrors: FC<FormFieldsErrorsProps> = ({setFieldError, chil
     useEffect(() => {
         formFieldsErrors && formFieldsErrors.forEach(element =>
             setFieldError(element.field, element.errorMessage))
-    }, []);
+    }, [formFieldsErrors, setFieldError]);
 
     return children
 }

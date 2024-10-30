@@ -18,19 +18,21 @@ export const ScheduleTableContainer: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
 
     useLayoutEffect(() => {
-        const currentRef = bodyContainerRef.current
+        const currentRef = bodyContainerRef.current;
 
         if (currentRef) {
             const handleOverflowCheck = () => {
-                const isOverflowing = currentRef.scrollHeight > currentRef.clientHeight;
-                dispatch(setIsOverflowing(isOverflowing))
+                requestAnimationFrame(() => {
+                    const isOverflowing = currentRef.scrollHeight > currentRef.clientHeight;
+                    dispatch(setIsOverflowing(isOverflowing));
+                });
             };
 
             const resizeObserver = new ResizeObserver(handleOverflowCheck);
 
             resizeObserver.observe(currentRef);
 
-            //handleOverflowCheck();
+            handleOverflowCheck();
 
             return () => {
                 resizeObserver.unobserve(currentRef);

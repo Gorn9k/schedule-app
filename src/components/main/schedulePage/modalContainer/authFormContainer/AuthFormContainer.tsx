@@ -13,7 +13,7 @@ export const AuthFormContainer: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
 
     return <Formik
-        initialValues={{login: '', password: '', incorrectValues: ''}}
+        initialValues={{login: '', password: '', incorrectLoginOrPasswordError: ''}}
         validationSchema={Yup.object({
             login: Yup.string()
                 .required('Поле не может быть пустым'),

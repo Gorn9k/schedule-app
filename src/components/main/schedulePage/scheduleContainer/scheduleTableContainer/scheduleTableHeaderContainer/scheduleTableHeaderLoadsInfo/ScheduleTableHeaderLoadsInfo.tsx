@@ -10,7 +10,7 @@ export const ScheduleTableHeaderLoadsInfo: FC = () => {
                 <th>Тип</th>
                 <th>Ответственный</th>
                 <th>Комментарий</th>
-                <th>Действие</th>
+                <th className={styles.thAndTdActions}>Действие</th>
             </tr>
     </>
 }

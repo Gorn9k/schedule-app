@@ -9,12 +9,19 @@ table, th, td {
 }
 
 td, th {
-    word-wrap: break-word;
     padding: 10px;
 }
 
 .thAndTdDayAndTime {
     width: 10%;
+}
+
+.thAndTdActions {
+    width: 15%;
+}
+
+td div svg {
+    height: 3em
 }
 
 .tdLesson {

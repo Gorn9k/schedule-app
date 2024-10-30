@@ -4,6 +4,7 @@ import {LoadInfo} from "../api/schedule-backend-api";
 type ModalState = {
     showLoadInfoModal: boolean
     showAuthModal: boolean
+    showDeleteModal: boolean
     isLoading: boolean
     errorMessage: string | null
     loadInfo: LoadInfo | null
@@ -15,6 +16,7 @@ type ModalState = {
 const initialState: ModalState = {
     showLoadInfoModal: false,
     showAuthModal: false,
+    showDeleteModal: false,
     isLoading: false,
     errorMessage: null,
     loadInfo: null,
@@ -32,13 +34,17 @@ const modalSlice = createSlice({
             state.showLoadInfoModal = false
         },
         editLoadInfoInit(state: ModalState, action: PayloadAction<{ loadInfo: LoadInfo }>) {
-            //state.isLoading = true
             state.operableIds.push(action.payload.loadInfo.id as number)
             state.showLoadInfoModal = false
         },
-        deleteLoadInfoInit(state: ModalState, action: PayloadAction<number>) {
-            //state.isLoading = true
-            state.operableIds.push(action.payload)
+        deleteLoadInfoInit(state: ModalState, _action: PayloadAction<number>) {
+            state.showDeleteModal = true
+        },
+        tryDeleteLoadInfo(state: ModalState) {
+            state.showDeleteModal = false
+        },
+        abortDeleteLoadInfo(state: ModalState) {
+            state.showDeleteModal = false
         },
         setAuth(state: ModalState) {
             state.showAuthModal = false
@@ -46,8 +52,7 @@ const modalSlice = createSlice({
         cancelAuth(state: ModalState) {
             state.showAuthModal = false
         },
-        crudLoadInfoSuccess(state: ModalState) {
-            state.showLoadInfoModal = false
+        crudLoadInfoCompleted(state: ModalState) {
             state.showAuthModal = false
             state.loadInfo = null
             state.isLoading = false
@@ -78,6 +83,9 @@ const modalSlice = createSlice({
         setLoadInfo(state: ModalState, action: PayloadAction<LoadInfo | null>) {
             state.loadInfo = action.payload
         },
+        addOperableId(state: ModalState, action: PayloadAction<number>) {
+            state.operableIds.push(action.payload)
+        },
         removeOperableId(state: ModalState, action: PayloadAction<number>) {
             state.operableIds = state.operableIds.filter(id => id !== action.payload)
         }
@@ -93,12 +101,15 @@ export const {
     editLoadInfoInit,
     deleteLoadInfoInit,
     setAuth,
-    crudLoadInfoSuccess,
+    crudLoadInfoCompleted,
     setFormFieldsErrors,
     cancelAuth,
     setNavigateTo,
     setLoadInfo,
-    removeOperableId
+    removeOperableId,
+    tryDeleteLoadInfo,
+    abortDeleteLoadInfo,
+    addOperableId
 } = modalSlice.actions
 
 export default modalSlice.reducer

@@ -12,9 +12,11 @@ import {
     takeEvery
 } from 'redux-saga/effects';
 import {
+    abortDeleteLoadInfo,
+    addOperableId,
     cancelAuth,
     createLoadInfoInit,
-    crudLoadInfoSuccess,
+    crudLoadInfoCompleted,
     deleteLoadInfoInit,
     editLoadInfoInit,
     removeOperableId,
@@ -22,8 +24,8 @@ import {
     setErrorMessage,
     setFormFieldsErrors,
     setLoadInfo,
-    setNavigateTo,
-    setShowAuthModal
+    setNavigateTo, setShowAuthModal,
+    tryDeleteLoadInfo
 } from "../redux/modalSlice";
 import {createLoadInfo, deleteLoadInfo, editLoadInfo, LoadInfo} from "../api/schedule-backend-api";
 import {PayloadAction} from "@reduxjs/toolkit";
@@ -39,29 +41,25 @@ function* handleError(action: Action, error: any, defaultErrorMessage: string):
         canceled?: TakeEffect
     }> {
     if (axios.isAxiosError(error)) {
-        if (error?.response?.status === 403) {
-            const showAuthModal = (yield select((state: RootState) => state.modal.showAuthModal)) as boolean
-            if (showAuthModal)
-                yield put(setFormFieldsErrors(
-                    {
-                        field: 'incorrectValues',
-                        errorMessage: 'Неверно введены логин или пароль'
-                    }
-                ))
-            else
+        if (error?.response?.status && error.response.status >= 400) {
+            if (error.response.status === 403) {
+                localStorage.getItem('authToken') && localStorage.removeItem('authToken')
                 yield put(setShowAuthModal(true))
-            localStorage.getItem('authToken') && localStorage.removeItem('authToken')
-        } else if (error?.response?.status === 400) {
-            for (const [field, message] of Object.entries(error.response.data as {
-                [key: string]: string
-            })) {
-                yield put(setFormFieldsErrors(
-                    {
-                        field: field,
-                        errorMessage: message
-                    }
-                ))
             }
+            if (typeof error.response.data === 'object' && Object.keys(error.response.data).length > 0) {
+                for (const [field, message] of Object.entries(error.response.data as {
+                    [key: string]: string
+                })) {
+                    console.log(`field: ${field}: ${message}`)
+                    yield put(setFormFieldsErrors(
+                        {
+                            field: field,
+                            errorMessage: message
+                        }
+                    ))
+                }
+            } else
+                yield put(setErrorMessage(defaultErrorMessage))
         } else
             yield put(setErrorMessage(defaultErrorMessage))
     } else {
@@ -104,12 +102,14 @@ function* createLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
     try {
         const response = (yield call(createLoadInfo, action.payload.loadInfo, localStorage.getItem('authToken'))) as AxiosResponse<void>
         if ((yield call(isInCurrentDaysPeriod, new Date(action.payload.loadInfo.date))) as boolean) {
-            const location = response.headers['location']
-            action.payload.loadInfo.id = Number
-                .parseInt(location.split('/')[location.split('/').length - 1])
-            yield put(addLoadInfo(action.payload.loadInfo))
+            const location = response.headers['location'] as string
+            const loadInfoWithId = {
+                ...action.payload.loadInfo,
+                id: Number.parseInt(location.split('/').pop() as string, 10)
+            };
+            yield put(addLoadInfo(loadInfoWithId));
         }
-        yield put(crudLoadInfoSuccess())
+        yield put(crudLoadInfoCompleted())
         return
     } catch (error) {
         yield put(setLoadInfo(action.payload.loadInfo))
@@ -126,26 +126,38 @@ function* updateLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
         yield call(editLoadInfo, action.payload.loadInfo, localStorage.getItem('authToken'));
         if ((yield call(isInCurrentDaysPeriod, new Date(action.payload.loadInfo.date))) as boolean)
             yield put(updateLoadInfo(action.payload.loadInfo))
-        yield put(crudLoadInfoSuccess())
+        yield put(crudLoadInfoCompleted())
+        yield put(removeOperableId(action.payload.loadInfo.id as number))
         return
     } catch (error) {
-        yield* handleError(action, error, 'Не удалось обновить нагрузку')
-    } finally {
         yield put(removeOperableId(action.payload.loadInfo.id as number))
+        yield* handleError(action, error, 'Не удалось обновить нагрузку')
     }
 }
 
 function* deleteLoadInfoSaga(action: PayloadAction<number>):
-    Generator<CallEffect | PutEffect | TakeEffect | RaceEffect<TakeEffect> | SelectEffect, void, void> {
+    Generator<CallEffect | PutEffect | TakeEffect | RaceEffect<TakeEffect> | SelectEffect, void, {
+        success?: TakeEffect,
+        canceled?: TakeEffect
+    }> {
     try {
+        const result = (yield race({
+            success: take(tryDeleteLoadInfo.type),
+            canceled: take(abortDeleteLoadInfo.type)
+        })) as { success?: TakeEffect, canceled?: TakeEffect }
+
+        if (result.canceled)
+            return
+
+        yield put(addOperableId(action.payload))
         yield call(deleteLoadInfo, action.payload, localStorage.getItem('authToken'))
         yield put(removeLoadInfo(action.payload))
-        yield put(crudLoadInfoSuccess())
+        yield put(crudLoadInfoCompleted())
+        yield put(removeOperableId(action.payload))
         return
     } catch (error) {
-        yield* handleError(action, error, 'Не удалось удалить нагрузку')
-    } finally {
         yield put(removeOperableId(action.payload))
+        yield* handleError(action, error, 'Не удалось удалить нагрузку')
     }
 }
 

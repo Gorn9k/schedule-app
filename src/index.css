@@ -4,6 +4,7 @@ html {
   line-height: 1.5;
   color: #434c63;
   text-align: center;
+  word-break: break-word
 }
 
 body {
