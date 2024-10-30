@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import generalStyles from "../../../../../../App.module.css";
 import {ErrorMessage, Field, Form, FormikErrors, FormikTouched} from "formik";
 
@@ -9,6 +9,8 @@ type AuthModalFormProps = {
 }
 
 export const AuthForm: FC<AuthModalFormProps> = ({isSubmitting, errors, touched}) => {
+    console.log(errors)
+
     return <Form>
         <div>
             <label htmlFor='login'>Логин:</label>

@@ -27,8 +27,8 @@ export const AuthFormContainer: FC = () => {
         }}
     >
         {
-            (({isSubmitting, errors, touched, setFieldError}) => {
-                return <FormFieldsErrors setFieldError={setFieldError}>
+            (({setTouched, setErrors, isSubmitting, errors, touched, setFieldError}) => {
+                return <FormFieldsErrors setTouched={setTouched} setErrors={setErrors}>
                     <>
                         <h2>Авторизация</h2>
                         <AuthForm errors={errors}

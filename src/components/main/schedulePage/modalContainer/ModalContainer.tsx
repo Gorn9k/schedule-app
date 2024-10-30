@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import {
     abortDeleteLoadInfo,
     cancelAuth, crudLoadInfoCompleted,
-    setErrorMessage,
+    setErrorMessage, setFormFieldsErrors,
     setIsLoading,
     setLoadInfo,
     setNavigateTo,
@@ -48,6 +48,7 @@ export const ModalContainer = () => {
                    dispatch(setErrorMessage(null))
                    dispatch(abortDeleteLoadInfo())
                    dispatch(cancelAuth())
+                   dispatch(setFormFieldsErrors(null))
                }}
                contentLabel="Модальное окно приложения"
                overlayClassName={generalStyles.dialogContent}
@@ -62,10 +63,10 @@ export const ModalContainer = () => {
                         alignContent: 'center',
                         margin: '0'
                     }}>{errorMessage}</h2>)
+                    ||
+                (showAuthModal && <AuthFormContainer/>)
                 ||
                 (showLoadInfoModal && <LoadInfoFormContainer/>)
-                ||
-                (showAuthModal && <AuthFormContainer/>)
                 ||
                 (showDeleteModal && <h2>Вы уверены что хотите удалить эту нагрузку?</h2>)
             }

@@ -8,7 +8,17 @@ type ModalState = {
     isLoading: boolean
     errorMessage: string | null
     loadInfo: LoadInfo | null
-    formFieldsErrors: { field: string, errorMessage: string }[]
+    formFieldsErrors: {
+        id: number | undefined,
+        date: string,
+        time: string,
+        type: string,
+        responsible: string,
+        description: string,
+        login: string,
+        password: string,
+        incorrectLoginOrPasswordError: string
+    } | null
     navigateTo: string | null
     operableIds: number[]
 }
@@ -20,7 +30,7 @@ const initialState: ModalState = {
     isLoading: false,
     errorMessage: null,
     loadInfo: null,
-    formFieldsErrors: [],
+    formFieldsErrors: null,
     navigateTo: null,
     operableIds: []
 }
@@ -50,7 +60,7 @@ const modalSlice = createSlice({
             state.showAuthModal = false
         },
         cancelAuth(state: ModalState) {
-            state.showAuthModal = false
+            //state.showAuthModal = false
         },
         crudLoadInfoCompleted(state: ModalState) {
             state.showAuthModal = false
@@ -73,8 +83,18 @@ const modalSlice = createSlice({
                 state.showLoadInfoModal = true
             state.isLoading = false
         },
-        setFormFieldsErrors(state: ModalState, action: PayloadAction<{ field: string, errorMessage: string }>) {
-            state.formFieldsErrors.push(action.payload)
+        setFormFieldsErrors(state: ModalState, action: PayloadAction<{
+            id: number | undefined,
+            date: string,
+            time: string,
+            type: string,
+            responsible: string,
+            description: string,
+            login: string,
+            password: string,
+            incorrectLoginOrPasswordError: string
+        } | null>) {
+            state.formFieldsErrors = action.payload
             state.isLoading = false
         },
         setNavigateTo(state: ModalState, action: PayloadAction<string | null>) {

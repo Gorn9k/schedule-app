@@ -47,8 +47,7 @@ export const LoadInfoFormContainer: FC = () => {
     >
         {
             (({isSubmitting, errors, touched, setFieldError}) => {
-                return <FormFieldsErrors setFieldError={setFieldError}>
-                    <>
+                return <>
                         <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
                         <LoadInfoForm renderButton={(disabled: boolean) =>
                             <button type="submit" disabled={disabled}
@@ -57,7 +56,7 @@ export const LoadInfoFormContainer: FC = () => {
                             </button>
                         } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
                     </>
-                </FormFieldsErrors>
+
             })
         }
     </Formik>

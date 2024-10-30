@@ -47,19 +47,9 @@ function* handleError(action: Action, error: any, defaultErrorMessage: string):
                 yield put(setShowAuthModal(true))
             }
             if (typeof error.response.data === 'object' && Object.keys(error.response.data).length > 0) {
-                for (const [field, message] of Object.entries(error.response.data as {
-                    [key: string]: string
-                })) {
-                    console.log(`field: ${field}: ${message}`)
-                    yield put(setFormFieldsErrors(
-                        {
-                            field: field,
-                            errorMessage: message
-                        }
-                    ))
-                }
+                yield put(setFormFieldsErrors(error.response.data))
             } else
-                yield put(setErrorMessage(defaultErrorMessage))
+                yield put(setErrorMessage(error.response.data))
         } else
             yield put(setErrorMessage(defaultErrorMessage))
     } else {
