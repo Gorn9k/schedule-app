@@ -57,10 +57,10 @@ export const ScheduleTableContainer: FC = () => {
             </tr>
         }
 
-        return <table className={schedule.length > 0 ? undefined : styles.scheduleTableNoContent}>
+        return <table className={schedule && schedule.length > 0 ? undefined : styles.scheduleTableNoContent}>
             <tbody>
             {
-                schedule.length > 0 ?
+                schedule && schedule.length > 0 ?
                     (frame && <ScheduleTableBodyClassesScheduleContainer lessons={schedule as Lesson[]}/>)
                     || <ScheduleTableBodyLoadsInfo loadsInfo={schedule as LoadInfo[]}/> : <NoContent/>
             }

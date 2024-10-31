@@ -71,6 +71,11 @@ ul {
     font-size: 1.25em;
     padding: 10px;
     min-width: max-content;
+    cursor: pointer;
+}
+
+button.link {
+    border: 1px;
 }
 
 .noFetchDataBlock {

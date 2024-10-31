@@ -37,13 +37,13 @@ export const MainPage: FC<MainPageProps> = ({startDateTime, endDateTime}) => {
     ]
 
     return <>
-        <NavLink to={`/class-schedule?${firstFrameUrl}`} className={styles.link}>Расписание аудиторий в 1-ом учебном
+        <NavLink to={`/classes-schedule?${firstFrameUrl}`} className={styles.link}>Расписание аудиторий в 1-ом учебном
             корпусе</NavLink>
 
-        <NavLink to={`/class-schedule?${fourthFrameUrl}`} className={styles.link}>Расписание аудиторий в 4-ом учебном
+        <NavLink to={`/classes-schedule?${fourthFrameUrl}`} className={styles.link}>Расписание аудиторий в 4-ом учебном
             корпусе</NavLink>
 
-        <NavLink to={`/loads-info?${classesLoadInfoUrl}`} className={styles.link}>Расписание занятости в 219
+        <NavLink to={`/loads-info-schedule?${classesLoadInfoUrl}`} className={styles.link}>Расписание занятости в 219
             аудитории</NavLink>
     </>
 }

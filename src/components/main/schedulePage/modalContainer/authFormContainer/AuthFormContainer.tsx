@@ -9,7 +9,7 @@ import {setAuth} from "../../../../../redux/modalSlice";
 import {FormFieldsErrors} from "../formFieldsErrors/FormFieldsErrors";
 
 export const AuthFormContainer: FC = () => {
-    console.log('auth')
+
     const dispatch = useDispatch<AppDispatch>()
 
     return <Formik
@@ -27,14 +27,12 @@ export const AuthFormContainer: FC = () => {
         }}
     >
         {
-            (({setTouched, setErrors, isSubmitting, errors, touched, setFieldError}) => {
-                return <FormFieldsErrors setTouched={setTouched} setErrors={setErrors}>
-                    <>
-                        <h2>Авторизация</h2>
-                        <AuthForm errors={errors}
-                                  touched={touched}
-                                  isSubmitting={isSubmitting}/>
-                    </>
+            (({setFieldTouched, setErrors, isSubmitting, errors, touched}) => {
+                return <FormFieldsErrors setFieldTouched={setFieldTouched} setErrors={setErrors}>
+                    <h2>Авторизация</h2>
+                    <AuthForm errors={errors}
+                              touched={touched}
+                              isSubmitting={isSubmitting}/>
                 </FormFieldsErrors>
             })
         }

@@ -22,7 +22,7 @@ export const useLocationParamsValidatorReduxSetter = () => {
         const params = new URLSearchParams(location.search)
         const badLocationParams = (() => {
             switch (location.pathname) {
-                case '/class-schedule': {
+                case '/classes-schedule': {
                     const startDateParam = params.get("startDate")
                     const endDateParam = params.get("endDate")
                     const frameParam = params.get("frame")
@@ -47,7 +47,7 @@ export const useLocationParamsValidatorReduxSetter = () => {
                     }
                     return badLocationParams
                 }
-                case '/loads-info': {
+                case '/loads-info-schedule': {
                     const startDateParam = params.get("startDate")
                     const endDateParam = params.get("endDate")
 

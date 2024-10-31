@@ -11,7 +11,7 @@ import {FormFieldsErrors} from "../formFieldsErrors/FormFieldsErrors";
 export const LoadInfoFormContainer: FC = () => {
 
     const loadInfo = useSelector((state: RootState) => state.modal.loadInfo)
-    console.log('loadInfo')
+
     const dispatch = useDispatch<AppDispatch>()
 
     return <Formik
@@ -46,17 +46,16 @@ export const LoadInfoFormContainer: FC = () => {
         }}
     >
         {
-            (({isSubmitting, errors, touched, setFieldError}) => {
-                return <>
-                        <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
-                        <LoadInfoForm renderButton={(disabled: boolean) =>
-                            <button type="submit" disabled={disabled}
-                                    className={`${generalStyles.button} ${generalStyles.formButton}`}>
-                                {(loadInfo?.id && 'Сохранить изменения') || 'Создать'}
-                            </button>
-                        } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
-                    </>
-
+            (({setFieldTouched, setErrors, isSubmitting, errors, touched}) => {
+                return <FormFieldsErrors setErrors={setErrors} setFieldTouched={setFieldTouched}>
+                    <h2>{`${(loadInfo?.id && 'Текущая') || 'Новая'} нагрузка`}</h2>
+                    <LoadInfoForm renderButton={(disabled: boolean) =>
+                        <button type="submit" disabled={disabled}
+                                className={`${generalStyles.button} ${generalStyles.formButton}`}>
+                            {(loadInfo?.id && 'Сохранить изменения') || 'Создать'}
+                        </button>
+                    } errors={errors} touched={touched} isSubmitting={isSubmitting}/>
+                </FormFieldsErrors>
             })
         }
     </Formik>

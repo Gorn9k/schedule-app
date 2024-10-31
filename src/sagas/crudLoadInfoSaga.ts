@@ -22,9 +22,9 @@ import {
     removeOperableId,
     setAuth,
     setErrorMessage,
-    setFormFieldsErrors,
+    setFormFieldsErrors, setIsLoading,
     setLoadInfo,
-    setNavigateTo, setShowAuthModal,
+    setNavigateTo, setShowAuthModal, setShowLoadInfoModal,
     tryDeleteLoadInfo
 } from "../redux/modalSlice";
 import {createLoadInfo, deleteLoadInfo, editLoadInfo, LoadInfo} from "../api/schedule-backend-api";
@@ -42,12 +42,13 @@ function* handleError(action: Action, error: any, defaultErrorMessage: string):
     }> {
     if (axios.isAxiosError(error)) {
         if (error?.response?.status && error.response.status >= 400) {
-            if (error.response.status === 403) {
-                localStorage.getItem('authToken') && localStorage.removeItem('authToken')
+            if (error.response.status === 403 || error.response.status === 401) {
+                error.response.status === 403 && localStorage.getItem('authToken') && localStorage.removeItem('authToken')
                 yield put(setShowAuthModal(true))
             }
             if (typeof error.response.data === 'object' && Object.keys(error.response.data).length > 0) {
                 yield put(setFormFieldsErrors(error.response.data))
+                yield put(setIsLoading(false))
             } else
                 yield put(setErrorMessage(error.response.data))
         } else
@@ -79,7 +80,7 @@ function* isInCurrentDaysPeriod(value: Date): Generator<SelectEffect | PutEffect
     const endDateString = new Date(generateEndDateMilliseconds(value)).toLocaleDateString('en-CA')
 
     if (!isIn)
-        yield put(setNavigateTo(`/loads-info?startDate=${startDateString}&endDate=${endDateString}`));
+        yield put(setNavigateTo(`/loads-info-schedule?startDate=${startDateString}&endDate=${endDateString}`));
 
     return isIn
 }
@@ -90,6 +91,7 @@ function* createLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
         canceled?: TakeEffect
     }> {
     try {
+        yield put(setFormFieldsErrors(null))
         const response = (yield call(createLoadInfo, action.payload.loadInfo, localStorage.getItem('authToken'))) as AxiosResponse<void>
         if ((yield call(isInCurrentDaysPeriod, new Date(action.payload.loadInfo.date))) as boolean) {
             const location = response.headers['location'] as string
@@ -102,6 +104,7 @@ function* createLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
         yield put(crudLoadInfoCompleted())
         return
     } catch (error) {
+        yield put(setShowLoadInfoModal(true))
         yield put(setLoadInfo(action.payload.loadInfo))
         yield* handleError(action, error, 'Не удалось сохранить нагрузку')
     }
@@ -113,6 +116,7 @@ function* updateLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
         canceled?: TakeEffect
     }> {
     try {
+        yield put(setFormFieldsErrors(null))
         yield call(editLoadInfo, action.payload.loadInfo, localStorage.getItem('authToken'));
         if ((yield call(isInCurrentDaysPeriod, new Date(action.payload.loadInfo.date))) as boolean)
             yield put(updateLoadInfo(action.payload.loadInfo))
@@ -120,6 +124,8 @@ function* updateLoadInfoSaga(action: PayloadAction<{ loadInfo: LoadInfo }>):
         yield put(removeOperableId(action.payload.loadInfo.id as number))
         return
     } catch (error) {
+        yield put(setShowLoadInfoModal(true))
+        yield put(setLoadInfo(action.payload.loadInfo))
         yield put(removeOperableId(action.payload.loadInfo.id as number))
         yield* handleError(action, error, 'Не удалось обновить нагрузку')
     }
@@ -131,6 +137,7 @@ function* deleteLoadInfoSaga(action: PayloadAction<number>):
         canceled?: TakeEffect
     }> {
     try {
+        yield put(setFormFieldsErrors(null))
         const result = (yield race({
             success: take(tryDeleteLoadInfo.type),
             canceled: take(abortDeleteLoadInfo.type)

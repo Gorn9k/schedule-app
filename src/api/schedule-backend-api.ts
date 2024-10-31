@@ -1,7 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8099'
+    baseURL: 'https://schedulecit.vstu.by/api'
+    // baseURL: 'http://localhost:3011'
 });
 
 export type Lesson = {

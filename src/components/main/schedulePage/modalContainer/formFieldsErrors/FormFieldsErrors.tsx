@@ -1,37 +1,24 @@
 import {FC, ReactElement, useEffect} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/store";
-import {FormikErrors, FormikTouched} from "formik";
+import {FormikErrors, FormikValues} from "formik";
 
 type FormFieldsErrorsProps = {
-    setErrors: (errors: FormikErrors<{
-        login: string,
-        password: string,
-        incorrectLoginOrPasswordError: string
-    }>) => void
-    setTouched: (touched: FormikTouched<{
-        login: string
-        password: string
-        incorrectLoginOrPasswordError: string
-    }>, shouldValidate?: (boolean | undefined)) => Promise<void | FormikErrors<{
-        login: string,
-        password: string,
-        incorrectLoginOrPasswordError: string
-    }>>
-    children: ReactElement | null
+    setErrors: (errors: FormikErrors<FormikValues>) => void
+    setFieldTouched: (field: string, isTouched?: (boolean | undefined), shouldValidate?: (boolean | undefined)) => Promise<void | FormikErrors<FormikValues>>
+    children: ReactElement[] | ReactElement| null
 }
 
-export const FormFieldsErrors: FC<FormFieldsErrorsProps> = ({setTouched, setErrors, children}) => {
+export const FormFieldsErrors: FC<FormFieldsErrorsProps> = ({setFieldTouched, setErrors, children}) => {
 
     const formFieldsErrors = useSelector((state: RootState) => state.modal.formFieldsErrors)
 
     useEffect(() => {
-       if (formFieldsErrors){
-           const touched = async () =>
-               await setTouched({incorrectLoginOrPasswordError: true})
-           touched().then(() => setErrors(formFieldsErrors)).catch((reason) => console.log(reason))
-       }
-    }, [formFieldsErrors, setErrors]);
+        if (formFieldsErrors) {
+            Promise.all(Object.keys(formFieldsErrors).map(value =>
+                setFieldTouched(value, true))).then(() => setErrors(formFieldsErrors as FormikValues)).catch((reason) => console.log(reason))
+        }
+    }, [formFieldsErrors, setErrors, setFieldTouched]);
 
-    return children
+    return <>{children}</>
 }

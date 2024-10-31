@@ -21,7 +21,7 @@ export const WeekPeriodBlock: FC<WeekPeriodBlockProps> = ({startDate, endDate, f
             })
         frame && urlParams.set('frame', frame)
 
-        return `${frame ? '/class-schedule' : '/loads-info'}?${urlParams.toString()}`
+        return `${frame ? '/classes-schedule' : '/loads-info-schedule'}?${urlParams.toString()}`
     }
 
     return <>

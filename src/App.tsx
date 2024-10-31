@@ -28,10 +28,10 @@ const MemoizedApp = React.memo(() => {
         <header>
             <Routes>
                 <Route path="/" element={<Header title={'Расписание занятости в аудиториях(ЦИТ)'}/>}/>
-                <Route path="/class-schedule" element={<WithFrameHeader/>}>
+                <Route path="/classes-schedule" element={<WithFrameHeader/>}>
                     <Route index element={<MainPageLink/>}/>
                 </Route>
-                <Route path="/loads-info" element={<Header title={'Расписание занятости в 219 аудитории'}/>}>
+                <Route path="/loads-info-schedule" element={<Header title={'Расписание занятости в 219 аудитории'}/>}>
                     <Route index element={<MainPageLink/>}/>
                 </Route>
                 <Route path="*" element={<Header title={'Расписание занятости в аудиториях(ЦИТ)'}/>}/>
@@ -44,8 +44,8 @@ const MemoizedApp = React.memo(() => {
                         <MainPageContainer/>
                     </div>
                 }/>
-                <Route path="/class-schedule" element={<SchedulePage/>}/>
-                <Route path="/loads-info" element={<SchedulePage/>}>
+                <Route path="/classes-schedule" element={<SchedulePage/>}/>
+                <Route path="/loads-info-schedule" element={<SchedulePage/>}>
                     <Route index element={
                         <>
                             <button onClick={() => dispatch(setShowLoadInfoModal(true))}

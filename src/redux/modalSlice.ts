@@ -8,17 +8,7 @@ type ModalState = {
     isLoading: boolean
     errorMessage: string | null
     loadInfo: LoadInfo | null
-    formFieldsErrors: {
-        id: number | undefined,
-        date: string,
-        time: string,
-        type: string,
-        responsible: string,
-        description: string,
-        login: string,
-        password: string,
-        incorrectLoginOrPasswordError: string
-    } | null
+    formFieldsErrors: {[key: string]: string} | null
     navigateTo: string | null
     operableIds: number[]
 }
@@ -60,12 +50,15 @@ const modalSlice = createSlice({
             state.showAuthModal = false
         },
         cancelAuth(state: ModalState) {
-            //state.showAuthModal = false
+            state.showAuthModal = false
         },
         crudLoadInfoCompleted(state: ModalState) {
             state.showAuthModal = false
+            state.showLoadInfoModal = false
+            state.errorMessage = null
             state.loadInfo = null
             state.isLoading = false
+            state.formFieldsErrors = null
         },
         setShowLoadInfoModal(state: ModalState, action: PayloadAction<boolean>) {
             state.showLoadInfoModal = action.payload
@@ -79,23 +72,10 @@ const modalSlice = createSlice({
         },
         setErrorMessage(state: ModalState, action: PayloadAction<string | null>) {
             state.errorMessage = action.payload
-            if (action.payload)
-                state.showLoadInfoModal = true
             state.isLoading = false
         },
-        setFormFieldsErrors(state: ModalState, action: PayloadAction<{
-            id: number | undefined,
-            date: string,
-            time: string,
-            type: string,
-            responsible: string,
-            description: string,
-            login: string,
-            password: string,
-            incorrectLoginOrPasswordError: string
-        } | null>) {
+        setFormFieldsErrors(state: ModalState, action: PayloadAction<{[key: string]: string} | null>) {
             state.formFieldsErrors = action.payload
-            state.isLoading = false
         },
         setNavigateTo(state: ModalState, action: PayloadAction<string | null>) {
             state.navigateTo = action.payload

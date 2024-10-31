@@ -38,17 +38,13 @@ export const ModalContainer = () => {
         }
     }, [dispatch, navigate, navigateTo]);
 
-    console.log('modal')
     return (showAuthModal || showLoadInfoModal || errorMessage || isLoading || showDeleteModal) ?
         <Modal className={generalStyles.content}
                isOpen={showAuthModal || showLoadInfoModal || !!errorMessage || isLoading || showDeleteModal}
                onRequestClose={() => {
                    dispatch(crudLoadInfoCompleted())
-                   dispatch(setShowLoadInfoModal(false))
-                   dispatch(setErrorMessage(null))
                    dispatch(abortDeleteLoadInfo())
                    dispatch(cancelAuth())
-                   dispatch(setFormFieldsErrors(null))
                }}
                contentLabel="Модальное окно приложения"
                overlayClassName={generalStyles.dialogContent}
@@ -92,6 +88,7 @@ export const ModalContainer = () => {
                             else if (showLoadInfoModal) {
                                 dispatch(setShowLoadInfoModal(false))
                                 dispatch(setLoadInfo(null))
+                                dispatch(setFormFieldsErrors(null))
                             }
                         }}>Закрыть
                 </button>
