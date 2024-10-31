@@ -37,7 +37,7 @@ export const ScheduleTableBodyLoadsInfo: FC<ScheduleTableBodyLoadsInfoProps> = (
                             <td>{value.type}</td>
                             <td>{value.responsible}</td>
                             <td>{value.description}</td>
-                            <td className={styles.thAndTdActions}>
+                            <td>
                                 {
                                     operableIds.includes(value.id as number) ?
                                         <Preloader/> :

@@ -9,15 +9,11 @@ table, th, td {
 }
 
 td, th {
-    padding: 10px;
+    padding: 8px;
 }
 
 .thAndTdDayAndTime {
     width: 10%;
-}
-
-.thAndTdActions {
-    width: 15%;
 }
 
 td div svg {

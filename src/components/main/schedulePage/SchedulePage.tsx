@@ -13,7 +13,7 @@ export const SchedulePage: FC = () => {
 
         const weekPeriodBlockName = (frame && 'Период занятий') || 'Период занятости'
 
-        return <h2>{weekPeriodBlockName}</h2>
+        return <h2 style={{margin: '0.6em 0 0.35em 0'}}>{weekPeriodBlockName}</h2>
     }
 
     const EnhancedWeekPeriodBlockName = withFrame(WeekPeriodBlockName)
