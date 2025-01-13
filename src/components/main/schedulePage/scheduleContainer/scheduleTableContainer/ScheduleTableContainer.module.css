@@ -1,0 +1,77 @@
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table, th, td {
+    border: 1px solid #E2E8F0
+}
+
+td, th {
+    padding: 8px;
+}
+
+.thAndTdDayAndTime {
+    width: 10%;
+}
+
+td div svg {
+    height: 3em
+}
+
+.tdLesson {
+    padding: 0
+}
+
+.scheduleTableHeaderScroll {
+    margin-right: 5px;
+    width: calc(100% - 5px);
+}
+
+.scheduleTableHeader {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    overflow: hidden
+}
+
+.scheduleHeader {
+    font-size: 1.125em;
+    background: #434C63;
+    color: #FFFFFF
+}
+
+.scheduleContainerBody {
+    overflow: auto;
+    flex: 1;
+    padding-bottom: 1px;
+}
+
+.scheduleTableNoContent {
+    height: 100%;
+}
+
+.scheduleTableBodyContent {
+    margin-bottom: 1px
+}
+
+.scheduleBodyNoContent {
+    background: #EFEFEF;
+}
+
+.lessonContent {
+    padding: 10px
+}
+
+.lessonContentFlex {
+    border-top: 1px solid #E2E8F0;
+}
+
+.oddRow {
+    background: #f1f1f1;
+}
+
+.buttonEditLoadInfo {
+    display: inline-block;
+}
+

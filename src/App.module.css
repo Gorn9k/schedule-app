@@ -1,0 +1,194 @@
+::-webkit-scrollbar {
+    width: 5px
+}
+
+::-webkit-scrollbar-thumb {
+    background: #495471;
+    border-radius: 5px
+}
+
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+header {
+    background: #434c63;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+}
+
+main {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+footer {
+    height: 10vh;
+    color: #B8B8B8;
+    align-content: center
+}
+
+header, main, footer {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+a {
+    text-decoration: none;
+    color: #434c63
+}
+
+h1, h2 {
+    font-weight: normal;
+}
+
+header > :nth-child(2) {
+    margin: 0 8% 0 0;
+    width: 100%;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+}
+
+.button {
+    background: #353f57;
+    border-radius: 7px;
+}
+
+.link {
+    background: #353f57;
+    border-radius: 7px;
+    color: #FFFFFF;
+    font-size: 1.25em;
+    padding: 10px;
+    min-width: max-content;
+    cursor: pointer;
+}
+
+button.link {
+    border: 1px;
+}
+
+.noFetchDataBlock {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.formButton {
+    color: #FFFFFF;
+    font-size: 1.25em;
+    padding: 10px;
+    cursor: pointer;
+    margin: 20px 0 0;
+    border: 1px;
+}
+
+.content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 26vw
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+input[type=text], input[type=password], textarea {
+    min-height: 40px;
+    min-width: 20vw;
+    max-height: 200px;
+    max-width: 20vw;
+}
+
+input[type=date], input[type=time] {
+    max-width: 20vw;
+}
+
+input, textarea {
+    font-size: 16px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid #ebebeb;
+    box-shadow: 2px 8px 15px rgba(201, 201, 201, 0.1);
+    border-radius: 10px;
+}
+
+form div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start
+}
+
+form label {
+    color: #a2a2a2;
+    margin-top: 10px
+}
+
+.formLoginButtonsBlock {
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%
+}
+
+.buttonTopMargin {
+    margin: 40px 0 0
+}
+
+.errorMessage, .labelError {
+    color: red;
+}
+
+.errorMessage {
+    font-size: 15px
+}
+
+input.error, textarea.error {
+    border-color: red;
+}
+
+.dialogContent {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a.link, a.formButton {
+    line-height: normal
+}
+
+.containerLinks {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 2px solid #f5f5f5;
+    border-radius: 15px;
+    padding: 30px
+}
+
+.addLoadInfoLink {
+    margin: 0 0 10px 20px;
+    align-self: flex-start;
+}
