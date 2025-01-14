@@ -49,7 +49,7 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
                 }
 
                 return (
-                    <tr className={(styleFlag && styles.oddRow) || undefined}
+                    <tr className={(!styleFlag && styles.oddRow) || undefined}
                         key={lesson.id}>
                         {!tableDays.find(value => value.day === lesson.day) ? null :
                             <td rowSpan={tableDays.shift()?.rowSpan}
