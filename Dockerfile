@@ -13,6 +13,8 @@ ARG PUBLIC_URL
 
 ENV PUBLIC_URL $PUBLIC_URL
 
+ENV TZ="Europe/Minsk"
+
 # Copy local directories to the current local directory of our docker image (/app)
 COPY . /app
 
