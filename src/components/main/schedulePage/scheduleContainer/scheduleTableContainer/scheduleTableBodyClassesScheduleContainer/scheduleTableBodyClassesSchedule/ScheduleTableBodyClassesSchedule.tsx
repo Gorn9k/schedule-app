@@ -2,6 +2,8 @@ import React, {FC, memo, useEffect, useRef} from "react";
 import styles from "../../ScheduleTableContainer.module.css";
 import {Lesson} from "../../../../../../../api/schedule-backend-api";
 import {switchByDayNumber, switchByLessonNumber} from "../../../../../../../utils/dates";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../../../../redux/store";
 
 type ScheduleTableBodyClassScheduleNotEmptyProps = {
     lessons: Lesson[]
@@ -17,6 +19,8 @@ type TableDay = {
 export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassScheduleNotEmptyProps> = memo(({lessons, classesNumbers, days}) => {
 
     const currentRow = useRef<HTMLTableRowElement>(null);
+
+    const isOverflowing = useSelector((state: RootState) => state.schedule.isOverflowing)
 
     const tableDays: TableDay[] = []
 
@@ -42,10 +46,10 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
     let styleFlag = false;
 
     useEffect(() => {
-        if (currentRow.current) {
-            currentRow.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (currentRow.current && isOverflowing) {
+            currentRow.current.scrollIntoView({ behavior: 'smooth', block: window.screen.height < 1000 ? 'nearest' : 'center' });
         }
-    }, [currentRow]);
+    }, [currentRow, isOverflowing]);
 
     return <>
         {
