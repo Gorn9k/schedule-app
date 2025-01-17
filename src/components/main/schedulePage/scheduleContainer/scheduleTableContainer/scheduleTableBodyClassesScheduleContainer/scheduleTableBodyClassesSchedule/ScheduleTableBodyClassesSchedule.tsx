@@ -1,4 +1,4 @@
-import React, {FC, memo} from "react";
+import React, {FC, memo, useEffect, useRef} from "react";
 import styles from "../../ScheduleTableContainer.module.css";
 import {Lesson} from "../../../../../../../api/schedule-backend-api";
 import {switchByDayNumber, switchByLessonNumber} from "../../../../../../../utils/dates";
@@ -15,6 +15,8 @@ type TableDay = {
 }
 
 export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassScheduleNotEmptyProps> = memo(({lessons, classesNumbers, days}) => {
+
+    const currentRow = useRef<HTMLTableRowElement>(null);
 
     const tableDays: TableDay[] = []
 
@@ -39,6 +41,12 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
     let currentDay = 1;
     let styleFlag = false;
 
+    useEffect(() => {
+        if (currentRow.current) {
+            currentRow.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [currentRow]);
+
     return <>
         {
             tableLessons.map((lesson) => {
@@ -50,6 +58,7 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
 
                 return (
                     <tr className={(!styleFlag && styles.oddRow) || undefined}
+                        ref={(new Date().getDay() + 6 === lesson.day || (new Date().getDay() - 1) === lesson.day) ? currentRow : null}
                         key={lesson.id}>
                         {!tableDays.find(value => value.day === lesson.day) ? null :
                             <td rowSpan={tableDays.shift()?.rowSpan}
