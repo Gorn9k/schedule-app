@@ -16,9 +16,13 @@ type TableDay = {
     rowSpan: number
 }
 
-export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassScheduleNotEmptyProps> = memo(({lessons, classesNumbers, days}) => {
+export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassScheduleNotEmptyProps> = memo(({
+                                                                                                           lessons,
+                                                                                                           classesNumbers,
+                                                                                                           days
+                                                                                                       }) => {
 
-    const currentRow = useRef<HTMLTableRowElement>(null);
+    const currentRow = useRef<HTMLTableCellElement>(null);
 
     const isOverflowing = useSelector((state: RootState) => state.schedule.isOverflowing)
 
@@ -47,7 +51,15 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
 
     useEffect(() => {
         if (currentRow.current && isOverflowing) {
-            currentRow.current.scrollIntoView({ behavior: 'smooth', block: window.screen.height < 1000 ? 'nearest' : 'center' });
+
+            const cellRect = currentRow.current.getBoundingClientRect();
+            const table = currentRow.current.closest('table');
+
+            if (table) {
+                const tableRect = table.getBoundingClientRect();
+                let distance = cellRect.top - tableRect.top;
+                table.parentElement?.scroll({top: distance, behavior: "smooth"})
+            }
         }
     }, [currentRow, isOverflowing]);
 
@@ -55,17 +67,17 @@ export const ScheduleTableBodyClassesSchedule: FC<ScheduleTableBodyClassSchedule
         {
             tableLessons.map((lesson) => {
 
-                if(currentDay !== lesson.day) {
+                if (currentDay !== lesson.day) {
                     currentDay = lesson.day;
                     styleFlag = !styleFlag;
                 }
 
                 return (
                     <tr className={(!styleFlag && styles.oddRow) || undefined}
-                        ref={(new Date().getDay() + 6 === lesson.day || (new Date().getDay() - 1) === lesson.day) ? currentRow : null}
                         key={lesson.id}>
                         {!tableDays.find(value => value.day === lesson.day) ? null :
                             <td rowSpan={tableDays.shift()?.rowSpan}
+                                ref={(new Date().getDay() + 6 === lesson.day || (new Date().getDay() - 1) === lesson.day) ? currentRow : null}
                                 className={styles.thAndTdDayAndTime}>{`${switchByDayNumber(lesson.day)}`}</td>}
                         <td className={styles.thAndTdDayAndTime}>{`${switchByLessonNumber(lesson.lessonNumber)}`}</td>
                         {classesNumbers.map(classNumber => {
