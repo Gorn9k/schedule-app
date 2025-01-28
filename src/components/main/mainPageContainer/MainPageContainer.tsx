@@ -23,7 +23,7 @@ export const MainPageContainer = () => {
                 startDateTime: generateStartDateMilliseconds(),
                 endDateTime: generateEndDateMilliseconds()
             })
-        }, 100);
+        }, 1000);
 
         return () => clearInterval(timerId);
     }, []);

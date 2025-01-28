@@ -7,7 +7,7 @@ type HeaderScheduleContainerProps = {
     frame: FrameType
 }
 
-const HeaderScheduleContainer: FC<HeaderScheduleContainerProps> = ({frame}) => {
+const HeaderContainer: FC<HeaderScheduleContainerProps> = ({frame}) => {
 
     if (!frame) return null
 
@@ -17,4 +17,4 @@ const HeaderScheduleContainer: FC<HeaderScheduleContainerProps> = ({frame}) => {
     return <Header title={title}/>
 }
 
-export const WithFrameHeader = withFrame(HeaderScheduleContainer)
+export const WithFrameHeader = withFrame(HeaderContainer)

@@ -4,14 +4,14 @@ import generalStyles from './App.module.css';
 import {NavLink, Route, Routes} from 'react-router-dom';
 import {SchedulePage} from "./components/main/schedulePage/SchedulePage";
 import Modal from "react-modal";
-import {WithFrameHeader} from "./components/headerScheduleContainer/HeaderScheduleContainer";
+import {WithFrameHeader} from "./components/headerContainer/HeaderContainer";
 import {MainPageContainer} from "./components/main/mainPageContainer/MainPageContainer";
 import {NotFound} from "./components/main/notFound/NotFound";
 import {useLocationParamsValidatorReduxSetter} from "./hooks/useLocationParamsValidatorReduxSetter";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "./redux/store";
 import {resetScheduleState} from "./redux/scheduleSlice";
-import {Header} from "./components/headerScheduleContainer/header/Header";
+import {Header} from "./components/headerContainer/header/Header";
 import {setShowLoadInfoModal} from "./redux/modalSlice";
 import {ModalContainer} from "./components/main/schedulePage/modalContainer/ModalContainer";
 
